@@ -1,0 +1,623 @@
+[gd_scene format=3 uid="uid://be0htmasvo4nm"]
+
+[ext_resource type="PackedScene" uid="uid://brdmblcywuklx" path="res://#Template/Player.tscn" id="1_a0tgy"]
+[ext_resource type="Resource" uid="uid://csjpmhojb1kp8" path="res://[Scenes]/Fin/Fin.tres" id="2_fqiow"]
+[ext_resource type="PackedScene" uid="uid://be4vgpeo0nv84" path="res://#Template/CameraRoot.tscn" id="3_ndfec"]
+[ext_resource type="PackedScene" uid="uid://wx3awwdt8xdy" path="res://#Template/[Resources]/GAMEUI.tscn" id="4_vxmub"]
+[ext_resource type="Texture2D" uid="uid://bokq00qv7ojs5" path="res://#Template/[Resources]/PerfactCrownNoLight.png" id="5_p78jh"]
+[ext_resource type="PackedScene" uid="uid://car71stqmy3mh" path="res://#Template/Obstacle.tscn" id="6_fqiow"]
+[ext_resource type="PackedScene" uid="uid://cmson0cneufxo" path="res://#Template/Ground.tscn" id="6_mot87"]
+[ext_resource type="Script" uid="uid://cq7y41sswinln" path="res://#Template/[Scripts]/Guidance/GuidanceController.gd" id="6_r8b6q"]
+[ext_resource type="PackedScene" uid="uid://cceydenrkikf3" path="res://#Template/[Resources]/GuidanceBox.tscn" id="7_r8b6q"]
+[ext_resource type="PackedScene" uid="uid://b5hb8j8w782ki" path="res://#Template/trigger.tscn" id="7_vxmub"]
+[ext_resource type="Script" uid="uid://dd1gtglcv7geu" path="res://#Template/[Scripts]/Tutorial/TutorialManager.gd" id="8_0ck5o"]
+[ext_resource type="Script" uid="uid://cu3xuawfji3m2" path="res://#Template/[Scripts]/Trigger/EventTrigger.gd" id="9_mot87"]
+[ext_resource type="Script" uid="uid://bhmnocupnsd06" path="res://#Template/[Scripts]/Animator/LocalPosAnimator.gd" id="9_p78jh"]
+[ext_resource type="Script" uid="uid://c0whny0gf5gyj" path="res://#Template/[Scripts]/Trigger/KillPlayer.gd" id="13_1lcus"]
+
+[sub_resource type="Environment" id="Environment_ys6ci"]
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.8621534, 0.73527706, 0.40476644, 1)
+fog_density = 1.0
+
+[sub_resource type="Animation" id="Animation_wkp8b"]
+length = 0.001
+
+[sub_resource type="Animation" id="3"]
+length = 130.0
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cm0pq"]
+_data = {
+&"RESET": SubResource("Animation_wkp8b"),
+&"level": SubResource("3")
+}
+
+[node name="LevelHolder" type="Node3D" unique_id=542804875]
+
+[node name="BasicOBJ_Group" type="Node3D" parent="." unique_id=1533079692]
+
+[node name="Player" parent="BasicOBJ_Group" unique_id=2020142567 instance=ExtResource("1_a0tgy")]
+animation = NodePath("../AnimationPlayer")
+level_data = ExtResource("2_fqiow")
+
+[node name="CameraRoot" parent="BasicOBJ_Group" unique_id=1925825702 instance=ExtResource("3_ndfec")]
+
+[node name="Camera3D" parent="BasicOBJ_Group/CameraRoot/Rotator/Scale" parent_id_path=PackedInt32Array(1925825702, 1568144045) index="0" unique_id=1985620912]
+transform = Transform3D(-0.70710874, -0.4473887, 0.547577, -0.5720598, 0.81712383, -0.07110697, -0.41562575, -0.36352715, -0.83372855, 10.160331, 2.245903, -20.339718)
+environment = SubResource("Environment_ys6ci")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="BasicOBJ_Group" unique_id=560431425]
+root_node = NodePath("../..")
+libraries/ = SubResource("AnimationLibrary_cm0pq")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="BasicOBJ_Group/AnimationPlayer" unique_id=1995291670]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="BasicOBJ_Group" unique_id=1791213843]
+transform = Transform3D(-0.86602354, -0.43301606, 0.25000072, 0, 0.49999818, 0.86602646, -0.5000033, 0.7499993, -0.4330102, 0, -0.33333334, 0)
+shadow_enabled = true
+
+[node name="gameui" parent="BasicOBJ_Group" unique_id=75582180 instance=ExtResource("4_vxmub")]
+visible = false
+crown_no_light = ExtResource("5_p78jh")
+
+[node name="Control" type="Control" parent="BasicOBJ_Group" unique_id=850310662]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GuidanceBoxHolder" type="Node3D" parent="BasicOBJ_Group" unique_id=187676882 node_paths=PackedStringArray("box_holder")]
+script = ExtResource("6_r8b6q")
+box_holder = NodePath(".")
+
+[node name="OriginalGuidanceBox" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1723303954 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
+
+[node name="GuidanceBox 0" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1573509428 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, -0.45, 75.2)
+
+[node name="GuidanceBox 1" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1356714157 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.79999, -0.45, 75.2)
+
+[node name="GuidanceBox 2" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1375434104 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.79999, -0.45, 90.79976)
+
+[node name="GuidanceBox 3" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=141278498 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.400047, -0.45, 90.79976)
+
+[node name="GuidanceBox 4" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=673846457 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31.400047, -0.45, 122.3521)
+
+[node name="GuidanceBox 5" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=613920054 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.200096, -0.45, 122.3521)
+
+[node name="GuidanceBox 6" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=731844464 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 44.200096, -0.45, 140.599)
+
+[node name="GuidanceBox 7" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=526775129 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 59.800156, -0.45, 140.599)
+
+[node name="GuidanceBox 8" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=151997058 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 59.800156, -0.45, 166.5986)
+
+[node name="GuidanceBox 9" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1076662426 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62.800167, -0.45, 166.5986)
+
+[node name="GuidanceBox 10" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=679843667 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 62.800167, -0.45, 169.39856)
+
+[node name="GuidanceBox 11" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=676459637 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 73.400024, -0.45, 169.39856)
+
+[node name="GuidanceBox 12" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=2070080712 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 73.400024, -0.45, 171.59853)
+
+[node name="GuidanceBox 13" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1306497757 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75.79999, -0.45, 171.59853)
+
+[node name="GuidanceBox 14" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=2115422153 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 75.79999, -0.45, 182.19836)
+
+[node name="GuidanceBox 15" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=2144191960 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.19995, -0.45, 182.19836)
+
+[node name="GuidanceBox 16" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=28233806 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 78.19995, -0.45, 184.79832)
+
+[node name="GuidanceBox 17" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=2086763271 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110.99945, -0.45, 184.79832)
+
+[node name="GuidanceBox 18" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1525279314 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 110.99945, -0.45, 193.3982)
+
+[node name="GuidanceBox 19" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1380919132 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115.999374, -0.45, 193.3982)
+
+[node name="GuidanceBox 20" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=844898808 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 115.999374, -0.45, 203.99803)
+
+[node name="GuidanceBox 21" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1708272444 instance=ExtResource("7_r8b6q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 121.99928, -0.45, 203.99803)
+
+[node name="TutorialManager" type="Node" parent="BasicOBJ_Group" unique_id=1652725236]
+script = ExtResource("8_0ck5o")
+first_turn_slow_distance = 3.0
+turn_time_scale = 0.8
+
+[node name="NarrativeUI" type="CanvasLayer" parent="BasicOBJ_Group/TutorialManager" unique_id=2023907741]
+
+[node name="NarrativeLabel" type="Label" parent="BasicOBJ_Group/TutorialManager/NarrativeUI" unique_id=410531347]
+offset_left = 120.0
+offset_top = 560.0
+offset_right = 960.0
+offset_bottom = 650.0
+theme_override_colors/font_color = Color(0.92, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Scene_Group" type="Node3D" parent="." unique_id=1042175662]
+
+[node name="Scene_001" type="Node3D" parent="Scene_Group" unique_id=514366687]
+
+[node name="Ground" parent="Scene_Group/Scene_001" unique_id=755968428 instance=ExtResource("6_mot87")]
+transform = Transform3D(1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, -1, 0)
+visible = false
+
+[node name="Node3D" type="Node3D" parent="Scene_Group/Scene_001" unique_id=1607013115]
+
+[node name="Obstacle" parent="Scene_Group/Scene_001/Node3D" unique_id=359263919 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, 3.2006545, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D/Obstacle" unique_id=1825487038]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(5, -1.8680372, 9.111172)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001/Node3D/Obstacle" unique_id=608483111 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.29278085, 0, 0, 0, 1.25, 0, 0, 0, 0.27319735, -0.69681466, 0.73596025, -0.42936444)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_001/Node3D/Obstacle/Trigger" unique_id=40784537 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos"), NodePath("../../../Obstacle2/localpos")]
+target_methods = Array[String](["Trigger", "Trigger"])
+
+[node name="Obstacle2" parent="Scene_Group/Scene_001/Node3D" unique_id=1115518707 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, -3.5049534, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D/Obstacle2" unique_id=44425753]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(-5, -1.8680372, 9.111172)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Node3D2" type="Node3D" parent="Scene_Group/Scene_001" unique_id=1304077761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.47276)
+
+[node name="Obstacle" parent="Scene_Group/Scene_001/Node3D2" unique_id=662548255 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, 3.2006545, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D2/Obstacle" unique_id=889040786]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(5, -1.8680372, 16.583931)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001/Node3D2/Obstacle" unique_id=414084129 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.29278085, 0, 0, 0, 1.25, 0, 0, 0, 0.27319735, -0.69681466, 0.73596025, -0.42936444)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_001/Node3D2/Obstacle/Trigger" unique_id=2067325403 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos"), NodePath("../../../Obstacle2/localpos")]
+target_methods = Array[String](["Trigger", "Trigger"])
+
+[node name="Obstacle2" parent="Scene_Group/Scene_001/Node3D2" unique_id=1884352560 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, -3.5049534, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D2/Obstacle2" unique_id=322544165]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(-5, -1.8680372, 16.583931)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Node3D3" type="Node3D" parent="Scene_Group/Scene_001" unique_id=454723078]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15.214355)
+
+[node name="Obstacle" parent="Scene_Group/Scene_001/Node3D3" unique_id=1752483112 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, 3.2006545, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D3/Obstacle" unique_id=2108452907]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(5, -1.8680372, 24.325527)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001/Node3D3/Obstacle" unique_id=1528293631 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.29278085, 0, 0, 0, 1.25, 0, 0, 0, 0.27319735, -0.69681466, 0.73596025, -0.42936444)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_001/Node3D3/Obstacle/Trigger" unique_id=1428441289 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos"), NodePath("../../../Obstacle2/localpos")]
+target_methods = Array[String](["Trigger", "Trigger"])
+
+[node name="Obstacle2" parent="Scene_Group/Scene_001/Node3D3" unique_id=1148612439 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, -3.5049534, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D3/Obstacle2" unique_id=833713649]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(-5, -1.8680372, 24.325527)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Node3D4" type="Node3D" parent="Scene_Group/Scene_001" unique_id=580912522]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 22.738598)
+
+[node name="Obstacle" parent="Scene_Group/Scene_001/Node3D4" unique_id=704620126 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, 3.2006545, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D4/Obstacle" unique_id=1563594346]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(5, -1.8680372, 31.84977)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001/Node3D4/Obstacle" unique_id=179634827 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.29278085, 0, 0, 0, 1.25, 0, 0, 0, 0.27319735, -0.69681466, 0.73596025, -0.42936444)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_001/Node3D4/Obstacle/Trigger" unique_id=1683827278 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos"), NodePath("../../../Obstacle2/localpos")]
+target_methods = Array[String](["Trigger", "Trigger"])
+
+[node name="Obstacle2" parent="Scene_Group/Scene_001/Node3D4" unique_id=120581388 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, -3.5049534, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D4/Obstacle2" unique_id=955460151]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(-5, -1.8680372, 31.84977)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Node3D5" type="Node3D" parent="Scene_Group/Scene_001" unique_id=306663868]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30.314976)
+
+[node name="Obstacle" parent="Scene_Group/Scene_001/Node3D5" unique_id=302984240 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, 3.2006545, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D5/Obstacle" unique_id=787193505]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(5, -1.8680372, 39.426147)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001/Node3D5/Obstacle" unique_id=1693216388 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.29278085, 0, 0, 0, 1.25, 0, 0, 0, 0.27319735, -0.69681466, 0.73596025, -0.42936444)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_001/Node3D5/Obstacle/Trigger" unique_id=1862745867 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos"), NodePath("../../../Obstacle2/localpos")]
+target_methods = Array[String](["Trigger", "Trigger"])
+
+[node name="Obstacle2" parent="Scene_Group/Scene_001/Node3D5" unique_id=1554085158 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, -3.5049534, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D5/Obstacle2" unique_id=1926274525]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(-5, -1.8680372, 39.426147)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Node3D6" type="Node3D" parent="Scene_Group/Scene_001" unique_id=183212057]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 37.956966)
+
+[node name="Obstacle" parent="Scene_Group/Scene_001/Node3D6" unique_id=1042905635 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, 3.2006545, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D6/Obstacle" unique_id=240950480]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(5, -1.8680372, 47.06814)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001/Node3D6/Obstacle" unique_id=1464687051 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.29278085, 0, 0, 0, 1.25, 0, 0, 0, 0.27319735, -0.69681466, 0.73596025, -0.42936444)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_001/Node3D6/Obstacle/Trigger" unique_id=609214543 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos"), NodePath("../../../Obstacle2/localpos")]
+target_methods = Array[String](["Trigger", "Trigger"])
+
+[node name="Obstacle2" parent="Scene_Group/Scene_001/Node3D6" unique_id=1970870219 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, -3.5049534, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D6/Obstacle2" unique_id=213484965]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(-5, -1.8680372, 47.06814)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Node3D7" type="Node3D" parent="Scene_Group/Scene_001" unique_id=1095071513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 44.92613)
+
+[node name="Obstacle" parent="Scene_Group/Scene_001/Node3D7" unique_id=779322898 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, 3.2006545, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D7/Obstacle" unique_id=589132510]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(5, -1.8680372, 54.0373)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001/Node3D7/Obstacle" unique_id=1362996012 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.29278085, 0, 0, 0, 1.25, 0, 0, 0, 0.27319735, -0.69681466, 0.73596025, -0.42936444)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_001/Node3D7/Obstacle/Trigger" unique_id=1422689668 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos"), NodePath("../../../Obstacle2/localpos")]
+target_methods = Array[String](["Trigger", "Trigger"])
+
+[node name="Obstacle2" parent="Scene_Group/Scene_001/Node3D7" unique_id=485995821 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, -3.5049534, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D7/Obstacle2" unique_id=68923357]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(-5, -1.8680372, 54.0373)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Node3D8" type="Node3D" parent="Scene_Group/Scene_001" unique_id=379435513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 52.058216)
+
+[node name="Obstacle" parent="Scene_Group/Scene_001/Node3D8" unique_id=1698472348 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, 3.2006545, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D8/Obstacle" unique_id=1612356253]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(5, -1.8680372, 61.169388)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001/Node3D8/Obstacle" unique_id=1302920381 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.29278085, 0, 0, 0, 1.25, 0, 0, 0, 0.27319735, -0.69681466, 0.73596025, -0.42936444)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_001/Node3D8/Obstacle/Trigger" unique_id=1485828073 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos"), NodePath("../../../Obstacle2/localpos")]
+target_methods = Array[String](["Trigger", "Trigger"])
+
+[node name="Obstacle2" parent="Scene_Group/Scene_001/Node3D8" unique_id=2138670268 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, -3.5049534, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D8/Obstacle2" unique_id=610873963]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(-5, -1.8680372, 61.169388)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Node3D9" type="Node3D" parent="Scene_Group/Scene_001" unique_id=1121387895]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 59.847073)
+
+[node name="Obstacle" parent="Scene_Group/Scene_001/Node3D9" unique_id=605338993 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, 3.2006545, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D9/Obstacle" unique_id=2024260691]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(5, -1.8680372, 68.958244)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001/Node3D9/Obstacle" unique_id=1754410564 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.29278085, 0, 0, 0, 1.25, 0, 0, 0, 0.27319735, -0.69681466, 0.73596025, -0.42936444)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_001/Node3D9/Obstacle/Trigger" unique_id=1836411949 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos"), NodePath("../../../Obstacle2/localpos")]
+target_methods = Array[String](["Trigger", "Trigger"])
+
+[node name="Obstacle2" parent="Scene_Group/Scene_001/Node3D9" unique_id=386905692 instance=ExtResource("6_fqiow")]
+transform = Transform3D(5, 0, 0, 0, 2, 0, 0, 0, 5, -3.5049534, -1.8680372, 9.111172)
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_001/Node3D9/Obstacle2" unique_id=1583943706]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(-5, -1.8680372, 68.958244)
+end_offset = Vector3(0, 2, 0)
+EaseType = 1
+
+[node name="Trigger" parent="Scene_Group/Scene_001" unique_id=2141453635 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 80, 5.0094676, -0.5, 29.32045)
+
+[node name="airwall" type="Node3D" parent="Scene_Group/Scene_001/Trigger" unique_id=1613736953]
+script = ExtResource("13_1lcus")
+reason = 2
+
+[node name="Trigger3" parent="Scene_Group/Scene_001" unique_id=1738812620 instance=ExtResource("7_vxmub")]
+transform = Transform3D(-1.6900493, 0, -36.844177, 0, 2.5, 0, 1.8422089, 0, -33.800987, 23.273825, -0.49999428, 74.10916)
+
+[node name="airwall" type="Node3D" parent="Scene_Group/Scene_001/Trigger3" unique_id=530540642]
+script = ExtResource("13_1lcus")
+reason = 2
+
+[node name="Trigger4" parent="Scene_Group/Scene_001" unique_id=1266575622 instance=ExtResource("7_vxmub")]
+transform = Transform3D(-1.6900493, 0, -36.844177, 0, 2.5, 0, 1.8422089, 0, -33.800987, 7.5043545, -0.49999428, 92.82609)
+
+[node name="airwall" type="Node3D" parent="Scene_Group/Scene_001/Trigger4" unique_id=1238800432]
+script = ExtResource("13_1lcus")
+reason = 2
+
+[node name="Scene_002" type="Node3D" parent="Scene_Group" unique_id=867734978]
+
+[node name="Trigger5" parent="Scene_Group/Scene_002" unique_id=292639268 instance=ExtResource("7_vxmub")]
+transform = Transform3D(-1.6900493, 0, -36.844177, 0, 2.5, 0, 1.8422089, 0, -33.800987, 35.709846, -0.4999981, 143.26422)
+
+[node name="airwall" type="Node3D" parent="Scene_Group/Scene_002/Trigger5" unique_id=1502290502]
+script = ExtResource("13_1lcus")
+reason = 2
+
+[node name="Trigger6" parent="Scene_Group/Scene_002" unique_id=2075690965 instance=ExtResource("7_vxmub")]
+transform = Transform3D(-1.9080373, 0, -38.768684, 0, 2.5, 0, 1.6153619, 0, -45.792892, 59.025547, -0.49999428, 119.44406)
+
+[node name="airwall" type="Node3D" parent="Scene_Group/Scene_002/Trigger6" unique_id=464146233]
+script = ExtResource("13_1lcus")
+reason = 2
+
+[node name="Obstacle" parent="Scene_Group/Scene_002" unique_id=732122972 instance=ExtResource("6_fqiow")]
+transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, -0.3674202, 0.5, 83.853546)
+
+[node name="Obstacle2" parent="Scene_Group/Scene_002" unique_id=1463118870 instance=ExtResource("6_fqiow")]
+transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, 22.955, -2, 75.642)
+
+[node name="Trigger" parent="Scene_Group/Scene_002/Obstacle2" unique_id=557099457 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.3125, 0, 0, 0, 1.25, 0, 0, 0, 3.338627, -1.467666, 0.75, 0.06325531)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_002/Obstacle2/Trigger" unique_id=1229232858 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos")]
+target_methods = Array[String](["Trigger"])
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_002/Obstacle2" unique_id=1263452052]
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(22.955, -2, 75.642)
+end_offset = Vector3(0, 2.5, 0)
+
+[node name="Obstacle4" parent="Scene_Group/Scene_002" unique_id=787191167 instance=ExtResource("6_fqiow")]
+transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, 38.83425, -2, 90.83603)
+
+[node name="Trigger" parent="Scene_Group/Scene_002/Obstacle4" unique_id=802680665 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.3125, 0, 0, 0, 1.25, 0, 0, 0, 3.338627, -1.467666, 0.75, 0.06325531)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_002/Obstacle4/Trigger" unique_id=1663306992 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos")]
+target_methods = Array[String](["Trigger"])
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_002/Obstacle4" unique_id=672457929]
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(38.83425, -2, 90.83603)
+end_offset = Vector3(0, 2.5, 0)
+
+[node name="Obstacle6" parent="Scene_Group/Scene_002" unique_id=1747808036 instance=ExtResource("6_fqiow")]
+transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, 51.904495, -1.9999962, 122.434616)
+
+[node name="Trigger" parent="Scene_Group/Scene_002/Obstacle6" unique_id=166371534 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.3125, 0, 0, 0, 1.25, 0, 0, 0, 3.338627, -1.467666, 0.75, 0.06325531)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_002/Obstacle6/Trigger" unique_id=1763573296 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos")]
+target_methods = Array[String](["Trigger"])
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_002/Obstacle6" unique_id=1627460131]
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(51.904495, -1.9999962, 122.434616)
+end_offset = Vector3(0, 2.5, 0)
+
+[node name="Obstacle8" parent="Scene_Group/Scene_002" unique_id=853865772 instance=ExtResource("6_fqiow")]
+transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, 66.81021, -1.9999962, 141.08377)
+
+[node name="Trigger" parent="Scene_Group/Scene_002/Obstacle8" unique_id=856703559 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.3125, 0, 0, 0, 1.25, 0, 0, 0, 3.338627, -1.467666, 0.75, 0.06325531)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_002/Obstacle8/Trigger" unique_id=304087490 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos")]
+target_methods = Array[String](["Trigger"])
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_002/Obstacle8" unique_id=654506588]
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(66.81021, -1.9999962, 141.08377)
+end_offset = Vector3(0, 2.5, 0)
+
+[node name="Obstacle3" parent="Scene_Group/Scene_002" unique_id=362655640 instance=ExtResource("6_fqiow")]
+transform = Transform3D(-3.496911e-07, 0, -8, 0, 2, 0, 8, 0, -3.496911e-07, 15.732714, -2, 98.312874)
+
+[node name="Trigger" parent="Scene_Group/Scene_002/Obstacle3" unique_id=1753271878 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.3125, 0, 0, 0, 1.25, 0, 0, 0, 3.338627, -1.467666, 0.75, 0.06325531)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_002/Obstacle3/Trigger" unique_id=1124884530 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos")]
+target_methods = Array[String](["Trigger"])
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_002/Obstacle3" unique_id=371549982]
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(15.732714, -2, 98.312874)
+end_offset = Vector3(0, 2.5, 0)
+
+[node name="Obstacle5" parent="Scene_Group/Scene_002" unique_id=1364725314 instance=ExtResource("6_fqiow")]
+transform = Transform3D(-3.496911e-07, 0, -8, 0, 2, 0, 8, 0, -3.496911e-07, 31.544855, -2, 129.36896)
+
+[node name="Trigger" parent="Scene_Group/Scene_002/Obstacle5" unique_id=1732865551 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.3125, 0, 0, 0, 1.25, 0, 0, 0, 3.338627, -1.467666, 0.75, 0.06325531)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_002/Obstacle5/Trigger" unique_id=26106227 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos")]
+target_methods = Array[String](["Trigger"])
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_002/Obstacle5" unique_id=1282073408]
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(31.544855, -2, 129.36896)
+end_offset = Vector3(0, 2.5, 0)
+
+[node name="Obstacle7" parent="Scene_Group/Scene_002" unique_id=1670872184 instance=ExtResource("6_fqiow")]
+transform = Transform3D(-3.496911e-07, 0, -8, 0, 2, 0, 8, 0, -3.496911e-07, 43.97174, -2, 147.93082)
+
+[node name="Trigger" parent="Scene_Group/Scene_002/Obstacle7" unique_id=1741012570 instance=ExtResource("7_vxmub")]
+transform = Transform3D(0.3125, 0, 0, 0, 1.25, 0, 0, 0, 3.338627, -1.467666, 0.75, 0.06325531)
+
+[node name="event" type="Node3D" parent="Scene_Group/Scene_002/Obstacle7/Trigger" unique_id=303704869 node_paths=PackedStringArray("target_nodes")]
+script = ExtResource("9_mot87")
+target_nodes = [NodePath("../../localpos")]
+target_methods = Array[String](["Trigger"])
+
+[node name="localpos" type="Node3D" parent="Scene_Group/Scene_002/Obstacle7" unique_id=167537889]
+script = ExtResource("9_p78jh")
+transform_type = 1
+start_value = Vector3(43.97174, -2, 147.93082)
+end_offset = Vector3(0, 2.5, 0)
+
+[editable path="BasicOBJ_Group/CameraRoot"]
