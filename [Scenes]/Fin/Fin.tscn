@@ -10,10 +10,11 @@
 [ext_resource type="Script" uid="uid://cq7y41sswinln" path="res://#Template/[Scripts]/Guidance/GuidanceController.gd" id="6_r8b6q"]
 [ext_resource type="PackedScene" uid="uid://cceydenrkikf3" path="res://#Template/[Resources]/GuidanceBox.tscn" id="7_r8b6q"]
 [ext_resource type="PackedScene" uid="uid://b5hb8j8w782ki" path="res://#Template/trigger.tscn" id="7_vxmub"]
-[ext_resource type="Script" uid="uid://dd1gtglcv7geu" path="res://#Template/[Scripts]/Tutorial/TutorialManager.gd" id="8_0ck5o"]
+[ext_resource type="Script" uid="uid://dd1gtglcv7geu" path="res://[Scenes]/Tutorial/TutorialManager.gd" id="8_0ck5o"]
 [ext_resource type="Script" uid="uid://cu3xuawfji3m2" path="res://#Template/[Scripts]/Trigger/EventTrigger.gd" id="9_mot87"]
 [ext_resource type="Script" uid="uid://bhmnocupnsd06" path="res://#Template/[Scripts]/Animator/LocalPosAnimator.gd" id="9_p78jh"]
 [ext_resource type="Script" uid="uid://c0whny0gf5gyj" path="res://#Template/[Scripts]/Trigger/KillPlayer.gd" id="13_1lcus"]
+[ext_resource type="PackedScene" path="res://Character/SkinSelector.tscn" id="14_skin_selector"]
 
 [sub_resource type="Environment" id="Environment_ys6ci"]
 fog_enabled = true
@@ -37,15 +38,15 @@ _data = {
 
 [node name="BasicOBJ_Group" type="Node3D" parent="." unique_id=1533079692]
 
-[node name="Player" parent="BasicOBJ_Group" unique_id=2020142567 instance=ExtResource("1_a0tgy")]
-animation = NodePath("../AnimationPlayer")
-level_data = ExtResource("2_fqiow")
-
 [node name="CameraRoot" parent="BasicOBJ_Group" unique_id=1925825702 instance=ExtResource("3_ndfec")]
 
 [node name="Camera3D" parent="BasicOBJ_Group/CameraRoot/Rotator/Scale" parent_id_path=PackedInt32Array(1925825702, 1568144045) index="0" unique_id=1985620912]
 transform = Transform3D(-0.70710874, -0.4473887, 0.547577, -0.5720598, 0.81712383, -0.07110697, -0.41562575, -0.36352715, -0.83372855, 10.160331, 2.245903, -20.339718)
 environment = SubResource("Environment_ys6ci")
+
+[node name="Player" parent="BasicOBJ_Group" unique_id=1905697100 instance=ExtResource("1_a0tgy")]
+animation = NodePath("../AnimationPlayer")
+level_data = ExtResource("2_fqiow")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="BasicOBJ_Group" unique_id=560431425]
 root_node = NodePath("../..")
@@ -60,12 +61,6 @@ shadow_enabled = true
 [node name="gameui" parent="BasicOBJ_Group" unique_id=75582180 instance=ExtResource("4_vxmub")]
 visible = false
 crown_no_light = ExtResource("5_p78jh")
-
-[node name="Control" type="Control" parent="BasicOBJ_Group" unique_id=850310662]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
 
 [node name="GuidanceBoxHolder" type="Node3D" parent="BasicOBJ_Group" unique_id=187676882 node_paths=PackedStringArray("box_holder")]
 script = ExtResource("6_r8b6q")
@@ -142,20 +137,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 121.99928, -0.45, 203.99803)
 
 [node name="TutorialManager" type="Node" parent="BasicOBJ_Group" unique_id=1652725236]
 script = ExtResource("8_0ck5o")
-first_turn_slow_distance = 3.0
+first_turn_slow_distance = 5.0
 turn_time_scale = 0.8
+turn_recover_time = 0.1
 
 [node name="NarrativeUI" type="CanvasLayer" parent="BasicOBJ_Group/TutorialManager" unique_id=2023907741]
 
 [node name="NarrativeLabel" type="Label" parent="BasicOBJ_Group/TutorialManager/NarrativeUI" unique_id=410531347]
-offset_left = 120.0
-offset_top = 560.0
-offset_right = 960.0
-offset_bottom = 650.0
+offset_left = -4.0
+offset_top = 122.0
+offset_right = 392.0
+offset_bottom = 355.0
 theme_override_colors/font_color = Color(0.92, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="SkinSelector" parent="." unique_id=319829313 instance=ExtResource("14_skin_selector")]
+offset = Vector2(0, -100)
+transform = Transform2D(1, 0, 0, 1, 0, -100)
 
 [node name="Scene_Group" type="Node3D" parent="." unique_id=1042175662]
 

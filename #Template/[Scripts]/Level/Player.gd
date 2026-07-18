@@ -35,6 +35,8 @@ var current_direction: Vector3:
 @export var is_turn := false
 @export var is_end := false
 @export var tail_holder: Node3D
+var tail_enabled := true
+var death_particles_enabled := true
 
 @onready var mesh:Mesh = $MeshInstance3D.mesh
 @onready var past_translation := position
@@ -226,6 +228,10 @@ func _get_or_create_player_tail_holder() -> Node3D:
 	return holder
 
 func new_line():
+	if not tail_enabled:
+		line = null
+		past_translation = position
+		return
 	line = _get_from_pool()
 	line.mesh = mesh
 	line.position = position
@@ -238,6 +244,14 @@ func new_line():
 
 	past_translation = position
 	emit_signal("new_line1")
+
+func set_tail_enabled(enabled: bool) -> void:
+	tail_enabled = enabled
+	if not tail_enabled and is_instance_valid(tail_holder):
+		_clear_tail()
+
+func set_death_particles_enabled(enabled: bool) -> void:
+	death_particles_enabled = enabled
 
 func _play_land_effect() -> void:
 	if is_instance_valid(land_effect):
@@ -348,10 +362,10 @@ func die(spawn_particles: bool = true, death_state: LevelManager.GameStatus = Le
 		if animation_node: animation_node.pause()
 		LevelManager.GameOverNormal(false)
 		AudioManager.fade_out()
-		if spawn_particles:
+		if spawn_particles and death_particles_enabled:
 			$AudioStreamPlayer.play()
 
-		if not spawn_particles or not deathParticle:
+		if not spawn_particles or not death_particles_enabled or not deathParticle:
 			return
 
 		var forward_dir := velocity.normalized() if velocity.length() > 0.01 else Vector3.FORWARD

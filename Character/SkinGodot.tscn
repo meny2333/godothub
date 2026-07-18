@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://bw3tmlp8k6hi"]
+
+[ext_resource type="PackedScene" uid="uid://cmdvwn4s70itm" path="res://Character/godot.fbx" id="1_model"]
+[ext_resource type="Script" uid="uid://b5wwyny6f4l1c" path="res://Character/GodotCharacter.gd" id="2_script"]
+[ext_resource type="Animation" uid="uid://cw6wuihjrswti" path="res://Character/anim/hit.anim" id="3_nqjbo"]
+[ext_resource type="Animation" uid="uid://byqsyvgbw6mih" path="res://Character/anim/run.anim" id="4_ul48q"]
+[ext_resource type="Animation" uid="uid://csnptobv7wb7a" path="res://Character/anim/huachan.anim" id="5_pw087"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_nqjbo"]
+_data = {
+&"die": ExtResource("3_nqjbo"),
+&"run": ExtResource("4_ul48q"),
+&"turn": ExtResource("5_pw087")
+}
+
+[node name="SkinGodot" type="Node3D" unique_id=970531605]
+script = ExtResource("2_script")
+
+[node name="Character" parent="." unique_id=764623264 instance=ExtResource("1_model")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1672370198]
+root_node = NodePath("../Character")
+libraries/ = SubResource("AnimationLibrary_nqjbo")
