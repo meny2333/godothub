@@ -16,13 +16,25 @@
 [ext_resource type="Script" uid="uid://c0whny0gf5gyj" path="res://#Template/[Scripts]/Trigger/KillPlayer.gd" id="13_1lcus"]
 [ext_resource type="PackedScene" path="res://Character/SkinSelector.tscn" id="14_skin_selector"]
 [ext_resource type="Script" uid="uid://bev0h34up6j0c" path="res://#Template/[Scripts]/CameraScripts/CameraTrigger.gd" id="16_0ru4s"]
+[ext_resource type="Script" uid="uid://cdypglxkufbbo" path="res://#Template/[Scripts]/Trigger/SetFog.gd" id="17_5gd5p"]
 [ext_resource type="PackedScene" uid="uid://cgj86xrh55cfr" path="res://#Template/Pyramid.tscn" id="17_tgeva"]
+[ext_resource type="Script" uid="uid://bfhukfse7kskq" path="res://#Template/[Scripts]/Settings/FogSettings.gd" id="18_q5ls4"]
+[ext_resource type="PackedScene" uid="uid://c757j6a6ewnbb" path="res://#Template/Crystal.tscn" id="18_tgeva"]
 
 [sub_resource type="Environment" id="Environment_ys6ci"]
+background_mode = 1
+background_color = Color(0.8509804, 0.6784314, 0.3882353, 1)
+background_energy_multiplier = 0.85
+ambient_light_source = 2
+ambient_light_color = Color(0.94509804, 0.8117647, 0.5411765, 1)
+ambient_light_energy = 0.7
+reflected_light_source = 1
 fog_enabled = true
 fog_mode = 1
-fog_light_color = Color(0.8621534, 0.73527706, 0.40476644, 1)
+fog_light_color = Color(1, 0.79607844, 0.30588236, 1)
+fog_light_energy = 0.8
 fog_density = 1.0
+fog_depth_begin = 50.0
 
 [sub_resource type="Animation" id="Animation_wkp8b"]
 length = 0.001
@@ -35,6 +47,120 @@ _data = {
 &"RESET": SubResource("Animation_wkp8b"),
 &"level": SubResource("3")
 }
+
+[sub_resource type="Environment" id="Environment_0ru4s"]
+background_mode = 1
+background_color = Color(0.8509804, 0.6784314, 0.3882353, 1)
+background_energy_multiplier = 0.85
+ambient_light_source = 2
+ambient_light_color = Color(0.94509804, 0.8117647, 0.5411765, 1)
+ambient_light_energy = 0.7
+reflected_light_source = 1
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.78039217, 0.6117647, 0.35686275, 1)
+fog_light_energy = 0.8
+fog_density = 0.012
+fog_sky_affect = 0.35
+fog_depth_begin = 8.0
+fog_depth_end = 125.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tgeva"]
+albedo_color = Color(0.14117648, 0.23529412, 0.3529412, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="BoxMesh_8lafu"]
+size = Vector3(5, 7, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5gd5p"]
+albedo_color = Color(0.4, 0.33333334, 0.27058825, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="BoxMesh_q5ls4"]
+size = Vector3(7, 13, 7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fqkyq"]
+albedo_color = Color(0.14117648, 0.23529412, 0.3529412, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="BoxMesh_avxh5"]
+size = Vector3(5, 11, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2yiaw"]
+albedo_color = Color(0.4, 0.33333334, 0.27058825, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="BoxMesh_64jkl"]
+size = Vector3(7, 9, 7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_skowm"]
+albedo_color = Color(0.14117648, 0.23529412, 0.3529412, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="BoxMesh_h0smg"]
+size = Vector3(5, 7, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r52ik"]
+albedo_color = Color(0.4, 0.33333334, 0.27058825, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="BoxMesh_jkb44"]
+size = Vector3(7, 13, 7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uc76h"]
+shading_mode = 0
+albedo_color = Color(0.6117647, 0.8627451, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ytrvt"]
+radius = 0.18
+height = 0.36
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qvjd2"]
+shading_mode = 0
+albedo_color = Color(0.6117647, 0.8627451, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ahllt"]
+radius = 0.18
+height = 0.36
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g0nsa"]
+shading_mode = 0
+albedo_color = Color(0.6117647, 0.8627451, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_5dhol"]
+radius = 0.18
+height = 0.36
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l42g3"]
+shading_mode = 0
+albedo_color = Color(0.6117647, 0.8627451, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_8f1eb"]
+radius = 0.18
+height = 0.36
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l6jxc"]
+shading_mode = 0
+albedo_color = Color(0.6117647, 0.8627451, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_mtojw"]
+radius = 0.18
+height = 0.36
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_34yn8"]
+shading_mode = 0
+albedo_color = Color(0.6117647, 0.8627451, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_qmtuy"]
+radius = 0.18
+height = 0.36
+
+[sub_resource type="Resource" id="Resource_l0yca"]
+script = ExtResource("18_q5ls4")
+fog_color = Color(1, 0.79607844, 0.30588236, 1)
+start = 50.0
+end = 200.0
+metadata/_custom_type_script = "uid://bfhukfse7kskq"
 
 [node name="LevelHolder" type="Node3D" unique_id=542804875]
 
@@ -58,6 +184,8 @@ libraries/ = SubResource("AnimationLibrary_cm0pq")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="BasicOBJ_Group" unique_id=1791213843]
 transform = Transform3D(-0.86602354, -0.43301606, 0.25000072, 0, 0.49999818, 0.86602646, -0.5000033, 0.7499993, -0.4330102, 0, -0.33333334, 0)
+light_color = Color(1, 0.8784314, 0.627451, 1)
+light_energy = 1.15
 shadow_enabled = true
 
 [node name="gameui" parent="BasicOBJ_Group" unique_id=75582180 instance=ExtResource("4_vxmub")]
@@ -67,6 +195,7 @@ crown_no_light = ExtResource("5_p78jh")
 [node name="GuidanceBoxHolder" type="Node3D" parent="BasicOBJ_Group" unique_id=187676882 node_paths=PackedStringArray("box_holder")]
 script = ExtResource("6_r8b6q")
 box_holder = NodePath(".")
+guidance_color = Color(0.54509807, 0.84705883, 1, 1)
 
 [node name="OriginalGuidanceBox" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1723303954 instance=ExtResource("7_r8b6q")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
@@ -142,21 +271,129 @@ script = ExtResource("8_0ck5o")
 first_turn_slow_distance = 5.0
 turn_time_scale = 0.8
 turn_recover_time = 0.1
+narrative_hold = 5.0
 
 [node name="NarrativeUI" type="CanvasLayer" parent="BasicOBJ_Group/TutorialManager" unique_id=2023907741]
 
 [node name="NarrativeLabel" type="Label" parent="BasicOBJ_Group/TutorialManager/NarrativeUI" unique_id=410531347]
-offset_left = -4.0
-offset_top = 122.0
-offset_right = 392.0
-offset_bottom = 355.0
-theme_override_colors/font_color = Color(0.92, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 24
+z_index = 2
+offset_left = 40.0
+offset_top = 222.0
+offset_right = 328.0
+offset_bottom = 302.0
+theme_override_colors/font_color = Color(1, 0.9411765, 0.7607843, 1)
+theme_override_colors/font_outline_color = Color(0.09411765, 0.19607843, 0.3019608, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Part1NarrativeBackdrop" type="ColorRect" parent="BasicOBJ_Group/TutorialManager/NarrativeUI" unique_id=1913900215]
+visible = false
+z_index = 1
+offset_left = 24.0
+offset_top = 210.0
+offset_right = 344.0
+offset_bottom = 314.0
+mouse_filter = 2
+color = Color(0.055, 0.12, 0.2, 0.48)
 
 [node name="Camera3D" type="Camera3D" parent="BasicOBJ_Group" unique_id=601556590]
 transform = Transform3D(0.8141182, 0.10333138, -0.5714317, 0, 0.9840408, 0.17794304, 0.5806992, -0.14486666, 0.8011255, -5.2967014, 3.0170314, 7.902181)
+environment = SubResource("Environment_0ru4s")
+
+[node name="Part1Atmosphere" type="Node3D" parent="BasicOBJ_Group" unique_id=1268230959]
+
+[node name="DistantPillar_00" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=815159104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 4, 34)
+material_override = SubResource("StandardMaterial3D_tgeva")
+mesh = SubResource("BoxMesh_8lafu")
+
+[node name="DistantPillar_01" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=495432905]
+transform = Transform3D(0.9563048, 0, 0.2923717, 0, 1, 0, -0.2923717, 0, 0.9563048, 23, 6, 48)
+material_override = SubResource("StandardMaterial3D_5gd5p")
+mesh = SubResource("BoxMesh_q5ls4")
+
+[node name="DistantPillar_02" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=1856272118]
+transform = Transform3D(0.8290376, 0, 0.5591929, 0, 1, 0, -0.5591929, 0, 0.8290376, -26, 7, 78)
+material_override = SubResource("StandardMaterial3D_fqkyq")
+mesh = SubResource("BoxMesh_avxh5")
+
+[node name="DistantPillar_03" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=1432356013]
+transform = Transform3D(0.62932044, 0, 0.7771459, 0, 1, 0, -0.7771459, 0, 0.62932044, 69.4467, 5, 81.44462)
+material_override = SubResource("StandardMaterial3D_2yiaw")
+mesh = SubResource("BoxMesh_64jkl")
+
+[node name="DistantPillar_04" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=1885259810]
+transform = Transform3D(0.37460664, 0, 0.92718387, 0, 1, 0, -0.92718387, 0, 0.37460664, -30, 9, 126)
+material_override = SubResource("StandardMaterial3D_skowm")
+mesh = SubResource("BoxMesh_h0smg")
+
+[node name="DistantPillar_05" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=773126993]
+transform = Transform3D(0.087155804, 0, 0.9961947, 0, 1, 0, -0.9961947, 0, 0.087155804, 31, 7, 145)
+material_override = SubResource("StandardMaterial3D_r52ik")
+mesh = SubResource("BoxMesh_jkb44")
+
+[node name="DistantPillar_06" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=2030483957]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.016434, 4, 114.722305)
+material_override = SubResource("StandardMaterial3D_tgeva")
+mesh = SubResource("BoxMesh_8lafu")
+
+[node name="DistantPillar_07" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=1035472030]
+transform = Transform3D(0.9563048, 0, 0.2923717, 0, 1, 0, -0.2923717, 0, 0.9563048, 100.13171, 6, 154.10396)
+material_override = SubResource("StandardMaterial3D_5gd5p")
+mesh = SubResource("BoxMesh_q5ls4")
+
+[node name="DistantPillar_08" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=698205434]
+transform = Transform3D(0.8290376, 0, 0.5591929, 0, 1, 0, -0.5591929, 0, 0.8290376, 64.90465, 7, 178.54646)
+material_override = SubResource("StandardMaterial3D_fqkyq")
+mesh = SubResource("BoxMesh_avxh5")
+
+[node name="DistantPillar_09" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=849797535]
+transform = Transform3D(0.62932044, 0, 0.7771459, 0, 1, 0, -0.7771459, 0, 0.62932044, 145.10092, 5, 181.26913)
+material_override = SubResource("StandardMaterial3D_2yiaw")
+mesh = SubResource("BoxMesh_64jkl")
+
+[node name="DistantPillar_10" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=1094606383]
+transform = Transform3D(0.37460664, 0, 0.92718387, 0, 1, 0, -0.92718387, 0, 0.37460664, 51.103798, 9, 214.13814)
+material_override = SubResource("StandardMaterial3D_skowm")
+mesh = SubResource("BoxMesh_h0smg")
+
+[node name="DistantPillar_11" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=1698033816]
+transform = Transform3D(0.087155804, 0, 0.9961947, 0, 1, 0, -0.9961947, 0, 0.087155804, 101.57922, 7, 220.05502)
+material_override = SubResource("StandardMaterial3D_r52ik")
+mesh = SubResource("BoxMesh_jkb44")
+
+[node name="FloatingBlueLight_00" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=353465208]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0.7, 13)
+material_override = SubResource("StandardMaterial3D_uc76h")
+mesh = SubResource("SphereMesh_ytrvt")
+
+[node name="FloatingBlueLight_01" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=192227686]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.9, 28)
+material_override = SubResource("StandardMaterial3D_qvjd2")
+mesh = SubResource("SphereMesh_ahllt")
+
+[node name="FloatingBlueLight_02" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=577974604]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.8, 44)
+material_override = SubResource("StandardMaterial3D_g0nsa")
+mesh = SubResource("SphereMesh_5dhol")
+
+[node name="FloatingBlueLight_03" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=555632528]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1, 61)
+material_override = SubResource("StandardMaterial3D_l42g3")
+mesh = SubResource("SphereMesh_8f1eb")
+
+[node name="FloatingBlueLight_04" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=1149975519]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.9, 82)
+material_override = SubResource("StandardMaterial3D_l6jxc")
+mesh = SubResource("SphereMesh_mtojw")
+
+[node name="FloatingBlueLight_05" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=1249787254]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 1, 103)
+material_override = SubResource("StandardMaterial3D_34yn8")
+mesh = SubResource("SphereMesh_qmtuy")
 
 [node name="SkinSelector" parent="." unique_id=319829313 instance=ExtResource("14_skin_selector")]
 offset = Vector2(0, -100)
@@ -168,7 +405,6 @@ transform = Transform2D(1, 0, 0, 1, 0, -100)
 
 [node name="Ground" parent="Scene_Group/Scene_001" unique_id=755968428 instance=ExtResource("6_mot87")]
 transform = Transform3D(1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, -1, 0)
-visible = false
 
 [node name="Node3D" type="Node3D" parent="Scene_Group/Scene_001" unique_id=1607013115]
 
@@ -836,6 +1072,10 @@ script = ExtResource("9_mot87")
 target_nodes = [NodePath("../../localpos")]
 target_methods = Array[String](["Trigger"])
 
+[node name="fog" type="Node3D" parent="Scene_Group/Scene_003/Obstacle7/Trigger" unique_id=206887848]
+script = ExtResource("17_5gd5p")
+fog_settings = SubResource("Resource_l0yca")
+
 [node name="localpos" type="Node3D" parent="Scene_Group/Scene_003/Obstacle7" unique_id=23586531]
 script = ExtResource("9_p78jh")
 transform_type = 1
@@ -856,6 +1096,23 @@ transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 0, 0, 32.160248)
 
 [node name="StopPlayer" parent="Scene_Group/Scene_003/Pyramid" index="5" unique_id=1231749146]
 transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 7.6293945e-06, 0, -21.257233)
+
+[node name="collection" type="Node3D" parent="." unique_id=1192071381]
+
+[node name="Crystal" parent="collection" unique_id=521365085 instance=ExtResource("18_tgeva")]
+transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 15.699438, 0.52766323, 75.09107)
+
+[node name="Crystal2" parent="collection" unique_id=1716723550 instance=ExtResource("18_tgeva")]
+transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 31.461876, 0.52766323, 106.844376)
+
+[node name="Crystal3" parent="collection" unique_id=1140193002 instance=ExtResource("18_tgeva")]
+transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 59.435066, 0.52766323, 147.31184)
+
+[node name="Crystal4" parent="collection" unique_id=604947257 instance=ExtResource("18_tgeva")]
+transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 69.15783, 0.52766323, 169.39902)
+
+[node name="Crystal5" parent="collection" unique_id=204693766 instance=ExtResource("18_tgeva")]
+transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 88.38258, 0.52766323, 184.3287)
 
 [editable path="BasicOBJ_Group/CameraRoot"]
 [editable path="Scene_Group/Scene_003/Pyramid"]
