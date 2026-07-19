@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cmdvwn4s70itm"
+uid="uid://dwcxqsafhyld"
 path="res://.godot/imported/godot.fbx-28a8b95d25ad564137e27c71cd942c0e.scn"
 
 [deps]
@@ -41,11 +41,11 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "animations": {
-"Armature|44d08335dd8be85ff90a6c71ca551446_remap": {
+"Armature|87863afffd9fcbef3afb7f04b6005c1d_remap": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Character/anim/run.anim",
+"save_to_file/fallback_path": "res://Character/anim/idle.anim",
 "save_to_file/keep_custom_tracks": "",
-"save_to_file/path": "uid://blcj84t514lai",
+"save_to_file/path": "uid://ccm5qsutkc6xy",
 "settings/loop_mode": 0,
 "slice_1/end_frame": 0,
 "slice_1/loop_mode": 0,
