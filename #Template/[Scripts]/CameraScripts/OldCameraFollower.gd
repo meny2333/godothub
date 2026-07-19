@@ -11,9 +11,10 @@ enum RotateMode {
 	LOCAL_AXIS_ADD,
 }
 
-static var instance
+static var instance: OldCameraFollower
 
-@export var follow_speed = Vector3(1.5, 1.5, 1.5)
+## 兼容旧场景中以标量配置跟随速度，以及新场景中的 Vector3 配置。
+@export var follow_speed: Variant = Vector3(1.5, 1.5, 1.5)
 @export var follow: bool = true
 @export var smooth: bool = true
 
@@ -29,18 +30,18 @@ var fov_tween: Tween
 var shake_power: float = 0.0
 
 var _target_node: Node3D
-var _checkpoint_applied := false
+var _checkpoint_applied: bool = false
 
 ## Compatibility state used by the existing checkpoint code.
 var _tween: Tween
 var _current_rotate_mode: RotateMode = RotateMode.FAST
-var _target_rotation := Vector3.ZERO
-var _start_rotation := Vector3.ZERO
+var _target_rotation: Vector3 = Vector3.ZERO
+var _start_rotation: Vector3 = Vector3.ZERO
 var _rotation_progress: float = 0.0
 var _is_rotating: bool = false
-var _base_rotation := Vector3.ZERO
-var _target_add_position := Vector3.ZERO
-var _target_follow_speed = Vector3(1.5, 1.5, 1.5)
+var _base_rotation: Vector3 = Vector3.ZERO
+var _target_add_position: Vector3 = Vector3.ZERO
+var _target_follow_speed: Vector3 = Vector3(1.5, 1.5, 1.5)
 var _target_distance: float = 0.0
 
 ## Compatibility aliases for the former Godot OldCameraFollower API.
@@ -104,7 +105,7 @@ func _ready() -> void:
 
 	_resolve_target()
 	_target_add_position = rotator.position if rotator else Vector3.ZERO
-	_target_follow_speed = follow_speed
+	_target_follow_speed = _follow_speed_vector()
 	_target_rotation = rotator.rotation_degrees if rotator else Vector3.ZERO
 	_target_distance = absf(camera.position.z) if camera else 0.0
 	LevelManager.add_revive_listener(_on_player_revive)
@@ -128,7 +129,7 @@ func _process(delta: float) -> void:
 
 
 func _resolve_target() -> void:
-	var player_instance = Player.instance
+	var player_instance: Player = Player.instance
 	_target_node = player_instance if is_instance_valid(player_instance) else null
 
 
@@ -155,9 +156,9 @@ func _set_position(delta: float) -> void:
 		global_position = _target_node.global_position
 		return
 
-	var translation := _target_node.global_position - global_position
-	var speed := _follow_speed_vector()
-	var local_step := Vector3(
+	var translation: Vector3 = _target_node.global_position - global_position
+	var speed: Vector3 = _follow_speed_vector()
+	var local_step: Vector3 = Vector3(
 		translation.x * speed.x * delta,
 		translation.y * speed.y * delta,
 		translation.z * speed.z * delta
@@ -169,7 +170,7 @@ func _set_position(delta: float) -> void:
 func _follow_speed_vector() -> Vector3:
 	if typeof(follow_speed) == TYPE_VECTOR3:
 		return follow_speed
-	var scalar := float(follow_speed)
+	var scalar: float = float(follow_speed)
 	return Vector3(scalar, scalar, scalar)
 
 
@@ -205,7 +206,7 @@ func _set_offset(add_offset: bool, new_offset: Vector3, duration: float,
 	offset_tween = _kill_tween(offset_tween)
 	if not rotator:
 		return
-	var destination := rotator.position + new_offset if add_offset else new_offset
+	var destination: Vector3 = rotator.position + new_offset if add_offset else new_offset
 	_target_add_position = destination
 	offset_tween = create_tween().set_trans(trans_type).set_ease(ease_type)
 	offset_tween.tween_property(rotator, "position", destination, maxf(duration, 0.0))
@@ -222,19 +223,19 @@ func _set_rotation(new_rotation: Vector3, duration: float, mode: RotateMode,
 	_base_rotation = _start_rotation
 	_target_rotation = new_rotation
 	rotation_tween = create_tween().set_trans(trans_type).set_ease(ease_type)
-	var tween_duration := maxf(duration, 0.0)
+	var tween_duration: float = maxf(duration, 0.0)
 
 	if mode == RotateMode.FAST or mode == RotateMode.FAST_BEYOND_360:
-		var destination := new_rotation
+		var destination: Vector3 = new_rotation
 		if mode == RotateMode.FAST:
 			destination = _short_rotation_target(_start_rotation, new_rotation)
 		_target_rotation = destination
 		rotation_tween.tween_property(rotator, "rotation_degrees", destination, tween_duration)
 	else:
-		var initial_basis := rotator.basis
-		var initial_global_basis := rotator.global_basis
+		var initial_basis: Basis = rotator.basis
+		var initial_global_basis: Basis = rotator.global_basis
 		rotation_tween.tween_method(func(weight: float) -> void:
-			var added_basis := Basis.from_euler(new_rotation * weight * (PI / 180.0))
+			var added_basis: Basis = Basis.from_euler(new_rotation * weight * (PI / 180.0))
 			if mode == RotateMode.WORLD_AXIS_ADD:
 				rotator.global_basis = added_basis * initial_global_basis
 			else:
@@ -264,8 +265,8 @@ func _set_fov(new_fov: float, duration: float,
 func do_shake(power: float = 1.0, duration: float = 3.0) -> void:
 	shake_tween = _kill_tween(shake_tween)
 	shake_tween = create_tween().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
-	var half_duration := maxf(duration * 0.5, 0.0)
-	var initial_power := shake_power
+	var half_duration: float = maxf(duration * 0.5, 0.0)
+	var initial_power: float = shake_power
 	shake_tween.tween_method(_set_shake_power, initial_power, power, half_duration)
 	shake_tween.tween_method(_set_shake_power, power, 0.0, half_duration)
 	shake_tween.finished.connect(_shake_finished, CONNECT_ONE_SHOT)
@@ -306,7 +307,7 @@ func _short_rotation_target(initial: Vector3, requested: Vector3) -> Vector3:
 func _apply_state_checkpoint() -> void:
 	if _checkpoint_applied:
 		return
-	var cp := LevelManager.camera_checkpoint
+	var cp: Dictionary = LevelManager.camera_checkpoint
 	if not cp.has_checkpoint or not cp.restore_pending:
 		return
 	if not is_instance_valid(_target_node):
