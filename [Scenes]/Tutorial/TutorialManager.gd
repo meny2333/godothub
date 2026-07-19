@@ -123,8 +123,6 @@ func _on_turn() -> void:
 		_active_guidance_index = -1
 		_set_slow_motion(false)
 		_set_stage(TutorialStage.RHYTHM, RHYTHM_TEXT)
-	else:
-		_set_slow_motion(true)
 
 func _set_slow_motion(slow: bool) -> void:
 	var target_scale: float = turn_time_scale if slow else _level_time_scale
