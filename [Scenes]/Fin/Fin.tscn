@@ -158,7 +158,7 @@ height = 0.36
 [sub_resource type="Resource" id="Resource_l0yca"]
 script = ExtResource("18_q5ls4")
 fog_color = Color(1, 0.79607844, 0.30588236, 1)
-start = 50.0
+start = 100.0
 end = 200.0
 metadata/_custom_type_script = "uid://bfhukfse7kskq"
 
@@ -219,10 +219,10 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31.4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.35864, -0.45, 122.3521)
 
 [node name="GuidanceBox 6" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=731844464 instance=ExtResource("7_r8b6q")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 46.35864, -0.45, 139.73027)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 46.35864, -0.45, 138.43245)
 
 [node name="GuidanceBox 7" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=526775129 instance=ExtResource("7_r8b6q")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 59.800156, -0.45, 139.73027)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 59.800156, -0.45, 138.43245)
 
 [node name="GuidanceBox 8" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=151997058 instance=ExtResource("7_r8b6q")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 59.800156, -0.45, 166.5986)

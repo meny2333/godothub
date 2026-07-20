@@ -6,7 +6,6 @@ const IDLE_ANIMATION := "idle"
 const RUN_ANIMATION := "run"
 const TURN_ANIMATION := "turn"
 const DIE_ANIMATION := "die"
-const HEAD_EULER_Z := -35.0
 const RUN_SPEED := 2.0
 const TURN_SPEED := 1.8
 const SMOOTH_TURN_SPEED := 10.0
@@ -61,7 +60,7 @@ func _add_animation(library: AnimationLibrary, animation_name: String, resource_
 		return
 	_normalize_head_rotation(animation)
 	if animation_name == IDLE_ANIMATION or animation_name == RUN_ANIMATION:
-		animation.loop_mode = Animation.LOOP_LINEAR
+		animation.loop_mode = Animation.LOOP_PINGPONG
 	animation.resource_name = animation_name
 	library.add_animation(animation_name, animation)
 
