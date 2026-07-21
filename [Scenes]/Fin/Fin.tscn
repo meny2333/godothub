@@ -17,9 +17,8 @@
 [ext_resource type="PackedScene" path="res://Character/SkinSelector.tscn" id="14_skin_selector"]
 [ext_resource type="Script" uid="uid://bev0h34up6j0c" path="res://#Template/[Scripts]/CameraScripts/CameraTrigger.gd" id="16_0ru4s"]
 [ext_resource type="Script" uid="uid://cdypglxkufbbo" path="res://#Template/[Scripts]/Trigger/SetFog.gd" id="17_5gd5p"]
-[ext_resource type="PackedScene" uid="uid://cgj86xrh55cfr" path="res://#Template/Pyramid.tscn" id="17_tgeva"]
 [ext_resource type="Script" uid="uid://bfhukfse7kskq" path="res://#Template/[Scripts]/Settings/FogSettings.gd" id="18_q5ls4"]
-[ext_resource type="PackedScene" uid="uid://c757j6a6ewnbb" path="res://#Template/Crystal.tscn" id="18_tgeva"]
+[ext_resource type="PackedScene" uid="uid://cl2ga7ac0dg54" path="res://#Template/Gem.tscn" id="19_8lafu"]
 
 [sub_resource type="Environment" id="Environment_ys6ci"]
 background_mode = 1
@@ -1085,34 +1084,18 @@ duration = 0.8
 TransitionType = 10
 EaseType = 1
 
-[node name="Pyramid" parent="Scene_Group/Scene_003" unique_id=1497290031 instance=ExtResource("17_tgeva")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 65.81678, -0.2881291, 187.78897)
-
-[node name="OpenTrigger" parent="Scene_Group/Scene_003/Pyramid" index="2" unique_id=608483111]
-transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, -6.217249e-13, 0, 65.48834)
-
-[node name="WaitingForWin" parent="Scene_Group/Scene_003/Pyramid" index="4" unique_id=317890779]
-transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 0, 0, 32.160248)
-
-[node name="StopPlayer" parent="Scene_Group/Scene_003/Pyramid" index="5" unique_id=1231749146]
-transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 7.6293945e-06, 0, -21.257233)
-
 [node name="collection" type="Node3D" parent="." unique_id=1192071381]
 
-[node name="Crystal" parent="collection" unique_id=521365085 instance=ExtResource("18_tgeva")]
-transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 15.699438, 0.52766323, 75.09107)
+[node name="Crystal2" parent="collection" unique_id=149611988 instance=ExtResource("19_8lafu")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 31.461876, 0.63435745, 106.844376)
 
-[node name="Crystal2" parent="collection" unique_id=1716723550 instance=ExtResource("18_tgeva")]
-transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 31.461876, 0.52766323, 106.844376)
+[node name="Crystal3" parent="collection" unique_id=1484788857 instance=ExtResource("19_8lafu")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 59.435066, 0.63435745, 147.31184)
 
-[node name="Crystal3" parent="collection" unique_id=1140193002 instance=ExtResource("18_tgeva")]
-transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 59.435066, 0.52766323, 147.31184)
+[node name="Crystal4" parent="collection" unique_id=1153754592 instance=ExtResource("19_8lafu")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 69.15783, 0.63435745, 169.39902)
 
-[node name="Crystal4" parent="collection" unique_id=604947257 instance=ExtResource("18_tgeva")]
-transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 69.15783, 0.52766323, 169.39902)
-
-[node name="Crystal5" parent="collection" unique_id=204693766 instance=ExtResource("18_tgeva")]
-transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 88.38258, 0.52766323, 184.3287)
+[node name="Crystal5" parent="collection" unique_id=1983131277 instance=ExtResource("19_8lafu")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 88.38258, 0.63435745, 184.3287)
 
 [editable path="BasicOBJ_Group/CameraRoot"]
-[editable path="Scene_Group/Scene_003/Pyramid"]
