@@ -22,18 +22,20 @@
 
 [sub_resource type="Environment" id="Environment_ys6ci"]
 background_mode = 1
-background_color = Color(0.8509804, 0.6784314, 0.3882353, 1)
-background_energy_multiplier = 0.85
+background_color = Color(0.29803923, 0.3764706, 0.44705883, 1)
+background_energy_multiplier = 0.95
 ambient_light_source = 2
-ambient_light_color = Color(0.94509804, 0.8117647, 0.5411765, 1)
-ambient_light_energy = 0.7
+ambient_light_color = Color(0.44705883, 0.5137255, 0.5686275, 1)
+ambient_light_energy = 0.75
 reflected_light_source = 1
 fog_enabled = true
 fog_mode = 1
-fog_light_color = Color(1, 0.79607844, 0.30588236, 1)
-fog_light_energy = 0.8
+fog_light_color = Color(0.4392157, 0.53333336, 0.6, 1)
+fog_light_energy = 0.9
 fog_density = 1.0
-fog_depth_begin = 50.0
+fog_sky_affect = 1.0
+fog_depth_begin = 5.0
+fog_depth_end = 78.0
 
 [sub_resource type="Animation" id="Animation_wkp8b"]
 length = 0.001
@@ -49,15 +51,15 @@ _data = {
 
 [sub_resource type="Environment" id="Environment_0ru4s"]
 background_mode = 1
-background_color = Color(0.8509804, 0.6784314, 0.3882353, 1)
-background_energy_multiplier = 0.85
+background_color = Color(0.3372549, 0.4117647, 0.47843137, 1)
+background_energy_multiplier = 0.95
 ambient_light_source = 2
-ambient_light_color = Color(0.94509804, 0.8117647, 0.5411765, 1)
-ambient_light_energy = 0.7
+ambient_light_color = Color(0.47843137, 0.5411765, 0.59607846, 1)
+ambient_light_energy = 0.8
 reflected_light_source = 1
 fog_enabled = true
 fog_mode = 1
-fog_light_color = Color(0.78039217, 0.6117647, 0.35686275, 1)
+fog_light_color = Color(0.47058824, 0.5529412, 0.6117647, 1)
 fog_light_energy = 0.8
 fog_density = 0.012
 fog_sky_affect = 0.35
@@ -184,7 +186,6 @@ libraries/ = SubResource("AnimationLibrary_cm0pq")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="BasicOBJ_Group" unique_id=1791213843]
 transform = Transform3D(-0.86602354, -0.43301606, 0.25000072, 0, 0.49999818, 0.86602646, -0.5000033, 0.7499993, -0.4330102, 0, -0.33333334, 0)
 light_color = Color(1, 0.8784314, 0.627451, 1)
-light_energy = 1.15
 shadow_enabled = true
 
 [node name="gameui" parent="BasicOBJ_Group" unique_id=75582180 instance=ExtResource("4_vxmub")]
