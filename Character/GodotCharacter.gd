@@ -9,11 +9,16 @@ const DIE_ANIMATION := "die"
 const RUN_SPEED := 2.0
 const TURN_SPEED := 1.8
 const SMOOTH_TURN_SPEED := 10.0
+const GLITCH_HEIGHT_OFFSET: float = 1.0
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var glitch_plane: MeshInstance3D = $GlitchPlane
+@onready var glitch_delay_timer: Timer = $GlitchDelayTimer
+@onready var glitch_hide_timer: Timer = $GlitchHideTimer
 var is_dead := false
 var _follow_player := false
 var _target_yaw := 0.0
+var _glitch_death_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	var parent_player := get_parent() as CharacterBody3D
@@ -28,7 +33,18 @@ func _ready() -> void:
 	_setup_animation_library()
 	_setup_blend_times()
 	animation_player.animation_finished.connect(_on_animation_finished)
+	glitch_delay_timer.ignore_time_scale = true
+	glitch_hide_timer.ignore_time_scale = true
+	glitch_delay_timer.timeout.connect(_show_glitch_plane)
+	glitch_hide_timer.timeout.connect(_hide_glitch_plane)
+	glitch_plane.visible = false
+	if not Engine.is_editor_hint():
+		LevelManager.add_revive_listener(revive)
 	play_idle()
+
+func _exit_tree() -> void:
+	if not Engine.is_editor_hint():
+		LevelManager.remove_revive_listener(revive)
 
 func _on_player_start() -> void:
 	play_run()
@@ -59,8 +75,6 @@ func _add_animation(library: AnimationLibrary, animation_name: String, resource_
 		push_error("GodotCharacter: unable to load animation: " + resource_path)
 		return
 	_normalize_head_rotation(animation)
-	if animation_name == IDLE_ANIMATION or animation_name == RUN_ANIMATION:
-		animation.loop_mode = Animation.LOOP_PINGPONG
 	animation.resource_name = animation_name
 	library.add_animation(animation_name, animation)
 
@@ -75,7 +89,7 @@ func _normalize_head_rotation(animation: Animation) -> void:
 			var value = animation.track_get_key_value(track_index, key_index)
 			if value is Quaternion:
 				var euler: Vector3 = (value as Quaternion).get_euler()
-				euler.z -= deg_to_rad(45.0)
+				euler.z -= deg_to_rad(0)
 				animation.track_set_key_value(track_index, key_index, Quaternion.from_euler(euler))
 
 func _setup_blend_times() -> void:
@@ -103,8 +117,37 @@ func play_turn() -> void:
 
 func play_die() -> void:
 	is_dead = true
+	_schedule_glitch_plane()
 	if animation_player.has_animation(DIE_ANIMATION):
 		animation_player.play(DIE_ANIMATION)
+
+func _schedule_glitch_plane() -> void:
+	glitch_delay_timer.stop()
+	glitch_hide_timer.stop()
+	glitch_plane.visible = false
+	_set_character_visible(true)
+	_glitch_death_position = global_position
+	glitch_delay_timer.start()
+
+func _show_glitch_plane() -> void:
+	if not is_dead:
+		return
+	_set_character_visible(false)
+	glitch_plane.global_position = _glitch_death_position + Vector3.UP * GLITCH_HEIGHT_OFFSET
+	var glitch_material: ShaderMaterial = glitch_plane.material_override as ShaderMaterial
+	if glitch_material:
+		glitch_material.set_shader_parameter("seed", randf() * 1000.0)
+	glitch_plane.visible = true
+	glitch_hide_timer.start()
+
+func _hide_glitch_plane() -> void:
+	glitch_plane.visible = false
+	_set_character_visible(true)
+
+func _set_character_visible(value: bool) -> void:
+	var character_node: Node3D = get_node_or_null("Character") as Node3D
+	if character_node:
+		character_node.visible = value
 
 func _on_animation_finished(animation_name: StringName) -> void:
 	if animation_name == TURN_ANIMATION and not is_dead:
@@ -119,6 +162,9 @@ func set_moving(moving: bool) -> void:
 		play_idle()
 
 func revive() -> void:
+	glitch_delay_timer.stop()
+	glitch_hide_timer.stop()
+	_hide_glitch_plane()
 	play_run()
 
 func switch_skin(scene_path: String) -> void:

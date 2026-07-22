@@ -13,6 +13,62 @@ _data = {
 &"turn": ExtResource("5_pw087")
 }
 
+[sub_resource type="Shader" id="Shader_ul48q"]
+code = "shader_type spatial;
+render_mode unshaded, cull_disabled, depth_draw_never, blend_mix;
+
+uniform vec4 gold_color : source_color = vec4(1.0, 0.8784314, 0.627451, 1.0);
+uniform vec4 sky_color : source_color = vec4(0.6117647, 0.8627451, 1.0, 1.0);
+uniform float seed = 0.0;
+
+float hash21(vec2 p) {
+    p = fract(p * vec2(123.34, 345.45));
+    p += dot(p, p + 34.345);
+    return fract(p.x * p.y);
+}
+
+void vertex() {
+    MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
+        INV_VIEW_MATRIX[0],
+        INV_VIEW_MATRIX[1],
+        INV_VIEW_MATRIX[2],
+        MODEL_MATRIX[3]
+    );
+}
+
+void fragment() {
+    float frame = floor(TIME * 24.0);
+    float band = floor(UV.y * 24.0);
+    float band_random = hash21(vec2(band + seed, frame));
+    float horizontal_shift = (band_random - 0.5) * 0.24 * step(0.52, band_random);
+    vec2 glitch_uv = UV + vec2(horizontal_shift, 0.0);
+
+    float inside = step(0.0, glitch_uv.x) * step(glitch_uv.x, 1.0);
+    float block = hash21(floor(vec2(glitch_uv.x * 14.0, glitch_uv.y * 30.0)) + vec2(frame, seed));
+    float scan = pow(1.0 - abs(fract(glitch_uv.y * 20.0 - TIME * 5.0) * 2.0 - 1.0), 10.0);
+    float dropout = step(0.2, hash21(vec2(floor(glitch_uv.y * 35.0), frame + seed * 0.13)));
+
+    vec3 glitch_color = mix(gold_color.rgb, sky_color.rgb, step(0.55, block));
+    glitch_color += vec3(1.0, 0.9411765, 0.7607843) * scan * 0.18;
+    ALBEDO = glitch_color;
+    EMISSION = glitch_color * 1.5;
+    ALPHA = inside * dropout * (0.18 + block * 0.60 + scan * 0.35);
+    if (ALPHA < 0.08) {
+        discard;
+    }
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pw087"]
+resource_local_to_scene = true
+render_priority = 0
+shader = SubResource("Shader_ul48q")
+shader_parameter/gold_color = Color(1, 0.8784314, 0.627451, 1)
+shader_parameter/sky_color = Color(0.6117647, 0.8627451, 1, 1)
+shader_parameter/seed = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_47a01"]
+size = Vector2(2.6, 2.6)
+
 [node name="SkinGodot" type="Node3D" unique_id=970531605]
 script = ExtResource("2_script")
 
@@ -22,3 +78,18 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1672370198]
 root_node = NodePath("../Character")
 libraries/ = SubResource("AnimationLibrary_nqjbo")
+
+[node name="GlitchPlane" type="MeshInstance3D" parent="." unique_id=1782159333]
+top_level = true
+visible = false
+material_override = SubResource("ShaderMaterial_pw087")
+cast_shadow = 0
+extra_cull_margin = 2.0
+mesh = SubResource("QuadMesh_47a01")
+
+[node name="GlitchDelayTimer" type="Timer" parent="." unique_id=473862782]
+wait_time = 2.0
+one_shot = true
+
+[node name="GlitchHideTimer" type="Timer" parent="." unique_id=814556468]
+one_shot = true
