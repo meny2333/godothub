@@ -23,6 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://cl2ga7ac0dg54" path="res://#Template/Gem.tscn" id="19_8lafu"]
 [ext_resource type="PackedScene" uid="uid://csp4pxebneeme" path="res://Low Poly Rocks Pack/Bonus Assets/Prefabs/Mountains/Mountain_01.prefab.scn" id="20_avxh5"]
 [ext_resource type="PackedScene" uid="uid://bjky2nb3pi5h4" path="res://Low Poly Rocks Pack/Rock Assets/Prefabs/With_Mesh_Colliders/1 Color/Rock_Arches/Rock_Arch_04.prefab.scn" id="22_2yiaw"]
+[ext_resource type="Script" uid="uid://cnyq34xh5mmv8" path="res://#Template/[Scripts]/Trigger/SpawnGodotCharacter.gd" id="22_64jkl"]
 
 [sub_resource type="Environment" id="Environment_ys6ci"]
 background_mode = 1
@@ -182,6 +183,10 @@ albedo_color = Color(0.88235295, 0.69411767, 0.3372549, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_skowm"]
 material = SubResource("StandardMaterial3D_64jkl")
+
+[sub_resource type="Curve" id="Curve_l0yca"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.27956986, 0.49650347), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [node name="LevelHolder" type="Node3D" unique_id=542804875]
 
@@ -1924,6 +1929,15 @@ mesh = SubResource("BoxMesh_l0yca")
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001" unique_id=128119026]
 transform = Transform3D(-1.2239188e-06, 0, -2.5, 0, 1, 0, 28, 0, -1.09278474e-07, 260.55902, -0.95823264, 390.84894)
 mesh = SubResource("BoxMesh_l0yca")
+
+[node name="Trigger" parent="Scene_Group/part2/Scene_001" unique_id=1056027310 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 4.7665606)
+
+[node name="godot" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger" unique_id=1442248994]
+script = ExtResource("22_64jkl")
+orientation = Vector3(0, 90, 0)
+speed = 12.0
+alphaCurve = SubResource("Curve_l0yca")
 
 [node name="part3" type="Node3D" parent="Scene_Group" unique_id=1446843466]
 
