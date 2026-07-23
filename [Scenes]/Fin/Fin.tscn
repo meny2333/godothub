@@ -21,6 +21,8 @@
 [ext_resource type="PackedScene" uid="uid://cgj86xrh55cfr" path="res://#Template/Pyramid.tscn" id="18_5gd5p"]
 [ext_resource type="Script" uid="uid://bfhukfse7kskq" path="res://#Template/[Scripts]/Settings/FogSettings.gd" id="18_q5ls4"]
 [ext_resource type="PackedScene" uid="uid://cl2ga7ac0dg54" path="res://#Template/Gem.tscn" id="19_8lafu"]
+[ext_resource type="PackedScene" uid="uid://csp4pxebneeme" path="res://Low Poly Rocks Pack/Bonus Assets/Prefabs/Mountains/Mountain_01.prefab.scn" id="20_avxh5"]
+[ext_resource type="PackedScene" uid="uid://bjky2nb3pi5h4" path="res://Low Poly Rocks Pack/Rock Assets/Prefabs/With_Mesh_Colliders/1 Color/Rock_Arches/Rock_Arch_04.prefab.scn" id="22_2yiaw"]
 
 [sub_resource type="Environment" id="Environment_ys6ci"]
 background_mode = 1
@@ -166,8 +168,20 @@ metadata/_custom_type_script = "uid://bfhukfse7kskq"
 
 [sub_resource type="Resource" id="Resource_q5ls4"]
 script = ExtResource("18_q5ls4")
-fog_color = Color(1, 0.79607844, 0.30588236, 1)
+fog_color = Color(0.1764706, 0.21568628, 0.28235295, 0.49019608)
 metadata/_custom_type_script = "uid://bfhukfse7kskq"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cggl5"]
+albedo_color = Color(0.21037042, 0.1556938, 0.09664092, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_l0yca"]
+material = SubResource("StandardMaterial3D_cggl5")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_64jkl"]
+albedo_color = Color(0.88235295, 0.69411767, 0.3372549, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_skowm"]
+material = SubResource("StandardMaterial3D_64jkl")
 
 [node name="LevelHolder" type="Node3D" unique_id=542804875]
 
@@ -1060,7 +1074,7 @@ material_override = SubResource("StandardMaterial3D_fqkyq")
 mesh = SubResource("BoxMesh_avxh5")
 
 [node name="DistantPillar_09" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=849797535]
-transform = Transform3D(0.62932044, 0, 0.7771459, 0, 1, 0, -0.7771459, 0, 0.62932044, 145.10092, 5, 181.26913)
+transform = Transform3D(0.62932044, 0, 0.7771459, 0, 1, 0, -0.7771459, 0, 0.62932044, 135.05522, 5, 180.8744)
 material_override = SubResource("StandardMaterial3D_2yiaw")
 mesh = SubResource("BoxMesh_64jkl")
 
@@ -1443,7 +1457,7 @@ camera_rotation = Vector3(54, 70, 0)
 duration = 5.0
 
 [node name="Ground_Mountain_m_01" parent="Scene_Group/part1/Scene_001" unique_id=1139656814 instance=ExtResource("17_q5ls4")]
-transform = Transform3D(2.3180797, 0, 1.904339, 0, 3, 0, -1.904339, 0, 2.3180797, -32.361534, -1.5594263, 29.589659)
+transform = Transform3D(2.3180797, 0, 1.904339, 0, 3, 0, -1.904339, 0, 2.3180797, -32.361534, -2.3436594, 29.589659)
 
 [node name="Ground_Mountain_m_04" parent="Scene_Group/part1/Scene_001" unique_id=29438041 instance=ExtResource("17_q5ls4")]
 transform = Transform3D(2.8347123, 0, 0.98204225, 0, 3, 0, -0.98204225, 0, 2.8347123, 50.958534, -1.5594263, 118.573074)
@@ -1452,7 +1466,7 @@ transform = Transform3D(2.8347123, 0, 0.98204225, 0, 3, 0, -0.98204225, 0, 2.834
 transform = Transform3D(1.1014484, 0, 2.7904859, 0, 3, 0, -2.7904859, 0, 1.1014484, -98.84096, -1.5594263, 12.291444)
 
 [node name="Ground_Mountain_m_02" parent="Scene_Group/part1/Scene_001" unique_id=923894942 instance=ExtResource("17_q5ls4")]
-transform = Transform3D(-2.3235786, 0, -1.8976253, 0, 3, 0, 1.8976253, 0, -2.3235786, 92.19727, -1.5594225, 135.81013)
+transform = Transform3D(-2.3235786, 0, -1.8976253, 0, 3, 0, 1.8976253, 0, -2.3235786, 92.19727, -2.4209757, 135.81013)
 
 [node name="Ground_Mountain_m_05" parent="Scene_Group/part1/Scene_001" unique_id=277289459 instance=ExtResource("17_q5ls4")]
 transform = Transform3D(-2.0483315, 0, -2.19188, 0, 3, 0, 2.19188, 0, -2.0483315, 150.9696, -1.5594225, 191.42508)
@@ -1816,6 +1830,18 @@ EaseType = 1
 
 [node name="Scene_001" type="Node3D" parent="Scene_Group/part2" unique_id=1808317222]
 
+[node name="Mountain_01" parent="Scene_Group/part2/Scene_001" unique_id=225768636 instance=ExtResource("20_avxh5")]
+transform = Transform3D(0.5, 0, 7.1054265e-15, 0, 0.5, 0, -7.1054265e-15, 0, 0.5, 244.55441, -0.8174989, 320.15417)
+
+[node name="Mountain_04" parent="Scene_Group/part2/Scene_001" unique_id=154920126 instance=ExtResource("20_avxh5")]
+transform = Transform3D(-0.20930229, 0, 0.66797644, 0, 0.7, 0, -0.66797644, 0, -0.20930229, 227.41736, -0.81750274, 399.88733)
+
+[node name="Mountain_03" parent="Scene_Group/part2/Scene_001" unique_id=2031470725 instance=ExtResource("20_avxh5")]
+transform = Transform3D(-0.45861658, 0, -0.77438414, 0, 0.9, 0, 0.77438414, 0, -0.45861658, 295.20425, -0.8174989, 334.37198)
+
+[node name="Mountain_02" parent="Scene_Group/part2/Scene_001" unique_id=1451457453 instance=ExtResource("20_avxh5")]
+transform = Transform3D(0.1908161, 0, 0.77691007, 0, 0.8, 0, -0.77691007, 0, 0.1908161, 193.43422, -1.5827043, 352.85284)
+
 [node name="Trigger2" parent="Scene_Group/part2/Scene_001" unique_id=856092412 instance=ExtResource("7_vxmub")]
 transform = Transform3D(-1.09278474e-07, 0, -26.709017, 0, 2.5, 0, 2.5, 0, -1.1674882e-06, 120.57472, -0.49999237, 235.94594)
 
@@ -1837,6 +1863,72 @@ transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 0, 90.69079, 0)
 
 [node name="StopPlayer" parent="Scene_Group/part2/Scene_001/Pyramid" index="5" unique_id=1231749146]
 transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 0, 90.69079, -53.41746)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001" unique_id=999532055]
+transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 2.5, 209.36914, -0.95823646, 296.87405)
+mesh = SubResource("BoxMesh_l0yca")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001" unique_id=1804329107]
+transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 2.5, 273.11676, -0.95823646, 377.41507)
+mesh = SubResource("BoxMesh_l0yca")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001" unique_id=681841167]
+transform = Transform3D(-1.2239188e-06, 0, -2.5, 0, 1, 0, 28, 0, -1.09278474e-07, 200.58508, -0.95823646, 310.0657)
+mesh = SubResource("BoxMesh_l0yca")
+
+[node name="sign" type="Node3D" parent="Scene_Group/part2/Scene_001" unique_id=1642590514]
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign" unique_id=1621171764]
+transform = Transform3D(4.2426405, 0, 0.70710677, 0, 3, 0, -4.2426405, 0, 0.70710677, 205.42279, 7.025589, 301.58826)
+mesh = SubResource("BoxMesh_l0yca")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign" unique_id=1653099822]
+transform = Transform3D(4.2426405, 0, 0.70710677, 0, 0.2, 0, -4.2426405, 0, 0.70710677, 205.30376, 7.025589, 301.4692)
+mesh = SubResource("BoxMesh_skowm")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign" unique_id=43789291]
+transform = Transform3D(1.2247448, -0.07071068, 0.70710677, 1, 0.17320508, 0, -1.2247448, 0.07071068, 0.70710677, 203.85133, 7.5286617, 302.92163)
+mesh = SubResource("BoxMesh_skowm")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign" unique_id=719922828]
+transform = Transform3D(1.2247449, 0.07071069, 0.70710677, -1.0000001, 0.17320508, 0, -1.2247449, -0.07071069, 0.70710677, 203.81987, 6.5558524, 302.9531)
+mesh = SubResource("BoxMesh_skowm")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign" unique_id=907749846]
+transform = Transform3D(-8.742278e-09, 0, -0.2, 0, 10, 0, 0.2, 0, -8.742278e-09, 205.13452, 3.442917, 301.3581)
+mesh = SubResource("BoxMesh_l0yca")
+
+[node name="sign2" type="Node3D" parent="Scene_Group/part2/Scene_001" unique_id=1518602804]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.113, 0, 80.466)
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign2" unique_id=122795558]
+transform = Transform3D(4.2426405, 0, 0.70710677, 0, 3, 0, -4.2426405, 0, 0.70710677, 205.42279, 7.025589, 301.58826)
+mesh = SubResource("BoxMesh_l0yca")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign2" unique_id=399356396]
+transform = Transform3D(4.2426405, 0, 0.70710677, 0, 0.2, 0, -4.2426405, 0, 0.70710677, 205.30376, 7.025589, 301.4692)
+mesh = SubResource("BoxMesh_skowm")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign2" unique_id=1281895346]
+transform = Transform3D(1.2247448, -0.07071068, 0.70710677, 1, 0.17320508, 0, -1.2247448, 0.07071068, 0.70710677, 206.79634, 6.5444345, 299.97665)
+mesh = SubResource("BoxMesh_skowm")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign2" unique_id=207159890]
+transform = Transform3D(1.2247449, 0.07071069, 0.70710677, -1.0000001, 0.17320508, 0, -1.2247449, -0.07071069, 0.70710677, 206.7772, 7.527602, 299.99573)
+mesh = SubResource("BoxMesh_skowm")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001/sign2" unique_id=452936261]
+transform = Transform3D(-8.742278e-09, 0, -0.2, 0, 10, 0, 0.2, 0, -8.742278e-09, 205.13452, 3.442917, 301.3581)
+mesh = SubResource("BoxMesh_l0yca")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001" unique_id=128119026]
+transform = Transform3D(-1.2239188e-06, 0, -2.5, 0, 1, 0, 28, 0, -1.09278474e-07, 260.55902, -0.95823264, 390.84894)
+mesh = SubResource("BoxMesh_l0yca")
+
+[node name="part3" type="Node3D" parent="Scene_Group" unique_id=1446843466]
+
+[node name="Rock_Arch_04" parent="Scene_Group/part3" unique_id=107855111 instance=ExtResource("22_2yiaw")]
+transform = Transform3D(4.330127, 0, 2.5, 0, 5, 0, -2.5, 0, 4.330127, 347.31485, 0.5, 435.51413)
 
 [node name="collection" type="Node3D" parent="." unique_id=1192071381]
 
