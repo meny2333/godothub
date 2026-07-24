@@ -1854,6 +1854,11 @@ transform = Transform3D(-1.09278474e-07, 0, -26.709017, 0, 2.5, 0, 2.5, 0, -1.16
 script = ExtResource("17_5gd5p")
 fog_settings = SubResource("Resource_q5ls4")
 
+[node name="cam" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger2" unique_id=192533425]
+script = ExtResource("16_0ru4s")
+offset = Vector3(5, 0, 5)
+camera_rotation = Vector3(35, 35, 0)
+
 [node name="Pyramid" parent="Scene_Group/part2/Scene_001" unique_id=1497290031 instance=ExtResource("18_5gd5p")]
 transform = Transform3D(-2, 0, 4.5298744e-08, 0, 0.3, 0, -3.019916e-07, 0, -0.3, 120.8956, -0.28812522, 226.8616)
 
@@ -1931,11 +1936,21 @@ transform = Transform3D(-1.2239188e-06, 0, -2.5, 0, 1, 0, 28, 0, -1.09278474e-07
 mesh = SubResource("BoxMesh_l0yca")
 
 [node name="Trigger" parent="Scene_Group/part2/Scene_001" unique_id=1056027310 instance=ExtResource("7_vxmub")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 4.7665606)
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 196.1949, -3.8146973e-06, 291.20023)
 
 [node name="godot" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger" unique_id=1442248994]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7653747, 0, 2.0895996)
 script = ExtResource("22_64jkl")
-orientation = Vector3(0, 90, 0)
+direction = Vector3(1, 0, 0)
+speed = 12.0
+alphaCurve = SubResource("Curve_l0yca")
+
+[node name="Trigger3" parent="Scene_Group/part2/Scene_001" unique_id=720881174 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 256.2541, -3.8146973e-06, 374.97717)
+
+[node name="godot" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger3" unique_id=689114011]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7653747, 0, 2.0895996)
+script = ExtResource("22_64jkl")
 speed = 12.0
 alphaCurve = SubResource("Curve_l0yca")
 

@@ -1,13 +1,13 @@
 extends Node3D
 
-## 在触发器位置生成一个小 Godot 角色，并沿指定朝向移动。
+## 在触发器位置生成一个小 Godot 角色，并沿指定方向移动。
 ## 作为 BaseTrigger 的子节点使用，由父节点负责碰撞检测。
 
 const GODOT_CHARACTER_SCENE: PackedScene = preload("res://Character/SkinGodot.tscn")
 const RUN_ANIMATION: StringName = &"run"
 
-## 生成实例的全局欧拉角（度）；实例沿自身后方 Vector3.BACK 前进。
-@export var orientation: Vector3 = Vector3.ZERO
+## 角色移动的全局方向；使用前会归一化。
+@export var direction: Vector3 = Vector3.BACK
 ## 每秒移动距离。
 @export var speed: float = 5.0
 ## 实例存在时间（秒）。
@@ -30,10 +30,18 @@ func trigger(_body: Node3D) -> void:
 
 	sceneRoot.add_child(character)
 	character.global_position = global_position
-	character.global_rotation_degrees = orientation
+	var movementDirection: Vector3 = direction.normalized()
+	if movementDirection.is_zero_approx():
+		push_warning("SpawnGodotCharacter: direction must not be zero")
+		character.queue_free()
+		return
+	var upDirection: Vector3 = Vector3.UP
+	if absf(movementDirection.dot(upDirection)) > 0.999:
+		upDirection = Vector3.FORWARD
+	character.global_basis = Basis.looking_at(-movementDirection, upDirection)
 
 	_playRunLoop(character)
-	_animateCharacter(character)
+	_animateCharacter(character, movementDirection)
 
 
 func _playRunLoop(character: Node3D) -> void:
@@ -52,7 +60,7 @@ func _playRunLoop(character: Node3D) -> void:
 	animationPlayer.play(RUN_ANIMATION)
 
 
-func _animateCharacter(character: Node3D) -> void:
+func _animateCharacter(character: Node3D, movementDirection: Vector3) -> void:
 	var fadeMaterials: Array[BaseMaterial3D] = []
 	var baseAlphas: Array[float] = []
 	_collectFadeMaterials(character, fadeMaterials, baseAlphas)
@@ -63,9 +71,7 @@ func _animateCharacter(character: Node3D) -> void:
 		character.queue_free()
 		return
 
-	var forward: Vector3 = character.global_basis * Vector3.BACK
-	forward = forward.normalized()
-	var destination: Vector3 = character.global_position + forward * speed * duration
+	var destination: Vector3 = character.global_position + movementDirection * speed * duration
 	var tween: Tween = character.create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(character, "global_position", destination, duration)
