@@ -24,10 +24,8 @@
 [ext_resource type="PackedScene" uid="uid://csp4pxebneeme" path="res://Low Poly Rocks Pack/Bonus Assets/Prefabs/Mountains/Mountain_01.prefab.scn" id="20_avxh5"]
 [ext_resource type="PackedScene" uid="uid://bjky2nb3pi5h4" path="res://Low Poly Rocks Pack/Rock Assets/Prefabs/With_Mesh_Colliders/1 Color/Rock_Arches/Rock_Arch_04.prefab.scn" id="22_2yiaw"]
 [ext_resource type="Script" uid="uid://cnyq34xh5mmv8" path="res://#Template/[Scripts]/Trigger/SpawnGodotCharacter.gd" id="22_64jkl"]
-
-[ext_resource type="Script" uid="uid://1rnushn33nxrz" path="res://#Template/[Scripts]/Trigger/Speed.gd" id="23_speed"]
-[ext_resource type="Script" uid="uid://1bc1kyuzqoyzk" path="res://#Template/[Scripts]/Trigger/Jump.gd" id="24_jump"]
-[ext_resource type="Script" uid="uid://0szoxc10usla9" path="res://#Template/[Scripts]/Trigger/ChangeDirection.gd" id="25_changedir"]
+[ext_resource type="PackedScene" uid="uid://cywnhc10ltmc0" path="res://Low Poly Rocks Pack/Rock Assets/Prefabs/With_Mesh_Colliders/1 Color/Round_Rocks/Rock_Round_l_01.prefab.scn" id="23_skowm"]
+[ext_resource type="PackedScene" uid="uid://c0vq477gdjib6" path="res://Low Poly Rocks Pack/Rock Assets/Prefabs/With_Mesh_Colliders/1 Color/Round_Rocks/Rock_Round_m_14.prefab.scn" id="24_h0smg"]
 
 [sub_resource type="Environment" id="Environment_ys6ci"]
 background_mode = 1
@@ -191,20 +189,6 @@ material = SubResource("StandardMaterial3D_64jkl")
 [sub_resource type="Curve" id="Curve_l0yca"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.27956986, 0.49650347), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
-
-[sub_resource type="Resource" id="Resource_p3dawn"]
-script = ExtResource("18_q5ls4")
-fog_color = Color(1, 0.79607844, 0.30588236, 1)
-start = 40.0
-end = 300.0
-metadata/_custom_type_script = "uid://bfhukfse7kskq"
-
-[sub_resource type="Resource" id="Resource_p3recover"]
-script = ExtResource("18_q5ls4")
-fog_color = Color(0.1764706, 0.21568628, 0.28235295, 0.49019608)
-start = 15.0
-end = 120.0
-metadata/_custom_type_script = "uid://bfhukfse7kskq"
 
 [node name="LevelHolder" type="Node3D" unique_id=542804875]
 
@@ -1152,7 +1136,7 @@ transform = Transform2D(1, 0, 0, 1, 0, -100)
 [node name="Scene_001" type="Node3D" parent="Scene_Group/part1" unique_id=514366687]
 
 [node name="Ground" parent="Scene_Group/part1/Scene_001" unique_id=755968428 instance=ExtResource("6_mot87")]
-transform = Transform3D(3000, 0, 0, 0, 1, 0, 0, 0, 3000, 1000.05, -1, 1000)
+transform = Transform3D(300, 0, 0, 0, 1, 0, 0, 0, 300, 43.53409, -1, 94.873024)
 
 [node name="Node3D" type="Node3D" parent="Scene_Group/part1/Scene_001" unique_id=1607013115]
 
@@ -1480,10 +1464,10 @@ camera_rotation = Vector3(54, 70, 0)
 duration = 5.0
 
 [node name="Ground_Mountain_m_01" parent="Scene_Group/part1/Scene_001" unique_id=1139656814 instance=ExtResource("17_q5ls4")]
-transform = Transform3D(2.3180797, 0, 1.904339, 0, 3, 0, -1.904339, 0, 2.3180797, -32.361534, -2.3436594, 29.589659)
+transform = Transform3D(2.925277, 0, 0.6653979, 0, 3, 0, -0.6653979, 0, 2.925277, -42.807163, -2.3436594, -26.38206)
 
 [node name="Ground_Mountain_m_04" parent="Scene_Group/part1/Scene_001" unique_id=29438041 instance=ExtResource("17_q5ls4")]
-transform = Transform3D(2.8347123, 0, 0.98204225, 0, 3, 0, -0.98204225, 0, 2.8347123, 50.958534, -1.5594263, 118.573074)
+transform = Transform3D(2.1311712, 0, 2.1114235, 0, 3, 0, -2.1114235, 0, 2.1311712, 4.4421587, -2.381341, 144.68236)
 
 [node name="Ground_Mountain_m_03" parent="Scene_Group/part1/Scene_001" unique_id=222986736 instance=ExtResource("17_q5ls4")]
 transform = Transform3D(1.1014484, 0, 2.7904859, 0, 3, 0, -2.7904859, 0, 1.1014484, -98.84096, -1.5594263, 12.291444)
@@ -1812,7 +1796,7 @@ target_methods = Array[String](["Trigger"])
 
 [node name="cam" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle5/Trigger" unique_id=71417818]
 script = ExtResource("16_0ru4s")
-offset = Vector3(0, -5, 0)
+offset = Vector3(-5, -5, 0)
 duration = 5.0
 
 [node name="localpos" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle5" unique_id=2097309492]
@@ -1838,7 +1822,7 @@ target_methods = Array[String](["Trigger"])
 [node name="fog" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle7/Trigger" unique_id=206887848]
 script = ExtResource("17_5gd5p")
 fog_settings = SubResource("Resource_l0yca")
-duration = 0.5
+duration = 1.0
 
 [node name="localpos" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle7" unique_id=23586531]
 script = ExtResource("9_p78jh")
@@ -1854,16 +1838,16 @@ EaseType = 1
 [node name="Scene_001" type="Node3D" parent="Scene_Group/part2" unique_id=1808317222]
 
 [node name="Mountain_01" parent="Scene_Group/part2/Scene_001" unique_id=225768636 instance=ExtResource("20_avxh5")]
-transform = Transform3D(0.5, 0, 7.1054265e-15, 0, 0.5, 0, -7.1054265e-15, 0, 0.5, 244.55441, -0.8174989, 320.15417)
+transform = Transform3D(0.1593324, 0, -0.47393373, 0, 0.5, 0, 0.47393373, 0, 0.1593324, 238.18463, -0.8174989, 323.5333)
 
 [node name="Mountain_04" parent="Scene_Group/part2/Scene_001" unique_id=154920126 instance=ExtResource("20_avxh5")]
-transform = Transform3D(-0.20930229, 0, 0.66797644, 0, 0.7, 0, -0.66797644, 0, -0.20930229, 227.41736, -0.81750274, 399.88733)
+transform = Transform3D(-0.03783623, 0, 0.69897664, 0, 0.7, 0, -0.69897664, 0, -0.03783623, 242.90993, -2.4604518, 385.98813)
 
 [node name="Mountain_03" parent="Scene_Group/part2/Scene_001" unique_id=2031470725 instance=ExtResource("20_avxh5")]
-transform = Transform3D(-0.45861658, 0, -0.77438414, 0, 0.9, 0, 0.77438414, 0, -0.45861658, 295.20425, -0.8174989, 334.37198)
+transform = Transform3D(-0.292298, 0, -0.8512119, 0, 0.9, 0, 0.8512119, 0, -0.292298, 253.88504, -2.0816267, 325.10425)
 
 [node name="Mountain_02" parent="Scene_Group/part2/Scene_001" unique_id=1451457453 instance=ExtResource("20_avxh5")]
-transform = Transform3D(0.1908161, 0, 0.77691007, 0, 0.8, 0, -0.77691007, 0, 0.1908161, 193.43422, -1.5827043, 352.85284)
+transform = Transform3D(-0.07735488, 0, 0.7962513, 0, 0.79999983, 0, -0.7962513, 0, -0.07735488, 212.94748, -7.27264, 353.97293)
 
 [node name="Trigger2" parent="Scene_Group/part2/Scene_001" unique_id=856092412 instance=ExtResource("7_vxmub")]
 transform = Transform3D(-1.09278474e-07, 0, -26.709017, 0, 2.5, 0, 2.5, 0, -1.1674882e-06, 120.57472, -0.49999237, 235.94594)
@@ -1967,10 +1951,22 @@ alphaCurve = SubResource("Curve_l0yca")
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 256.2541, -3.8146973e-06, 374.97717)
 
 [node name="godot" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger3" unique_id=689114011]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7653747, 0, 2.0895996)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7653809, 0, 0.010955811)
 script = ExtResource("22_64jkl")
 speed = 12.0
 alphaCurve = SubResource("Curve_l0yca")
+
+[node name="Rock_Round_l_01" parent="Scene_Group/part2" unique_id=87967593 instance=ExtResource("23_skowm")]
+transform = Transform3D(2.365147, -0.7638754, 1.3798475e-05, 0.68336576, 2.1433198, -1.0877166, 0.33021727, 1.0357015, 2.250972, 236.81676, 0.8507111, 335.12564)
+
+[node name="Rock_Round_m_14" parent="Scene_Group/part2" unique_id=1812717138 instance=ExtResource("24_h0smg")]
+transform = Transform3D(2.4839387, 0, 1.37940615e-05, 0, 2.5, 0, -1.2451133e-08, 0, 2.5, 239.49474, -0.49847302, 340.78467)
+
+[node name="Node3D" type="Node3D" parent="Scene_Group/part2" unique_id=1425110572]
+transform = Transform3D(0.97418857, 0, -2.2997003, 0, 2.5000002, 0, 2.2849312, 0, 0.98050034, 231.67924, -0.49847302, 335.5703)
+
+[node name="Rock_Round_m_15" parent="Scene_Group/part2/Node3D" unique_id=268918830 instance=ExtResource("24_h0smg")]
+transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
 
 [node name="part3" type="Node3D" parent="Scene_Group" unique_id=1446843466]
 
@@ -1990,143 +1986,3 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 88.38258, 0.63435745, 184.328
 
 [editable path="BasicOBJ_Group/CameraRoot"]
 [editable path="Scene_Group/part2/Scene_001/Pyramid"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_beam"]
-transparency = 1
-albedo_color = Color(1, 0.95, 0.7, 0.25)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_beam"]
-top_radius = 0.8
-bottom_radius = 0.8
-height = 12.0
-material = SubResource("StandardMaterial3D_beam")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_echo"]
-albedo_color = Color(0.6, 0.9, 1, 1)
-emission = Color(0.6, 0.9, 1, 1)
-emission_energy_multiplier = 1.0
-
-[sub_resource type="SphereMesh" id="SphereMesh_echo"]
-radius = 0.18
-height = 0.36
-material = SubResource("StandardMaterial3D_echo")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_float"]
-shading_mode = 0
-albedo_color = Color(0.6117647, 0.8627451, 1, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_float"]
-radius = 0.18
-height = 0.36
-material = SubResource("StandardMaterial3D_float")
-
-[node name="P3_SunBeam_0" type="MeshInstance3D" parent="Scene_Group/part3/Scene_001" unique_id=999999001]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 340, 5, 445)
-mesh = SubResource("CylinderMesh_beam")
-
-[node name="P3_SunBeam_1" type="MeshInstance3D" parent="Scene_Group/part3/Scene_001" unique_id=999999002]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 360, 5, 470)
-mesh = SubResource("CylinderMesh_beam")
-
-[node name="P3_SunBeam_2" type="MeshInstance3D" parent="Scene_Group/part3/Scene_001" unique_id=999999003]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 380, 5, 510)
-mesh = SubResource("CylinderMesh_beam")
-
-[node name="P3_SunBeam_3" type="MeshInstance3D" parent="Scene_Group/part3/Scene_001" unique_id=999999004]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 5, 550)
-mesh = SubResource("CylinderMesh_beam")
-
-[node name="P3_SunBeam_4" type="MeshInstance3D" parent="Scene_Group/part3/Scene_001" unique_id=999999005]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 430, 5, 590)
-mesh = SubResource("CylinderMesh_beam")
-
-[node name="P3_FloatLight_0" type="MeshInstance3D" parent="Scene_Group/part3/Scene_001" unique_id=999999006]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 340, 1.5, 440)
-mesh = SubResource("SphereMesh_float")
-
-[node name="P3_FloatLight_1" type="MeshInstance3D" parent="Scene_Group/part3/Scene_001" unique_id=999999007]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 380, 1.5, 500)
-mesh = SubResource("SphereMesh_float")
-
-[node name="P3_FloatLight_2" type="MeshInstance3D" parent="Scene_Group/part3/Scene_001" unique_id=999999008]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 420, 1.5, 560)
-mesh = SubResource("SphereMesh_float")
-
-[node name="P4_EchoFragment_0" type="MeshInstance3D" parent="Scene_Group/part4" unique_id=999999009]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 530, 0.8, 700)
-mesh = SubResource("SphereMesh_echo")
-
-[node name="P4_EchoFragment_1" type="MeshInstance3D" parent="Scene_Group/part4" unique_id=999999010]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 535, 1.1, 710)
-mesh = SubResource("SphereMesh_echo")
-
-[node name="P4_EchoFragment_2" type="MeshInstance3D" parent="Scene_Group/part4" unique_id=999999011]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 540, 0.8, 700)
-mesh = SubResource("SphereMesh_echo")
-
-[node name="P4_EchoFragment_3" type="MeshInstance3D" parent="Scene_Group/part4" unique_id=999999012]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 545, 1.1, 710)
-mesh = SubResource("SphereMesh_echo")
-
-[node name="P4_EchoFragment_4" type="MeshInstance3D" parent="Scene_Group/part4" unique_id=999999013]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 550, 0.8, 700)
-mesh = SubResource("SphereMesh_echo")
-
-[node name="P4_EchoFragment_5" type="MeshInstance3D" parent="Scene_Group/part4" unique_id=999999014]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 555, 1.1, 710)
-mesh = SubResource("SphereMesh_echo")
-
-[node name="Crystal_P3_0" parent="collection" unique_id=999999015 instance=ExtResource("19_8lafu")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 360, 0.6, 450)
-
-[node name="Crystal_P3_1" parent="collection" unique_id=999999016 instance=ExtResource("19_8lafu")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 400, 0.6, 520)
-
-[node name="Crystal_P3_2" parent="collection" unique_id=999999017 instance=ExtResource("19_8lafu")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 460, 0.6, 600)
-
-
-[node name="Trigger_P3_Slow" parent="Scene_Group/part3/Scene_001" unique_id=999999101 instance=ExtResource("7_vxmub")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 340, 0, 425)
-one_shot = true
-require_playing = true
-
-[node name="speed" type="Node3D" parent="Scene_Group/part3/Scene_001/Trigger_P3_Slow" unique_id=999999102]
-script = ExtResource("23_speed")
-new_speed = 6.0
-
-[node name="fog" type="Node3D" parent="Scene_Group/part3/Scene_001/Trigger_P3_Slow" unique_id=999999103]
-script = ExtResource("17_5gd5p")
-fog_settings = SubResource("Resource_p3dawn")
-duration = 3.0
-
-[node name="Trigger_P3_FakeEnd" parent="Scene_Group/part3/Scene_001" unique_id=999999104 instance=ExtResource("7_vxmub")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 348, 0, 445)
-one_shot = true
-require_playing = true
-
-[node name="kill" type="Node3D" parent="Scene_Group/part3/Scene_001/Trigger_P3_FakeEnd" unique_id=999999105]
-script = ExtResource("13_1lcus")
-
-[node name="Trigger_P3_Recover" parent="Scene_Group/part3/Scene_001" unique_id=999999106 instance=ExtResource("7_vxmub")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 500, 0, 620)
-one_shot = true
-require_playing = true
-
-[node name="speed" type="Node3D" parent="Scene_Group/part3/Scene_001/Trigger_P3_Recover" unique_id=999999107]
-script = ExtResource("23_speed")
-new_speed = 12.0
-
-[node name="fog" type="Node3D" parent="Scene_Group/part3/Scene_001/Trigger_P3_Recover" unique_id=999999108]
-script = ExtResource("17_5gd5p")
-fog_settings = SubResource("Resource_p3recover")
-duration = 2.0
-
-[node name="Trigger_P4_Slow" parent="Scene_Group/part4" unique_id=999999109 instance=ExtResource("7_vxmub")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 540, 0, 680)
-one_shot = true
-require_playing = true
-
-[node name="speed" type="Node3D" parent="Scene_Group/part4/Trigger_P4_Slow" unique_id=999999110]
-script = ExtResource("23_speed")
-new_speed = 6.0
