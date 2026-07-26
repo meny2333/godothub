@@ -20,6 +20,10 @@ run/delta_smoothing=false
 boot_splash/show_image=false
 config/icon="res://icon.png"
 
+[autoload]
+
+MCPRuntimeProbe="*res://addons/godot_mcp/runtime/mcp_runtime_probe.gd"
+
 [debug]
 
 gdscript/warnings/enable=false
@@ -31,7 +35,11 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg", "res://addons/template/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg", "res://addons/template/plugin.cfg", "res://addons/unidot/unidot_importer-hlarsen-class-breakout/plugin.cfg")
+
+[filesystem]
+
+import/fbx2gltf/enabled=false
 
 [input]
 
