@@ -44,10 +44,7 @@ func _update_mesh():
 
 func _ensure_material():
 	if material_override == null:
-		var mat = ShaderMaterial.new()
-		mat.shader = load("res://#Template/[Materials]/water.gdshader")
-		mat.render_priority = 1
-		material_override = mat
+		material_override = load("res://#Template/[Materials]/water.tres")
 	elif material_override.shader == null:
 		material_override.shader = load("res://#Template/[Materials]/water.gdshader")
 

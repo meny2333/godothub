@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bh863n112n7aj"
+uid="uid://pjy6pf4psjs5"
 path="res://.godot/imported/Tree_30_autumn_pal.fbx-342155e4b226cb7964858947336f1ae4.scn"
 
 [deps]
@@ -30,17 +30,45 @@ meshes/light_baking=1
 meshes/lightmap_texel_size=0.2
 meshes/force_disable_compression=false
 skins/use_named_skins=true
-animation/import=true
-animation/fps=30
+animation/import=false
+animation/fps=24.0
 animation/trimming=true
-animation/remove_immutable_tracks=true
-animation/import_rest_as_RESET=false
+animation/remove_immutable_tracks=false
+animation/import_rest_as_RESET=true
 import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={}
-fbx/importer=1
+_subresources={
+"animations": {},
+"materials": {},
+"meshes": {
+"Circle_028": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://Assets/LowPolyNaturePack4Seasons/w_Pallete/Models/extracted/Tree_30_autumn_pal.Circle_028.mesh",
+"save_to_file/make_streamable": "",
+"save_to_file/path": "uid://b6xsrx7xky5s4"
+},
+"Root Scene_Circle_028": {
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://Assets/LowPolyNaturePack4Seasons/w_Pallete/Models/extracted/Tree_30_autumn_pal.Circle_028.mesh",
+"save_to_file/make_streamable": "",
+"save_to_file/path": "uid://b6xsrx7xky5s4"
+}
+},
+"nodes": {
+"PATH:AnimationPlayer": {
+"optimizer/enabled": true,
+"optimizer/max_angular_error": 0.00277777777777777,
+"optimizer/max_linear_error": 0.5
+}
+}
+}
+fbx/importer=0
 fbx/allow_geometry_helper_nodes=false
 fbx/embedded_image_handling=1
 fbx/naming_version=2
