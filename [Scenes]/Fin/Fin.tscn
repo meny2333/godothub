@@ -13,9 +13,9 @@
 [ext_resource type="PackedScene" path="res://[Scenes]/Fin/MobileMirror.tscn" id="8_uc76h"]
 [ext_resource type="Script" uid="uid://cu3xuawfji3m2" path="res://#Template/[Scripts]/Trigger/EventTrigger.gd" id="9_mot87"]
 [ext_resource type="Script" uid="uid://bhmnocupnsd06" path="res://#Template/[Scripts]/Animator/LocalPosAnimator.gd" id="9_p78jh"]
-[ext_resource type="Script" uid="uid://b4wgiagd4og7p" path="res://#Template/[Scripts]/Trigger/ShatterMirror.gd" id="11_qvjd2"]
+[ext_resource type="Script" uid="uid://b4wgiagd4og7p" path="res://[Scenes]/Fin/[Scripts]/Trigger/ShatterMirror.gd" id="11_qvjd2"]
 [ext_resource type="Script" uid="uid://c0whny0gf5gyj" path="res://#Template/[Scripts]/Trigger/KillPlayer.gd" id="13_1lcus"]
-[ext_resource type="PackedScene" path="res://Character/SkinSelector.tscn" id="14_skin_selector"]
+[ext_resource type="PackedScene" path="res://[Scenes]/Fin/Character/SkinSelector.tscn" id="14_skin_selector"]
 [ext_resource type="Script" uid="uid://bev0h34up6j0c" path="res://#Template/[Scripts]/CameraScripts/CameraTrigger.gd" id="16_0ru4s"]
 [ext_resource type="Script" uid="uid://cdypglxkufbbo" path="res://#Template/[Scripts]/Trigger/SetFog.gd" id="17_5gd5p"]
 [ext_resource type="PackedScene" uid="uid://n15fmkkgoje2" path="res://Assets/Low Poly Rocks Pack/Bonus Assets/Prefabs/Ground/Ground_Mountain_m_01.prefab.scn" id="17_q5ls4"]
@@ -24,7 +24,7 @@
 [ext_resource type="PackedScene" uid="uid://dtfkxin2egwf5" path="res://Assets/Low Poly Rocks Pack/Rock Assets/Prefabs/With_Mesh_Colliders/1 Color/Rock_Arches/Rock_Arch_03.prefab.scn" id="19_64jkl"]
 [ext_resource type="PackedScene" uid="uid://csp4pxebneeme" path="res://Assets/Low Poly Rocks Pack/Bonus Assets/Prefabs/Mountains/Mountain_01.prefab.scn" id="20_avxh5"]
 [ext_resource type="PackedScene" uid="uid://bjky2nb3pi5h4" path="res://Assets/Low Poly Rocks Pack/Rock Assets/Prefabs/With_Mesh_Colliders/1 Color/Rock_Arches/Rock_Arch_04.prefab.scn" id="22_2yiaw"]
-[ext_resource type="Script" uid="uid://cnyq34xh5mmv8" path="res://#Template/[Scripts]/Trigger/SpawnGodotCharacter.gd" id="22_64jkl"]
+[ext_resource type="Script" uid="uid://cnyq34xh5mmv8" path="res://[Scenes]/Fin/[Scripts]/Trigger/SpawnGodotCharacter.gd" id="22_64jkl"]
 [ext_resource type="PackedScene" uid="uid://cywnhc10ltmc0" path="res://Assets/Low Poly Rocks Pack/Rock Assets/Prefabs/With_Mesh_Colliders/1 Color/Round_Rocks/Rock_Round_l_01.prefab.scn" id="23_skowm"]
 [ext_resource type="PackedScene" uid="uid://c0vq477gdjib6" path="res://Assets/Low Poly Rocks Pack/Rock Assets/Prefabs/With_Mesh_Colliders/1 Color/Round_Rocks/Rock_Round_m_14.prefab.scn" id="24_h0smg"]
 [ext_resource type="Material" uid="uid://qoemls2vvo30" path="res://#Template/[Materials]/water.tres" id="24_r52ik"]
@@ -200,8 +200,6 @@ material = SubResource("StandardMaterial3D_64jkl")
 [sub_resource type="Curve" id="Curve_l0yca"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.27956986, 0.49650347), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
-
-[sub_resource type="BoxMesh" id="BoxMesh_cggl5"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_l6jxc"]
 _surfaces = [{
@@ -1121,7 +1119,7 @@ material_override = SubResource("StandardMaterial3D_fqkyq")
 mesh = SubResource("BoxMesh_avxh5")
 
 [node name="DistantPillar_09" type="MeshInstance3D" parent="BasicOBJ_Group/Part1Atmosphere" unique_id=849797535]
-transform = Transform3D(0.62932044, 0, 0.7771459, 0, 1, 0, -0.7771459, 0, 0.62932044, 119.76724, 5, 181.53113)
+transform = Transform3D(0.62932044, 0, 0.7771459, 0, 1, 0, -0.7771459, 0, 0.62932044, 119.76724, 8.680361, 181.53113)
 material_override = SubResource("StandardMaterial3D_2yiaw")
 mesh = SubResource("BoxMesh_64jkl")
 
@@ -1515,6 +1513,18 @@ transform = Transform3D(-7.229466, 0, -6.9090385, 0, 10, 0, 6.9090385, 0, -7.229
 [node name="MeshRenderer" parent="Scene_Group/part1/Scene_001/Ground_Mountain_m_04" index="0"]
 transform = Transform3D(-0.9762272, 0, 0.21674973, 0, 1, 0, -0.21674973, 0, -0.9762272, 33.066017, 0, 53.91807)
 
+[node name="MirrorShatterTrigger4" parent="Scene_Group/part1/Scene_001" unique_id=608483111 instance=ExtResource("7_vxmub")]
+transform = Transform3D(1.767767, 0, 1.767767, 0, 2.5, 0, -1.767767, 0, 1.767767, 0.4735589, 3.0517578e-05, 76.57399)
+one_shot = true
+
+[node name="MobileMirror2" parent="Scene_Group/part1/Scene_001/MirrorShatterTrigger4" unique_id=557164345 instance=ExtResource("8_uc76h")]
+transform = Transform3D(8.879252, 0, -1.5022163, 0, 4, 0, 3.598012, 0, 3.707202, -0.07609823, 5, 0.32080895)
+fragmentGravity = 0.0
+
+[node name="ShatterMirror" type="Node3D" parent="Scene_Group/part1/Scene_001/MirrorShatterTrigger4" unique_id=503674308]
+script = ExtResource("11_qvjd2")
+targetMirrorPath = NodePath("../MobileMirror2")
+
 [node name="Scene_002" type="Node3D" parent="Scene_Group/part1" unique_id=867734978]
 
 [node name="Trigger5" parent="Scene_Group/part1/Scene_002" unique_id=292639268 instance=ExtResource("7_vxmub")]
@@ -1776,26 +1786,6 @@ duration = 0.8
 TransitionType = 10
 EaseType = 1
 
-[node name="Obstacle8" parent="Scene_Group/part1/Scene_003" unique_id=1448437403 instance=ExtResource("6_fqiow")]
-transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, 72.25386, -1.9999962, 112.92627)
-
-[node name="Trigger" parent="Scene_Group/part1/Scene_003/Obstacle8" unique_id=1320320913 instance=ExtResource("7_vxmub")]
-transform = Transform3D(0.3125, 0, 0, 0, 1.25, 0, 0, 0, 3.338627, -1.467666, 0.75, 0.06325531)
-
-[node name="event" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle8/Trigger" unique_id=1760862309 node_paths=PackedStringArray("target_nodes")]
-script = ExtResource("9_mot87")
-target_nodes = [NodePath("../../localpos")]
-target_methods = Array[String](["Trigger"])
-
-[node name="localpos" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle8" unique_id=1671167525]
-script = ExtResource("9_p78jh")
-transform_type = 1
-start_value = Vector3(128.63089, -1.9999886, 202.95923)
-end_offset = Vector3(0, 2.5, 0)
-duration = 0.8
-TransitionType = 10
-EaseType = 1
-
 [node name="Obstacle3" parent="Scene_Group/part1/Scene_003" unique_id=1655591265 instance=ExtResource("6_fqiow")]
 transform = Transform3D(-3.496911e-07, 0, -8, 0, 2, 0, 8, 0, -3.496911e-07, 15.732714, -2, 98.312874)
 
@@ -1906,8 +1896,21 @@ fog_settings = SubResource("Resource_q5ls4")
 
 [node name="cam" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger2" unique_id=192533425]
 script = ExtResource("16_0ru4s")
-offset = Vector3(5, 0, 5)
-camera_rotation = Vector3(35, 35, 0)
+offset = Vector3(5, 0, 0)
+camera_rotation = Vector3(54, 120, 0)
+
+[node name="Trigger4" parent="Scene_Group/part2/Scene_001" unique_id=492864580 instance=ExtResource("7_vxmub")]
+transform = Transform3D(1.715861, 0, -19.424845, 0, 2.5, 0, 1.8181919, 0, 18.331585, 200.00052, -0.49999237, 318.4097)
+
+[node name="fog" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger4" unique_id=245560931]
+script = ExtResource("17_5gd5p")
+fog_settings = SubResource("Resource_q5ls4")
+
+[node name="cam" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger4" unique_id=570756538]
+script = ExtResource("16_0ru4s")
+offset = Vector3(-10, 0, -10)
+camera_rotation = Vector3(40, 90, 0)
+duration = 4.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Scene_Group/part2/Scene_001" unique_id=999532055]
 transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 2.5, 209.36914, -0.95823646, 296.87405)
@@ -1972,23 +1975,57 @@ transform = Transform3D(-1.2239188e-06, 0, -2.5, 0, 1, 0, 28, 0, -1.09278474e-07
 mesh = SubResource("BoxMesh_l0yca")
 
 [node name="Trigger" parent="Scene_Group/part2/Scene_001" unique_id=1056027310 instance=ExtResource("7_vxmub")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 196.1949, -3.8146973e-06, 291.20023)
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 190.306, -3.8146973e-06, 291.20023)
 
 [node name="godot" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger" unique_id=1442248994]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7653747, 0, 2.0895996)
 script = ExtResource("22_64jkl")
 direction = Vector3(1, 0, 0)
 speed = 12.0
 alphaCurve = SubResource("Curve_l0yca")
 
 [node name="Trigger3" parent="Scene_Group/part2/Scene_001" unique_id=720881174 instance=ExtResource("7_vxmub")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 256.2541, -3.8146973e-06, 374.97717)
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 256.2541, -3.8146973e-06, 372.72617)
 
 [node name="godot" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger3" unique_id=689114011]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7653809, 0, 0.010955811)
 script = ExtResource("22_64jkl")
 speed = 12.0
 alphaCurve = SubResource("Curve_l0yca")
+
+[node name="Trigger5" parent="Scene_Group/part2/Scene_001" unique_id=1429096245 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 245.17645, -4.2915344e-06, 363.87454)
+
+[node name="jump" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger5" unique_id=2036912572]
+script = ExtResource("33_8f1eb")
+height = 0.1
+
+[node name="Trigger6" parent="Scene_Group/part2/Scene_001" unique_id=261586808 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 205.80252, -4.2915344e-06, 325.7795)
+
+[node name="jump" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger6" unique_id=1040027054]
+script = ExtResource("33_8f1eb")
+height = 0.1
+
+[node name="Trigger7" parent="Scene_Group/part2/Scene_001" unique_id=1388168881 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 222.3435, -2.3841858e-06, 341.21594)
+
+[node name="jump" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger7" unique_id=607872183]
+script = ExtResource("33_8f1eb")
+height = 0.1
+
+[node name="Trigger8" parent="Scene_Group/part2/Scene_001" unique_id=128737659 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 235.58179, -3.33786e-06, 350.4245)
+
+[node name="jump" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger8" unique_id=1896757525]
+script = ExtResource("33_8f1eb")
+height = 0.1
+
+[node name="Trigger9" parent="Scene_Group/part2/Scene_001" unique_id=1502366017 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 226.90987, -3.33786e-06, 344.34222)
+
+[node name="jump" type="Node3D" parent="Scene_Group/part2/Scene_001/Trigger9" unique_id=2073370775]
+script = ExtResource("33_8f1eb")
+height = 0.1
 
 [node name="Rock_Flat_crk_m_02" parent="Scene_Group/part2/Scene_001" unique_id=1281410863 instance=ExtResource("25_g0nsa")]
 transform = Transform3D(3.3942916, 0, 7.7243743, 0, 2.2318425, 0, -2.4436464, 0, 10.729368, 211.2485, -1.2888762, 329.48715)
@@ -2023,9 +2060,6 @@ transform = Transform3D(1.3400842, 0, 1.2666835, 0, 0.99999994, 0, -3.889784, 0,
 [node name="Rock_Round_m_17" parent="Scene_Group/part2/Node3D" unique_id=932178471 instance=ExtResource("24_h0smg")]
 transform = Transform3D(3.5767777, 0, 1.0262336, 0, 0.99999994, 0, -2.0329556, 0, 1.8055527, 10.162136, -0.42200223, 0.1932077)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Scene_Group/part2" unique_id=1904971415]
-mesh = SubResource("BoxMesh_cggl5")
-
 [node name="Water" type="MeshInstance3D" parent="Scene_Group/part2" unique_id=1792415090]
 transform = Transform3D(0.7776906, 0, -0.6286472, 0, 1, 0, 0.6286472, 0, 0.7776906, 240.75311, -0.8805313, 356.25732)
 material_override = ExtResource("24_r52ik")
@@ -2046,7 +2080,7 @@ height = 32.0
 transform = Transform3D(-4.1778784, 0, 6.4987445, 0, 3.19857, 0, -11.151074, 0, -2.4348292, 219.02525, -1.0198882, 339.2338)
 
 [node name="Ground" parent="Scene_Group/part2" unique_id=1080893231 instance=ExtResource("6_mot87")]
-transform = Transform3D(38.215446, 0, 287.8815, 0, 1, 0, -49.650845, 0, 221.57774, 163.89864, -1.0183135, 284.19855)
+transform = Transform3D(38.215446, 0, 287.8815, 0, 1, 0, -49.650845, 0, 221.57774, 163.89864, -1.0274861, 284.19855)
 script = ExtResource("32_5dhol")
 
 [node name="Trigger" parent="Scene_Group/part2" unique_id=1284361513 instance=ExtResource("7_vxmub")]
@@ -2057,18 +2091,29 @@ script = ExtResource("33_8f1eb")
 height = 10.0
 
 [node name="jumppre" type="Node3D" parent="Scene_Group/part2/Trigger" unique_id=863418478]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 300.30643, -0.5183134, 402.7355)
+top_level = true
 script = ExtResource("34_l6jxc")
 
 [node name="fog" type="Node3D" parent="Scene_Group/part2/Trigger" unique_id=467106375]
 script = ExtResource("17_5gd5p")
 fog_settings = SubResource("Resource_cggl5")
 
+[node name="Trigger2" parent="Scene_Group/part2" unique_id=885083764 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 275.8259, -0.5183134, 377.3828)
+
+[node name="cam" type="Node3D" parent="Scene_Group/part2/Trigger2" unique_id=1311596200]
+script = ExtResource("16_0ru4s")
+offset = Vector3(10, 0, 5)
+camera_rotation = Vector3(54, -100, 0)
+duration = 4.0
+
 [node name="part3" type="Node3D" parent="Scene_Group" unique_id=1446843466]
 
 [node name="Rock_Arch_04" parent="Scene_Group/part3" unique_id=107855111 instance=ExtResource("22_2yiaw")]
 transform = Transform3D(4.330127, 0, 2.5, 0, 5, 0, -2.5, 0, 4.330127, 347.31485, 0.5, 435.51413)
 
-[node name="MirrorShatterTrigger" parent="Scene_Group/part3" unique_id=608483111 instance=ExtResource("7_vxmub")]
+[node name="MirrorShatterTrigger" parent="Scene_Group/part3" unique_id=736546739 instance=ExtResource("7_vxmub")]
 transform = Transform3D(1.767767, 0, 1.767767, 0, 2.5, 0, -1.767767, 0, 1.767767, 434.26602, 3.0517578e-05, 520.81555)
 one_shot = true
 

@@ -1,10 +1,134 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=11 format=3]
 
-[ext_resource type="Script" path="res://Character/SkinSelector.gd" id="1_script"]
+[ext_resource type="Script" path="res://[Scenes]/Fin/Character/SkinSelector.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://[Scenes]/Fin/classical.png" id="2_classic"]
+[ext_resource type="Texture2D" path="res://[Scenes]/Fin/godot.png" id="3_godot"]
+[ext_resource type="FontFile" path="res://#Template/[Resources]/GUI/MiSans-Normal.ttf" id="4_font"]
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+bg_color = Color(0.035, 0.055, 0.07, 0.97)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.82, 0.84, 0.72)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.38)
+shadow_size = 18
+shadow_offset = Vector2(0, 6)
+content_margin_left = 16.0
+content_margin_top = 14.0
+content_margin_right = 16.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="Style_action_normal"]
+bg_color = Color(0.09, 0.14, 0.16, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.62, 0.65, 0.55)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="Style_action_hover"]
+bg_color = Color(0.12, 0.25, 0.27, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.92, 0.9, 0.95)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="Style_card_normal"]
+bg_color = Color(0.07, 0.095, 0.115, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.32, 0.42, 0.45, 0.7)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 9.0
+content_margin_top = 9.0
+content_margin_right = 9.0
+content_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxFlat" id="Style_card_hover"]
+bg_color = Color(0.105, 0.19, 0.21, 0.99)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.88, 0.88, 0.95)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="Style_card_pressed"]
+bg_color = Color(0.14, 0.28, 0.29, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.55, 0.96, 0.93, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="Style_focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.55, 0.96, 0.93, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="Theme" id="Theme_selector"]
+default_font = ExtResource("4_font")
+default_font_size = 16
+Button/colors/font_color = Color(0.9, 0.96, 0.96, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/styles/normal = SubResource("Style_action_normal")
+Button/styles/hover = SubResource("Style_action_hover")
+Button/styles/pressed = SubResource("Style_action_hover")
+Button/styles/focus = SubResource("Style_focus")
 
 [node name="SkinSelector" type="CanvasLayer"]
 layer = 4
 script = ExtResource("1_script")
+
+[node name="ModalDimmer" type="ColorRect" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.015, 0.025, 0.035, 0.42)
 
 [node name="InputBlocker" type="Control" parent="."]
 layout_mode = 3
@@ -16,29 +140,227 @@ grow_vertical = 2
 mouse_filter = 0
 
 [node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
 offset_left = 24.0
-offset_top = 560.0
-offset_right = 244.0
-offset_bottom = 700.0
+offset_top = -180.0
+offset_right = 452.0
+offset_bottom = -24.0
+grow_vertical = 0
+theme = SubResource("Theme_selector")
+theme_override_styles/panel = SubResource("Style_panel")
 mouse_filter = 2
 
 [node name="Contents" type="VBoxContainer" parent="Panel"]
-theme_override_constants/separation = 6
+layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="SkinButton" type="Button" parent="Panel/Contents"]
-custom_minimum_size = Vector2(0, 42)
-text = "皮肤：经典"
+[node name="Header" type="HBoxContainer" parent="Panel/Contents"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="Accent" type="ColorRect" parent="Panel/Contents/Header"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+color = Color(0.3, 0.88, 0.88, 1)
+
+[node name="TitleStack" type="VBoxContainer" parent="Panel/Contents/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Kicker" type="Label" parent="Panel/Contents/Header/TitleStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.43, 0.82, 0.83, 1)
+theme_override_font_sizes/font_size = 11
+text = "SKIN SELECTOR"
+
+[node name="Title" type="Label" parent="Panel/Contents/Header/TitleStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.98, 0.97, 1)
+theme_override_font_sizes/font_size = 21
+text = "皮肤"
+
+[node name="CurrentRow" type="HBoxContainer" parent="Panel/Contents"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+theme_override_constants/separation = 11
+
+[node name="CurrentPreview" type="TextureRect" parent="Panel/Contents/CurrentRow"]
+custom_minimum_size = Vector2(58, 72)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+texture = ExtResource("3_godot")
+
+[node name="CurrentInfo" type="VBoxContainer" parent="Panel/Contents/CurrentRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="CurrentCaption" type="Label" parent="Panel/Contents/CurrentRow/CurrentInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.69, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "当前使用"
+
+[node name="CurrentName" type="Label" parent="Panel/Contents/CurrentRow/CurrentInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.98, 0.97, 1)
+theme_override_font_sizes/font_size = 19
+text = "Godot"
+
+[node name="CurrentDetail" type="Label" parent="Panel/Contents/CurrentRow/CurrentInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.58, 0.6, 1)
+theme_override_font_sizes/font_size = 11
+text = "低多边形角色"
+text_overrun_behavior = 3
+
+[node name="SkinButton" type="Button" parent="Panel/Contents/CurrentRow"]
+custom_minimum_size = Vector2(92, 46)
+layout_mode = 2
+size_flags_vertical = 4
+text = "更换"
+tooltip_text = "打开皮肤选择"
 
 [node name="Options" type="VBoxContainer" parent="Panel/Contents"]
-visible = false
-theme_override_constants/separation = 4
+layout_mode = 2
+theme_override_constants/separation = 8
 
-[node name="ClassicButton" type="Button" parent="Panel/Contents/Options"]
-custom_minimum_size = Vector2(0, 38)
-text = "经典  #Template/Player.tscn"
+[node name="OptionsHeader" type="HBoxContainer" parent="Panel/Contents/Options"]
+layout_mode = 2
 
-[node name="GodotButton" type="Button" parent="Panel/Contents/Options"]
-custom_minimum_size = Vector2(0, 38)
-text = "Godot  Character/SkinGodot.tscn"
+[node name="Title" type="Label" parent="Panel/Contents/Options/OptionsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.82, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 14
+text = "选择角色外观"
 
-[connection signal="pressed" from="Panel/Contents/SkinButton" to="." method="_toggle_options"]
+[node name="Hint" type="Label" parent="Panel/Contents/Options/OptionsHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.43, 0.63, 0.65, 1)
+theme_override_font_sizes/font_size = 11
+text = "游戏开始前"
+vertical_alignment = 1
+
+[node name="Cards" type="HBoxContainer" parent="Panel/Contents/Options"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ClassicButton" type="Button" parent="Panel/Contents/Options/Cards"]
+custom_minimum_size = Vector2(190, 218)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_default_cursor_shape = 2
+text = ""
+theme_override_colors/font_color = Color(0.96, 0.98, 0.97, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("Style_card_normal")
+theme_override_styles/hover = SubResource("Style_card_hover")
+theme_override_styles/pressed = SubResource("Style_card_pressed")
+theme_override_styles/focus = SubResource("Style_focus")
+tooltip_text = "选择经典皮肤"
+
+[node name="CardContent" type="VBoxContainer" parent="Panel/Contents/Options/Cards/ClassicButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 5
+
+[node name="Image" type="TextureRect" parent="Panel/Contents/Options/Cards/ClassicButton/CardContent"]
+custom_minimum_size = Vector2(0, 132)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+texture = ExtResource("2_classic")
+
+[node name="Name" type="Label" parent="Panel/Contents/Options/Cards/ClassicButton/CardContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.52, 1)
+theme_override_font_sizes/font_size = 16
+text = "经典"
+
+[node name="Detail" type="Label" parent="Panel/Contents/Options/Cards/ClassicButton/CardContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.69, 0.69, 1)
+theme_override_font_sizes/font_size = 10
+text = "原始角色"
+
+[node name="ClassicSelectedBar" type="ColorRect" parent="Panel/Contents/Options/Cards/ClassicButton/CardContent"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.98, 0.74, 0.36, 1)
+
+[node name="GodotButton" type="Button" parent="Panel/Contents/Options/Cards"]
+custom_minimum_size = Vector2(190, 218)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_default_cursor_shape = 2
+text = ""
+theme_override_colors/font_color = Color(0.96, 0.98, 0.97, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("Style_card_normal")
+theme_override_styles/hover = SubResource("Style_card_hover")
+theme_override_styles/pressed = SubResource("Style_card_pressed")
+theme_override_styles/focus = SubResource("Style_focus")
+tooltip_text = "选择 Godot 皮肤"
+
+[node name="CardContent" type="VBoxContainer" parent="Panel/Contents/Options/Cards/GodotButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 5
+
+[node name="Image" type="TextureRect" parent="Panel/Contents/Options/Cards/GodotButton/CardContent"]
+custom_minimum_size = Vector2(0, 132)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+texture = ExtResource("3_godot")
+
+[node name="Name" type="Label" parent="Panel/Contents/Options/Cards/GodotButton/CardContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 0.94, 1)
+theme_override_font_sizes/font_size = 16
+text = "Godot"
+
+[node name="Detail" type="Label" parent="Panel/Contents/Options/Cards/GodotButton/CardContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.69, 0.69, 1)
+theme_override_font_sizes/font_size = 10
+text = "低多边形角色"
+
+[node name="GodotSelectedBar" type="ColorRect" parent="Panel/Contents/Options/Cards/GodotButton/CardContent"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.3, 0.88, 0.92, 1)
+
+[node name="BottomHint" type="Label" parent="Panel/Contents/Options"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.57, 0.59, 1)
+theme_override_font_sizes/font_size = 11
+text = "点击面板外区域关闭"
+horizontal_alignment = 2
+
+[connection signal="pressed" from="Panel/Contents/CurrentRow/SkinButton" to="." method="_toggle_options"]

@@ -202,6 +202,8 @@ func _input(event: InputEvent) -> void:
 				return
 		var can_turn: bool = LevelManager.GameState == LevelManager.GameStatus.Playing or (LevelManager.GameState == LevelManager.GameStatus.Waiting and not is_start)
 		if event.is_action_pressed("turn") and is_live and allowTurn and can_turn and not disallow_input:
+			if _consume_spawn_prompt_click(event):
+				return
 			turn()
 
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -229,6 +231,13 @@ func reload() -> void:
 	LevelManager.anim_time = 0.0
 	_clear_tail()
 	tree.reload_current_scene()
+
+func _consume_spawn_prompt_click(event: InputEvent) -> bool:
+	var prompt_nodes: Array[Node] = get_tree().get_nodes_in_group("spawn_godot_character_prompt")
+	for prompt: Node in prompt_nodes:
+		if prompt.has_method("consume_turn_input") and prompt.call("consume_turn_input", event):
+			return true
+	return false
 
 func _clear_tail() -> void:
 	line = null

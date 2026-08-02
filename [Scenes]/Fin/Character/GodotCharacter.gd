@@ -61,10 +61,10 @@ func _process(delta: float) -> void:
 
 func _setup_animation_library() -> void:
 	var library := AnimationLibrary.new()
-	_add_animation(library, IDLE_ANIMATION, "res://Character/anim/idle.anim")
-	_add_animation(library, RUN_ANIMATION, "res://Character/anim/run.anim")
-	_add_animation(library, TURN_ANIMATION, "res://Character/anim/huachan.anim")
-	_add_animation(library, DIE_ANIMATION, "res://Character/anim/hit.anim")
+	_add_animation(library, IDLE_ANIMATION, "res://[Scenes]/Fin/Character/anim/idle.anim")
+	_add_animation(library, RUN_ANIMATION, "res://[Scenes]/Fin/Character/anim/run.anim")
+	_add_animation(library, TURN_ANIMATION, "res://[Scenes]/Fin/Character/anim/huachan.anim")
+	_add_animation(library, DIE_ANIMATION, "res://[Scenes]/Fin/Character/anim/hit.anim")
 	if animation_player.has_animation_library(""):
 		animation_player.remove_animation_library("")
 	animation_player.add_animation_library("", library)

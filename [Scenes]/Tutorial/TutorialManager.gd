@@ -48,7 +48,12 @@ var level_data: LevelData
 @onready var player: Node = get_node_or_null(player_path)
 @onready var animation_player: AnimationPlayer = get_node_or_null(animation_player_path) as AnimationPlayer
 @onready var narrative_label: Label = get_node_or_null("NarrativeUI/NarrativeLabel") as Label
+@onready var narrative_ui: CanvasLayer = get_node_or_null("NarrativeUI") as CanvasLayer
 var guidance_nodes: Array[Node3D] = []
+var click_indicator: Panel
+var click_indicator_tween: Tween
+var click_indicator_world_position: Vector3 = Vector3.ZERO
+var click_indicator_has_world_position: bool = false
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
@@ -63,6 +68,11 @@ func _deferred_bind() -> void:
 	player = get_node_or_null(player_path)
 	animation_player = get_node_or_null(animation_player_path) as AnimationPlayer
 	narrative_label = get_node_or_null("NarrativeUI/NarrativeLabel") as Label
+	narrative_ui = get_node_or_null("NarrativeUI") as CanvasLayer
+	_ensure_click_indicator()
+	var viewport: Viewport = get_viewport()
+	if viewport and not viewport.size_changed.is_connected(_position_click_indicator):
+		viewport.size_changed.connect(_position_click_indicator)
 	guidance_nodes.clear()
 	for path in guidance_paths:
 		guidance_nodes.append(get_node_or_null(path) as Node3D)
@@ -86,6 +96,8 @@ func _deferred_bind() -> void:
 		player.connect("onturn", _on_turn)
 
 func _process(delta: float) -> void:
+	if click_indicator and click_indicator.visible:
+		_position_click_indicator()
 	if Engine.is_editor_hint() or not _tutorial_started or stage == TutorialStage.COMPLETE:
 		return
 	elapsed += delta
@@ -194,6 +206,99 @@ func _trigger_stall() -> void:
 func _set_stage(next_stage: TutorialStage, text: String) -> void:
 	stage = next_stage
 	_show_narrative(text)
+
+
+func show_narrative(text: String) -> void:
+	_show_narrative(text)
+
+
+func set_tutorial_slow_motion(slow: bool) -> void:
+	_set_slow_motion(slow)
+
+
+func show_click_indicator(world_position: Vector3) -> void:
+	_ensure_click_indicator()
+	if click_indicator == null:
+		return
+	click_indicator_world_position = world_position
+	click_indicator_has_world_position = true
+	_position_click_indicator()
+	click_indicator.visible = true
+	click_indicator.scale = Vector2.ONE
+	if click_indicator_tween and click_indicator_tween.is_valid():
+		click_indicator_tween.kill()
+	click_indicator_tween = create_tween()
+	click_indicator_tween.set_ignore_time_scale(true)
+	click_indicator_tween.set_loops()
+	click_indicator_tween.tween_property(click_indicator, "scale", Vector2(1.18, 1.18), 0.45)
+	click_indicator_tween.tween_property(click_indicator, "scale", Vector2.ONE, 0.45)
+
+
+func update_click_indicator(world_position: Vector3) -> void:
+	click_indicator_world_position = world_position
+	click_indicator_has_world_position = true
+	if click_indicator and click_indicator.visible:
+		_position_click_indicator()
+
+
+func hide_click_indicator() -> void:
+	if click_indicator_tween and click_indicator_tween.is_valid():
+		click_indicator_tween.kill()
+	if click_indicator:
+		click_indicator.visible = false
+		click_indicator.scale = Vector2.ONE
+	click_indicator_has_world_position = false
+
+
+func _ensure_click_indicator() -> void:
+	if click_indicator or not narrative_ui:
+		return
+	click_indicator = Panel.new()
+	click_indicator.name = "ClickIndicator"
+	click_indicator.size = Vector2(112.0, 112.0)
+	click_indicator.custom_minimum_size = click_indicator.size
+	click_indicator.pivot_offset = click_indicator.size / 2.0
+	click_indicator.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	click_indicator.z_index = 3
+
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color = Color(1.0, 0.78, 0.2, 0.16)
+	style.border_color = Color(1.0, 0.94, 0.55, 0.98)
+	style.set_border_width_all(4)
+	style.set_corner_radius_all(56)
+	click_indicator.add_theme_stylebox_override("panel", style)
+
+	var label: Label = Label.new()
+	label.text = "点击"
+	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_color_override("font_color", Color(1.0, 0.98, 0.82, 1.0))
+	label.add_theme_color_override("font_outline_color", Color(0.08, 0.12, 0.2, 0.95))
+	label.add_theme_constant_override("outline_size", 6)
+	click_indicator.add_child(label)
+	narrative_ui.add_child(click_indicator)
+	click_indicator.visible = false
+
+
+func _position_click_indicator() -> void:
+	if not click_indicator:
+		return
+	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return
+
+	var screen_position: Vector2 = viewport_size * Vector2(0.5, 0.7)
+	var camera: Camera3D = get_viewport().get_camera_3d()
+	if camera and click_indicator_has_world_position:
+		var target_position: Vector3 = click_indicator_world_position + Vector3.UP * 1.0
+		if not camera.is_position_behind(target_position):
+			screen_position = camera.unproject_position(target_position)
+
+	click_indicator.position = screen_position - click_indicator.size * 0.5
+
 
 func _show_narrative(text: String) -> void:
 	if not narrative_label:
