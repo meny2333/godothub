@@ -4193,13 +4193,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 390.9224, 14, 452.62326)
 [node name="Rock_Flat_crk_m_03" parent="." unique_id=1896139691 instance=ExtResource("34_8f1eb")]
 transform = Transform3D(2.266955, -0.15069403, 0.5432397, 0.34968176, 0.9884451, -7.450581e-09, -0.2460588, 0.016356573, 5.0048985, 217.39386, -1.0528187, 336.78732)
 
-[editable path="BasicOBJ_Group/CameraRoot"]
-[editable path="Scene_Group/part1/Scene_001/Ground_Mountain_m_02"]
-[editable path="Scene_Group/part1/Scene_001/Ground_Mountain_m_04"]
-[editable path="Scene_Group/part3/Pyramid"]
-[editable path="collection/Crown"]
-[editable path="collection/Crown2"]
-
 [connection signal="triggered" from="Scene_Group/part1/Scene_001/Node3D/Obstacle/Trigger/event" to="Scene_Group/part1/Scene_001/Node3D/Obstacle/localpos" method="Trigger"]
 [connection signal="triggered" from="Scene_Group/part1/Scene_001/Node3D/Obstacle/Trigger/event" to="Scene_Group/part1/Scene_001/Node3D/Obstacle2/localpos" method="Trigger"]
 [connection signal="triggered" from="Scene_Group/part1/Scene_001/Node3D2/Obstacle/Trigger/event" to="Scene_Group/part1/Scene_001/Node3D2/Obstacle/localpos" method="Trigger"]
@@ -4231,3 +4224,10 @@ transform = Transform3D(2.266955, -0.15069403, 0.5432397, 0.34968176, 0.9884451,
 [connection signal="triggered" from="Scene_Group/part1/Scene_003/Obstacle3/Trigger/event" to="Scene_Group/part1/Scene_003/Obstacle3/localpos" method="Trigger"]
 [connection signal="triggered" from="Scene_Group/part1/Scene_003/Obstacle5/Trigger/event" to="Scene_Group/part1/Scene_003/Obstacle5/localpos" method="Trigger"]
 [connection signal="triggered" from="Scene_Group/part1/Scene_003/Obstacle7/Trigger/event" to="Scene_Group/part1/Scene_003/Obstacle7/localpos" method="Trigger"]
+
+[editable path="BasicOBJ_Group/CameraRoot"]
+[editable path="Scene_Group/part1/Scene_001/Ground_Mountain_m_02"]
+[editable path="Scene_Group/part1/Scene_001/Ground_Mountain_m_04"]
+[editable path="Scene_Group/part3/Pyramid"]
+[editable path="collection/Crown"]
+[editable path="collection/Crown2"]

@@ -27,6 +27,8 @@ const MIN_REFLECTION_EDGE: int = 64
 var _sourceCamera: Camera3D
 var _reflectionSize: Vector2i = Vector2i.ZERO
 var _isShattered: bool = false
+var _reflectionCleanupTween: Tween
+var _fragments: Array[RigidBody3D] = []
 
 
 func _ready() -> void:
@@ -102,11 +104,27 @@ func shatter(impactPosition: Vector3) -> bool:
 	_isShattered = true
 	_mirrorSurface.visible = false
 	_spawnFragments(impactPosition)
-	var reflectionCleanupTween: Tween = create_tween()
-	reflectionCleanupTween.tween_interval(fragmentLifetime + 0.8)
-	reflectionCleanupTween.tween_callback(_disableReflection)
+	_reflectionCleanupTween = create_tween()
+	_reflectionCleanupTween.tween_interval(fragmentLifetime + 0.8)
+	_reflectionCleanupTween.tween_callback(_disableReflection)
 	shattered.emit()
 	return true
+
+
+func resetShatter() -> void:
+	if not _isShattered:
+		return
+	if _reflectionCleanupTween != null and _reflectionCleanupTween.is_valid():
+		_reflectionCleanupTween.kill()
+	_reflectionCleanupTween = null
+	for fragment: RigidBody3D in _fragments:
+		if is_instance_valid(fragment):
+			fragment.queue_free()
+	_fragments.clear()
+	_isShattered = false
+	_mirrorSurface.visible = true
+	_reflectionViewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	set_process(true)
 
 
 func _spawnFragments(impactPosition: Vector3) -> void:
@@ -233,6 +251,7 @@ func _spawnTriangleFragment(
 	fragment.mass = clampf(area * 0.02, 0.05, 2.0)
 	fragment.physics_material_override = physicsMaterial
 	fragmentParent.add_child(fragment)
+	_fragments.append(fragment)
 	fragment.global_transform = Transform3D(global_basis.orthonormalized(), center)
 
 	var meshInstance: MeshInstance3D = MeshInstance3D.new()
