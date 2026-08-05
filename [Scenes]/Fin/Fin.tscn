@@ -41,6 +41,10 @@
 [ext_resource type="PackedScene" uid="uid://dqvgfuneewf1j" path="res://#Template/CrownCheckPoint.tscn" id="37_mtojw"]
 [ext_resource type="Script" uid="uid://cq3coymowo07g" path="res://#Template/[Scripts]/Animator/LocalScaleAnimator.gd" id="37_qmtuy"]
 [ext_resource type="PackedScene" uid="uid://dup02jc1bhxfc" path="res://#Template/HeartCheckPoint.tscn" id="40_qmtuy"]
+[ext_resource type="Script" uid="uid://b51jai1eoi3p6" path="res://#Template/[Scripts]/Settings/CameraSettings.gd" id="41_kgxq2"]
+[ext_resource type="Script" uid="uid://dwfmi5egh11fa" path="res://#Template/[Scripts]/Settings/OldCameraSettings.gd" id="42_71skv"]
+[ext_resource type="Script" uid="uid://f5lnff32rrn5" path="res://#Template/[Scripts]/Settings/LightSettings.gd" id="43_dbrwa"]
+[ext_resource type="Script" uid="uid://6ex7d7l6f7kl" path="res://#Template/[Scripts]/Settings/AmbientSettings.gd" id="44_pyhya"]
 
 [sub_resource type="Environment" id="Environment_ys6ci"]
 background_mode = 1
@@ -269,6 +273,36 @@ script = ExtResource("18_q5ls4")
 start = 20.0
 end = 100.0
 metadata/_custom_type_script = "uid://bfhukfse7kskq"
+
+[sub_resource type="Resource" id="Resource_4kpwy"]
+resource_local_to_scene = true
+script = ExtResource("41_kgxq2")
+offset = Vector3(-3, -3, -3)
+rotation = Vector3(30, -135, 0)
+fov = 80.0
+
+[sub_resource type="Resource" id="Resource_paapq"]
+resource_local_to_scene = true
+script = ExtResource("42_71skv")
+
+[sub_resource type="Resource" id="Resource_f5cks"]
+resource_local_to_scene = true
+script = ExtResource("18_q5ls4")
+start = 20.0
+end = 100.0
+
+[sub_resource type="Resource" id="Resource_asbnh"]
+resource_local_to_scene = true
+script = ExtResource("43_dbrwa")
+rotation = Vector3(-60.000107, 149.99976, 0)
+color = Color(1, 0.8784314, 0.627451, 1)
+shadow_strength = 1.0
+
+[sub_resource type="Resource" id="Resource_k328y"]
+resource_local_to_scene = true
+script = ExtResource("44_pyhya")
+intensity = 0.75
+ambient_color = Color(0.44705883, 0.5137255, 0.5686275, 1)
 
 [node name="LevelHolder" type="Node3D" unique_id=542804875]
 
@@ -4190,6 +4224,15 @@ transform = Transform3D(-0.38176775, 0.18301275, -0.9059578, -0.101721175, 0.965
 [node name="HeartCheckpoint" parent="collection" unique_id=1980331538 instance=ExtResource("40_qmtuy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 390.9224, 14, 452.62326)
 
+[node name="HeartCheckpoint" parent="collection/HeartCheckpoint/Area3D" index="3"]
+AutoRecord = false
+GameTime = 70.051704
+camera_new = SubResource("Resource_4kpwy")
+camera_old = SubResource("Resource_paapq")
+fog = SubResource("Resource_f5cks")
+light = SubResource("Resource_asbnh")
+ambient = SubResource("Resource_k328y")
+
 [node name="Rock_Flat_crk_m_03" parent="." unique_id=1896139691 instance=ExtResource("34_8f1eb")]
 transform = Transform3D(2.266955, -0.15069403, 0.5432397, 0.34968176, 0.9884451, -7.450581e-09, -0.2460588, 0.016356573, 5.0048985, 217.39386, -1.0528187, 336.78732)
 
@@ -4231,3 +4274,4 @@ transform = Transform3D(2.266955, -0.15069403, 0.5432397, 0.34968176, 0.9884451,
 [editable path="Scene_Group/part3/Pyramid"]
 [editable path="collection/Crown"]
 [editable path="collection/Crown2"]
+[editable path="collection/HeartCheckpoint"]
