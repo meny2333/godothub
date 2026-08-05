@@ -1,4 +1,4 @@
-extends Area3D
+extends Node3D
 class_name Checkpoint
 
 enum Direction { First, Second }
@@ -45,14 +45,24 @@ var _player_second_direction: Vector3 = Vector3.ZERO
 var _fake_players_data: Array[Dictionary] = []
 
 var _revive_position: Node3D
+var _checkpoint_container: Node3D
 
 func _ready() -> void:
-	_revive_position = get_node_or_null("RevivePosition")
+	_checkpoint_container = _resolve_checkpoint_container()
+	_revive_position = _checkpoint_container.get_node_or_null("RevivePosition") as Node3D
 	if _revive_position:
 		_revive_position.visible = false
 
-	if not body_entered.is_connected(_on_checkpoint_body_entered):
-		body_entered.connect(_on_checkpoint_body_entered)
+func _resolve_checkpoint_container() -> Node3D:
+	var parent_area: Area3D = get_parent() as Area3D
+	if parent_area:
+		var container: Node3D = parent_area.get_parent() as Node3D
+		if container:
+			return container
+	return self
+
+func trigger(body: Node3D) -> void:
+	_on_checkpoint_body_entered(body)
 
 func _on_checkpoint_body_entered(body: Node3D) -> void:
 	if used:
@@ -84,7 +94,7 @@ func _enter_trigger(body: Node3D) -> void:
 		_capture_ambient()
 
 	# Capture material colors auto
-	for s in material_colors_auto:
+	for s: SingleColor in material_colors_auto:
 		s.apply()
 
 	# Save player state
@@ -99,6 +109,7 @@ func _enter_trigger(body: Node3D) -> void:
 		if music_player and music_player.playing:
 			GameTime = music_player.get_playback_position()
 		PlayerSpeed = body.speed
+		TemplateCheckpointCapture.capture(self)
 
 	# Save to LevelManager (OldCameraFollower only, new camera stores in camera_new)
 	if UsingOldCameraFollower:
@@ -109,7 +120,7 @@ func _enter_trigger(body: Node3D) -> void:
 	# Save FakePlayer states
 	_fake_players_data.clear()
 	var fake_players: Array[Node] = body.get_tree().get_nodes_in_group("fake_players")
-	for fp in fake_players:
+	for fp: Node in fake_players:
 		var fake: FakePlayer = fp as FakePlayer
 		if fake:
 			_fake_players_data.append(fake.get_reset_data())
@@ -125,12 +136,12 @@ func _capture_fog() -> void:
 func _capture_light() -> void:
 	var main_line: Player = Player.instance
 	if main_line:
-		var scene_light: DirectionalLight3D = main_line.get_scene_light()
-		if scene_light:
-			light.rotation = scene_light.rotation_degrees
-			light.color = scene_light.light_color
-			light.intensity = scene_light.light_energy
-			light.shadow_strength = 1.0 if scene_light.shadow_enabled else 0.0
+		var sceneLight: DirectionalLight3D = main_line.get_scene_light()
+		if sceneLight:
+			light.rotation = sceneLight.rotation_degrees
+			light.color = sceneLight.light_color
+			light.intensity = sceneLight.light_energy
+			light.shadow_strength = 1.0 if sceneLight.shadow_enabled else 0.0
 
 func _capture_ambient() -> void:
 	var env: Environment = _get_scene_environment()
@@ -223,7 +234,7 @@ func revive() -> void:
 	get_tree().call_group("death_particles", "queue_free")
 
 	# Kill all tweens
-	for tween in get_tree().get_processed_tweens():
+	for tween: Tween in get_tree().get_processed_tweens():
 		tween.kill()
 
 	# Restore camera
@@ -259,14 +270,14 @@ func revive() -> void:
 	main_line.restore_managed_animation_state()
 
 	# Restore material colors
-	for s in material_colors_auto:
+	for s: SingleColor in material_colors_auto:
 		s.apply()
-	for s in material_colors_manual:
+	for s: SingleColor in material_colors_manual:
 		s.apply()
 
 	# Restore FakePlayers
 	var fake_players: Array[Node] = main_line.get_tree().get_nodes_in_group("fake_players")
-	for i in range(min(fake_players.size(), _fake_players_data.size())):
+	for i: int in range(min(fake_players.size(), _fake_players_data.size())):
 		var fake: FakePlayer = fake_players[i] as FakePlayer
 		if fake and _fake_players_data[i].get("playing", false):
 			fake.set_reset_data(_fake_players_data[i])
@@ -279,8 +290,8 @@ func revive() -> void:
 		music_player.pitch_scale = 1.0
 		# Set music to checkpoint position but don't play yet
 		var music_time: float = LevelManager.music_checkpoint_time
-		if music_time > 0.0 and main_line.level_data and main_line.level_data.levelAudioClip:
-			music_player.stream = main_line.level_data.levelAudioClip
+		if music_time > 0.0 and main_line.levelData and main_line.levelData.levelAudioClip:
+			music_player.stream = main_line.levelData.levelAudioClip
 			# Play then immediately pause to set the position
 			music_player.play(music_time)
 			music_player.stream_paused = true
