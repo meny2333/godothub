@@ -165,7 +165,8 @@ func revive() -> void:
 	glitch_delay_timer.stop()
 	glitch_hide_timer.stop()
 	_hide_glitch_plane()
-	play_run()
+	is_dead = false
+	play_idle()
 
 func switch_skin(scene_path: String) -> void:
 	var skin_scene := load(scene_path) as PackedScene
