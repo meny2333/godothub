@@ -5,7 +5,7 @@ class_name StartPage
 signal start_requested
 signal info_button_pressed
 signal autoplay_toggled(is_on: bool)
-signal setting_changed(key: String, value)
+signal setting_changed(key: String, value: Variant)
 signal shadow_toggled(is_on: bool)
 signal post_toggled(is_on: bool)
 
@@ -17,6 +17,8 @@ signal post_toggled(is_on: bool)
 @onready var bottom_bar: Panel = $UIContainer/BottomBar
 @onready var about_panel: Panel = $UIContainer/AboutPanel
 @onready var about_content: Panel = $UIContainer/AboutPanel/AboutContent
+@onready var about_canvas: Control = $UIContainer/AboutPanel/AboutContent
+@onready var about_hide_canvas: Node = $UIContainer/AboutPanel/AboutContent/HideCanvas
 # Setting item mode constants
 const MODE_CYCLIC: int = 0
 const MODE_RANGE: int = 1
@@ -40,8 +42,15 @@ var _about_visible: bool = false
 func _ready() -> void:
 	_init_setting_states()
 	_apply_ported_visuals()
-	# 从 Player.level_data 读取关卡信息，填充关于页面（与 Unity 版 StartPage 一致）
 	_populate_about_from_level_data()
+	if OS.has_feature("template"):
+		autoplay_area.visible = false
+		if _set_auto_play:
+			_set_auto_play.queue_free()
+	else:
+		await get_tree().process_frame
+		if _set_auto_play and _set_auto_play.has_method("get_auto"):
+			autoplay_checkbox.button_pressed = _set_auto_play.get_auto()
 
 func _apply_ported_visuals() -> void:
 	var left_icon: Texture2D = load("res://#Template/[Resources]/GUI/arrow_left.png") as Texture2D
@@ -113,9 +122,9 @@ func _init_setting_states() -> void:
 func _populate_about_from_level_data() -> void:
 	# Player 使用 class_name + static var instance 模式
 	var player: Player = Player.instance if Player.instance != null else null
-	if not player or not player.level_data:
+	if not player or not player.levelData:
 		return
-	var ld: LevelData = player.level_data
+	var ld: LevelData = player.levelData
 
 	# 设置标题
 	var title_node: Node = about_content.find_child("about_title", true)
@@ -142,52 +151,31 @@ static func _open_author_url(url: String) -> void:
 
 # === Background click ===
 
-func _on_background_click(event: InputEvent) -> void:
+func _on_main_panel_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		start_requested.emit()
 
-# === About show/hide animation ===
+func _on_autoplay_hit_target_pressed() -> void:
+	var is_on: bool = not autoplay_checkbox.button_pressed
+	autoplay_checkbox.set_pressed_no_signal(is_on)
+	_on_autoplay_toggled(is_on)
 
-func _toggle_about() -> void:
-	if _about_visible:
-		_hide_about()
-	else:
-		_show_about()
+# === About show/hide animation ===
 
 func _show_about() -> void:
 	if _about_visible:
 		return
 	_about_visible = true
 	about_panel.visible = true
-
-	const REST: float = -185.0
-	const SHIFT: float = 400.0
-	about_content.offset_top = REST + SHIFT
-	about_content.offset_bottom = -REST + SHIFT
-	about_content.rotation_degrees = 15
-	about_content.modulate.a = 0.0
-
-	var tween: Tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tween.set_parallel(true)
-	tween.tween_property(about_content, "offset_top", REST, 0.4)
-	tween.tween_property(about_content, "offset_bottom", -REST, 0.4)
-	tween.tween_property(about_content, "rotation_degrees", 0.0, 0.4)
-	tween.tween_property(about_content, "modulate:a", 1.0, 0.3)
+	if about_canvas.has_method("show_canvas"):
+		about_canvas.call("show_canvas")
 
 func _hide_about() -> void:
 	if not _about_visible:
 		return
 	_about_visible = false
-
-	const REST: float = -185.0
-	const SHIFT: float = 400.0
-	var tween: Tween = create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
-	tween.set_parallel(true)
-	tween.tween_property(about_content, "offset_top", REST + SHIFT, 0.3)
-	tween.tween_property(about_content, "offset_bottom", -REST + SHIFT, 0.3)
-	tween.tween_property(about_content, "rotation_degrees", -15.0, 0.3)
-	tween.tween_property(about_content, "modulate:a", 0.0, 0.3)
-	tween.finished.connect(_on_about_hide_finished)
+	if about_hide_canvas.has_method("hide_canvas"):
+		about_hide_canvas.call("hide_canvas")
 func _on_about_hide_finished() -> void:
 	about_panel.visible = false
 
@@ -254,7 +242,7 @@ func set_about_content(title: String, authors: Array, credits: String) -> void:
 	if credits_node is Label:
 		credits_node.text = credits
 
-func set_setting(key: String, value) -> void:
+func set_setting(key: String, value: Variant) -> void:
 	if not _setting_states.has(key):
 		return
 	var state: Dictionary = _setting_states[key]
@@ -265,10 +253,10 @@ func set_setting(key: String, value) -> void:
 		elif state.options.size() > 0:
 			push_warning("StartPage.set_setting: value '%s' not found in options" % str(value))
 	else:
-		state.value = clampf(value, state.min_val, state.max_val)
+		state.value = clampf(float(value), state.min_val, state.max_val)
 	_update_setting_display(state)
 
-func get_setting(key: String):
+func get_setting(key: String) -> Variant:
 	if _setting_states.has(key):
 		return _get_setting_value(_setting_states[key])
 	return null
@@ -325,7 +313,7 @@ func _update_setting_display(state: Dictionary) -> void:
 				display_val = round(state.value * 100)
 			state.value_label.text = str(display_val) + state.suffix
 
-func _get_setting_value(state: Dictionary):
+func _get_setting_value(state: Dictionary) -> Variant:
 	if state.mode == MODE_CYCLIC:
 		return state.options[state.index] if state.options.size() > 0 else null
 	return state.value
@@ -386,12 +374,12 @@ func _on_about_click(event: InputEvent) -> void:
 
 func _on_info_pressed() -> void:
 	info_button_pressed.emit()
-	_toggle_about()
+	_show_about()
 
-func _on_autoplay_toggled(_is_on: bool) -> void:
-	autoplay_toggled.emit(_is_on)
+func _on_autoplay_toggled(is_on: bool) -> void:
+	autoplay_toggled.emit(is_on)
 	if _set_auto_play and _set_auto_play.has_method("SetAuto"):
-		_set_auto_play.SetAuto()
+		_set_auto_play.SetAuto(is_on)
 
 func _on_shadow_toggled(is_on: bool) -> void:
 	shadow_toggled.emit(is_on)

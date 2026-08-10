@@ -5,30 +5,60 @@ const WELCOME_URL := "https://www.cnblogs.com/mmme/p/-/tutorial"
 const MARKER_PATH := "user://.first_run_welcome_done"
 
 const TEMPLATE_DEFAULT := "res://[Scenes]/DefaultScene/Default.tscn"
+const TEMPLATE_DEFAULT3 := "res://[Scenes]/DefaultScene3/Default.tscn"
 const TEMPLATE_SAMPLE := "res://[Scenes]/Sample/Sample.tscn"
 const LEVELS_ROOT := "res://[Scenes]/"
+const DirectionGizmoPlugin := preload("res://addons/template/direction_gizmo_plugin.gd")
+const PluginStoreDialogClass := preload("res://addons/template/plugin_store_dialog.gd")
+const EventTriggerInspectorPluginClass := preload("res://addons/template/event_trigger_inspector_plugin.gd")
+const CheckpointCaptureRuntimeClass := preload("res://addons/template/checkpoint_capture_runtime.gd")
+const CheckpointCaptureDebuggerPluginClass := preload("res://addons/template/checkpoint_capture_debugger.gd")
 
 var _menu_button: MenuButton
 var _new_level_dialog: ConfirmationDialog
+var _store_dialog: ConfirmationDialog
+var _direction_gizmo_plugin: EditorNode3DGizmoPlugin
+var _event_trigger_inspector_plugin: Object
+var _checkpoint_capture_debugger_plugin: EditorDebuggerPlugin
 
 
 func _enter_tree() -> void:
+	PluginStoreDialogClass.cleanup_quarantine()
 	_check_first_run()
+	_direction_gizmo_plugin = DirectionGizmoPlugin.new()
+	add_node_3d_gizmo_plugin(_direction_gizmo_plugin)
+	_event_trigger_inspector_plugin = EventTriggerInspectorPluginClass.new()
+	add_inspector_plugin(_event_trigger_inspector_plugin)
+	_checkpoint_capture_debugger_plugin = CheckpointCaptureDebuggerPluginClass.new()
+	_checkpoint_capture_debugger_plugin.call("setup", Callable(self, "_apply_checkpoint_snapshot"))
+	add_debugger_plugin(_checkpoint_capture_debugger_plugin)
 
 	_menu_button = MenuButton.new()
-	_menu_button.text = "模板 2.2"
+	var template_version: String = PluginRegistry.get_template_version()
+	_menu_button.text = "模板 %s" % (template_version if not template_version.is_empty() else "未知版本")
 	_menu_button.tooltip_text = "Template 相关资源"
 	_menu_button.switch_on_hover = true
 
 	var popup: PopupMenu = _menu_button.get_popup()
 	popup.add_item("模板手册", 0)
 	popup.add_item("新建关卡", 1)
+	popup.add_separator()
+	popup.add_item("插件商城", 2)
 	popup.id_pressed.connect(_on_menu_item_pressed)
 
 	add_control_to_container(CONTAINER_TOOLBAR, _menu_button)
 
 
 func _exit_tree() -> void:
+	if _checkpoint_capture_debugger_plugin:
+		remove_debugger_plugin(_checkpoint_capture_debugger_plugin)
+		_checkpoint_capture_debugger_plugin = null
+	if _direction_gizmo_plugin:
+		remove_node_3d_gizmo_plugin(_direction_gizmo_plugin)
+		_direction_gizmo_plugin = null
+	if _event_trigger_inspector_plugin:
+		remove_inspector_plugin(_event_trigger_inspector_plugin)
+		_event_trigger_inspector_plugin = null
 	if _menu_button:
 		remove_control_from_container(CONTAINER_TOOLBAR, _menu_button)
 		_menu_button.queue_free()
@@ -36,6 +66,9 @@ func _exit_tree() -> void:
 	if _new_level_dialog and is_instance_valid(_new_level_dialog):
 		_new_level_dialog.queue_free()
 		_new_level_dialog = null
+	if _store_dialog and is_instance_valid(_store_dialog):
+		_store_dialog.queue_free()
+		_store_dialog = null
 
 
 func _check_first_run() -> void:
@@ -56,6 +89,20 @@ func _on_menu_item_pressed(id: int) -> void:
 			OS.shell_open(WELCOME_URL)
 		1:
 			_show_new_level_dialog()
+		2:
+			_show_store_dialog()
+
+
+# ===================== 插件商城 =====================
+
+func _show_store_dialog() -> void:
+	if _store_dialog and is_instance_valid(_store_dialog):
+		_store_dialog.queue_free()
+		_store_dialog = null
+
+	_store_dialog = PluginStoreDialogClass.new()
+	add_child(_store_dialog)
+	_store_dialog.popup_centered(Vector2i(720, 520))
 
 
 # ===================== 新建关卡 =====================
@@ -96,7 +143,8 @@ func _show_new_level_dialog() -> void:
 	tpl_row.add_child(tpl_lbl)
 	var tpl_opts := OptionButton.new()
 	tpl_opts.add_item("DefaultScene", 0)
-	tpl_opts.add_item("Sample", 1)
+	tpl_opts.add_item("DefaultScene3", 1)
+	tpl_opts.add_item("Sample", 2)
 	tpl_opts.custom_minimum_size = Vector2(250, 0)
 	tpl_row.add_child(tpl_opts)
 
@@ -124,7 +172,14 @@ func _show_new_level_dialog() -> void:
 
 	dialog.confirmed.connect(func():
 		var level_name := name_edit.text.strip_edges()
-		var template_path: String = TEMPLATE_DEFAULT if tpl_opts.selected == 0 else TEMPLATE_SAMPLE
+		var template_path: String
+		match tpl_opts.get_selected_id():
+			0:
+				template_path = TEMPLATE_DEFAULT
+			1:
+				template_path = TEMPLATE_DEFAULT3
+			_:
+				template_path = TEMPLATE_SAMPLE
 		var level_id_text := id_edit.text.strip_edges()
 		var level_id := 1
 		if level_id_text.is_valid_int():
@@ -176,8 +231,8 @@ func _create_new_level(level_name: String, template_path: String, level_id: int)
 		root.queue_free()
 		return ERR_INVALID_DATA
 
-	if not player.level_data:
-		_push_error("模板场景 %s 的 Player 节点未设置 level_data" % template_path)
+	if not player.levelData:
+		_push_error("模板场景 %s 的 Player 节点未设置 levelData" % template_path)
 		root.queue_free()
 		return ERR_INVALID_DATA
 
@@ -185,7 +240,7 @@ func _create_new_level(level_name: String, template_path: String, level_id: int)
 	DirAccess.make_dir_recursive_absolute(level_dir)
 
 	# 深拷贝 LevelData 资源，设新字段（唯一化）
-	var new_data := (player.level_data as Resource).duplicate(true) as LevelData
+	var new_data := (player.levelData as Resource).duplicate(true) as LevelData
 	if not new_data:
 		_push_error("复制 LevelData 资源失败")
 		root.queue_free()
@@ -211,8 +266,8 @@ func _create_new_level(level_name: String, template_path: String, level_id: int)
 		root.queue_free()
 		return ERR_CANT_OPEN
 
-	# 将 Player 的 level_data 指向唯一副本
-	player.level_data = saved_data
+	# 将 Player 的 levelData 指向唯一副本
+	player.levelData = saved_data
 
 	# 打包并保存场景
 	var new_scene := PackedScene.new()
@@ -253,3 +308,53 @@ func _sanitize_name(name: String) -> String:
 func _push_error(msg: String) -> void:
 	push_error("[Template 插件] " + msg)
 	printerr("[Template 插件] " + msg)
+
+
+func _apply_checkpoint_snapshot(snapshot: Dictionary) -> void:
+	var edited_root: Node = EditorInterface.get_edited_scene_root()
+	if not edited_root:
+		return
+	var scene_path: String = str(snapshot.get("scene_path", ""))
+	if edited_root.scene_file_path != scene_path:
+		push_warning("[CheckpointCapture] 当前编辑场景与运行场景不一致，已忽略：%s" % scene_path)
+		return
+	var node_path: NodePath = NodePath(str(snapshot.get("node_path", "")))
+	var checkpoint: Node = edited_root.get_node_or_null(node_path)
+	if not checkpoint or not checkpoint is Checkpoint:
+		push_warning("[CheckpointCapture] 本地场景未找到 Checkpoint：%s" % node_path)
+		return
+
+	var updates: Dictionary = {}
+	var values_value: Variant = snapshot.get("values", {})
+	if values_value is Dictionary:
+		var values: Dictionary = values_value as Dictionary
+		for property_name: StringName in CheckpointCaptureRuntimeClass.VALUE_PROPERTIES:
+			if values.has(property_name):
+				updates[property_name] = values[property_name]
+
+	var settings_value: Variant = snapshot.get("settings", {})
+	if settings_value is Dictionary:
+		var settings: Dictionary = settings_value as Dictionary
+		for property_name: StringName in CheckpointCaptureRuntimeClass.SETTINGS_PROPERTIES:
+			var serialized_value: Variant = settings.get(property_name, null)
+			if not serialized_value is Dictionary:
+				continue
+			var restored: Object = dict_to_inst(serialized_value as Dictionary)
+			var resource: Resource = restored as Resource
+			if resource:
+				resource.resource_local_to_scene = true
+				updates[property_name] = resource
+
+	if updates.is_empty():
+		return
+	var undo_redo: EditorUndoRedoManager = get_undo_redo()
+	undo_redo.create_action(
+		"自动复制 Checkpoint 参数",
+		UndoRedo.MERGE_DISABLE,
+		edited_root,
+	)
+	for property_name: StringName in updates:
+		undo_redo.add_do_property(checkpoint, property_name, updates[property_name])
+		undo_redo.add_undo_property(checkpoint, property_name, checkpoint.get(property_name))
+	undo_redo.commit_action()
+	print("[CheckpointCapture] 已自动复制：%s" % node_path)

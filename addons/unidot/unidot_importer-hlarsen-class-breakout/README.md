@@ -1,5 +1,7 @@
 # Unidot Importer
 
+This GodotLine distribution is adapted by Meny for Godot 4.7.
+
 Unify your Godot asset interop with **Unidot**, a **Uni**versal Go**dot** Engine source asset translator and interoperability pipeline for Godot 4.
 
 At its heart, Unidot Importer can convert `.unitypackage` assets and asset folders into Godot 4.x compatible formats.
@@ -27,7 +29,7 @@ Please use a version of Godot 4.0 or later with FBX2glTF configured in Editor Se
 
 ## System requirements:
 
-Unidot has been tested on Windows, macOS and Linux versions. Currently supports Godot Editor versions 4.0 through 4.2.
+Unidot has been tested on Windows, macOS and Linux versions. The upstream project supports Godot Editor versions 4.0 through 4.2. This GodotLine distribution is adapted and validated for Godot 4.7.
 
 Unidot recommends a system with at least 16GB of RAM for many assets. It is uncommon for large imports to take more than 10-12GB.
 

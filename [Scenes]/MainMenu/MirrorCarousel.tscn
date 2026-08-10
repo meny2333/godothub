@@ -1,0 +1,575 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://[Scenes]/MainMenu/MirrorCarousel.gd" id="1_carousel"]
+[ext_resource type="Script" path="res://[Scenes]/MainMenu/MirrorOverlay.gd" id="2_overlay"]
+[ext_resource type="Script" path="res://[Scenes]/MainMenu/LockGlyph.gd" id="3_lock"]
+[ext_resource type="Texture2D" path="res://[Scenes]/MainMenu/p1.png" id="4_p1"]
+[ext_resource type="Texture2D" path="res://[Scenes]/MainMenu/p2.png" id="5_p2"]
+[ext_resource type="Texture2D" path="res://[Scenes]/MainMenu/p3.png" id="6_p3"]
+[ext_resource type="Texture2D" path="res://[Scenes]/MainMenu/p4.png" id="7_p4"]
+[ext_resource type="Texture2D" path="res://#Template/[Resources]/GUI/arrow_left.png" id="8_left"]
+[ext_resource type="Texture2D" path="res://#Template/[Resources]/GUI/arrow_right.png" id="9_right"]
+
+[sub_resource type="StyleBoxFlat" id="CardFrame"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.76, 0.88, 0.91, 0.42)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="ClearStyle"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="ArrowStyle"]
+bg_color = Color(0.025, 0.04, 0.05, 0.84)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.68, 0.84, 0.88, 0.36)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="ArrowHover"]
+bg_color = Color(0.08, 0.13, 0.15, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.74, 0.93, 0.96, 0.76)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="MirrorCarousel" type="Control"]
+custom_minimum_size = Vector2(0, 310)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+clip_contents = true
+script = ExtResource("1_carousel")
+
+[node name="Card01" type="Control" parent="."]
+custom_minimum_size = Vector2(480, 258)
+layout_mode = 0
+offset_right = 480.0
+offset_bottom = 258.0
+clip_contents = true
+
+[node name="Image" type="TextureRect" parent="Card01"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_p1")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Shade" type="ColorRect" parent="Card01"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.015, 0.025, 0.03, 0.38)
+
+[node name="Reflection" type="ColorRect" parent="Card01"]
+layout_mode = 0
+anchor_left = 0.58
+anchor_right = 0.76
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.78, 0.91, 0.95, 0.07)
+rotation = 0.14
+
+[node name="Copy" type="VBoxContainer" parent="Card01"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -116.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Index" type="Label" parent="Card01/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.73, 0.38, 1)
+theme_override_font_sizes/font_size = 11
+text = "01"
+
+[node name="Title" type="Label" parent="Card01/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.98, 0.96, 1)
+theme_override_font_sizes/font_size = 28
+text = "初滞"
+
+[node name="Subtitle" type="Label" parent="Card01/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.77, 0.82, 0.84, 1)
+theme_override_font_sizes/font_size = 13
+text = "暖黄峡谷"
+
+[node name="Status" type="Label" parent="Card01/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
+theme_override_font_sizes/font_size = 10
+text = "可进入"
+
+[node name="Frame" type="Panel" parent="Card01"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("CardFrame")
+
+[node name="HitTarget" type="Button" parent="Card01"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("ClearStyle")
+theme_override_styles/hover = SubResource("ClearStyle")
+theme_override_styles/pressed = SubResource("ClearStyle")
+theme_override_styles/focus = SubResource("ClearStyle")
+flat = true
+
+[node name="Card02" type="Control" parent="."]
+custom_minimum_size = Vector2(480, 258)
+layout_mode = 0
+offset_right = 480.0
+offset_bottom = 258.0
+clip_contents = true
+
+[node name="Image" type="TextureRect" parent="Card02"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_p2")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Shade" type="ColorRect" parent="Card02"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.01, 0.025, 0.035, 0.47)
+
+[node name="Reflection" type="ColorRect" parent="Card02"]
+layout_mode = 0
+anchor_left = 0.58
+anchor_right = 0.76
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.78, 0.91, 0.95, 0.07)
+rotation = 0.14
+
+[node name="Copy" type="VBoxContainer" parent="Card02"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -116.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Index" type="Label" parent="Card02/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.59, 0.79, 0.9, 1)
+theme_override_font_sizes/font_size = 11
+text = "02"
+
+[node name="Title" type="Label" parent="Card02/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.98, 0.96, 1)
+theme_override_font_sizes/font_size = 28
+text = "回声"
+
+[node name="Subtitle" type="Label" parent="Card02/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.77, 0.82, 0.84, 1)
+theme_override_font_sizes/font_size = 13
+text = "灰蓝山谷"
+
+[node name="Status" type="Label" parent="Card02/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
+theme_override_font_sizes/font_size = 10
+text = "场景待补"
+
+[node name="Frame" type="Panel" parent="Card02"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("CardFrame")
+
+[node name="HitTarget" type="Button" parent="Card02"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("ClearStyle")
+theme_override_styles/hover = SubResource("ClearStyle")
+theme_override_styles/pressed = SubResource("ClearStyle")
+theme_override_styles/focus = SubResource("ClearStyle")
+flat = true
+
+[node name="Card03" type="Control" parent="."]
+custom_minimum_size = Vector2(480, 258)
+layout_mode = 0
+offset_right = 480.0
+offset_bottom = 258.0
+clip_contents = true
+
+[node name="Image" type="TextureRect" parent="Card03"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("6_p3")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Shade" type="ColorRect" parent="Card03"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.025, 0.025, 0.02, 0.42)
+
+[node name="Reflection" type="ColorRect" parent="Card03"]
+layout_mode = 0
+anchor_left = 0.58
+anchor_right = 0.76
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.94, 0.76, 0.08)
+rotation = 0.14
+
+[node name="Copy" type="VBoxContainer" parent="Card03"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -116.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Index" type="Label" parent="Card03/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.97, 0.83, 0.53, 1)
+theme_override_font_sizes/font_size = 11
+text = "03"
+
+[node name="Title" type="Label" parent="Card03/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.98, 0.96, 1)
+theme_override_font_sizes/font_size = 28
+text = "终章"
+
+[node name="Subtitle" type="Label" parent="Card03/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.77, 0.82, 0.84, 1)
+theme_override_font_sizes/font_size = 13
+text = "破晓拱门"
+
+[node name="Status" type="Label" parent="Card03/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
+theme_override_font_sizes/font_size = 10
+text = "场景待补"
+
+[node name="Frame" type="Panel" parent="Card03"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("CardFrame")
+
+[node name="HitTarget" type="Button" parent="Card03"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("ClearStyle")
+theme_override_styles/hover = SubResource("ClearStyle")
+theme_override_styles/pressed = SubResource("ClearStyle")
+theme_override_styles/focus = SubResource("ClearStyle")
+flat = true
+
+[node name="Card04" type="Control" parent="."]
+custom_minimum_size = Vector2(480, 258)
+layout_mode = 0
+offset_right = 480.0
+offset_bottom = 258.0
+clip_contents = true
+
+[node name="Image" type="TextureRect" parent="Card04"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_p4")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Shade" type="ColorRect" parent="Card04"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.01, 0.025, 0.03, 0.46)
+
+[node name="Reflection" type="ColorRect" parent="Card04"]
+layout_mode = 0
+anchor_left = 0.58
+anchor_right = 0.76
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.7, 0.95, 1, 0.1)
+rotation = 0.14
+
+[node name="Copy" type="VBoxContainer" parent="Card04"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -116.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Index" type="Label" parent="Card04/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.91, 0.94, 1)
+theme_override_font_sizes/font_size = 11
+text = "04"
+
+[node name="Title" type="Label" parent="Card04/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.98, 0.96, 1)
+theme_override_font_sizes/font_size = 28
+text = "回声之境"
+
+[node name="Subtitle" type="Label" parent="Card04/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.77, 0.82, 0.84, 1)
+theme_override_font_sizes/font_size = 13
+text = "镜面回廊"
+
+[node name="Status" type="Label" parent="Card04/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
+theme_override_font_sizes/font_size = 10
+text = "完整模式锁定"
+
+[node name="LockShade" type="ColorRect" parent="Card04"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.005, 0.012, 0.016, 0.68)
+
+[node name="LockGlyph" type="Control" parent="Card04"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -86.0
+offset_right = 80.0
+offset_bottom = 74.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_lock")
+
+[node name="Frame" type="Panel" parent="Card04"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("CardFrame")
+
+[node name="HitTarget" type="Button" parent="Card04"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("ClearStyle")
+theme_override_styles/hover = SubResource("ClearStyle")
+theme_override_styles/pressed = SubResource("ClearStyle")
+theme_override_styles/focus = SubResource("ClearStyle")
+flat = true
+
+[node name="MirrorOverlay" type="Control" parent="."]
+z_index = 20
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_overlay")
+
+[node name="PreviousButton" type="Button" parent="."]
+z_index = 30
+custom_minimum_size = Vector2(52, 72)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = -48.0
+offset_right = 60.0
+offset_bottom = 24.0
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+theme_override_icons/icon = ExtResource("8_left")
+theme_override_styles/normal = SubResource("ArrowStyle")
+theme_override_styles/hover = SubResource("ArrowHover")
+theme_override_styles/pressed = SubResource("ArrowHover")
+theme_override_styles/focus = SubResource("ClearStyle")
+flat = true
+expand_icon = true
+
+[node name="NextButton" type="Button" parent="."]
+z_index = 30
+custom_minimum_size = Vector2(52, 72)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -48.0
+offset_right = -8.0
+offset_bottom = 24.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+theme_override_icons/icon = ExtResource("9_right")
+theme_override_styles/normal = SubResource("ArrowStyle")
+theme_override_styles/hover = SubResource("ArrowHover")
+theme_override_styles/pressed = SubResource("ArrowHover")
+theme_override_styles/focus = SubResource("ClearStyle")
+flat = true
+expand_icon = true
+
+[node name="CounterLabel" type="Label" parent="."]
+z_index = 30
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -70.0
+offset_top = -28.0
+offset_right = 70.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.62, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 11
+text = "01  /  04"
+horizontal_alignment = 1

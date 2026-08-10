@@ -1,0 +1,167 @@
+extends CanvasLayer
+class_name SkinSelector
+
+const CLASSIC_SKIN: String = "classic"
+const GODOT_SKIN_ID: String = "godot"
+const GODOT_SKIN: String = "res://[Scenes]/Fin/Character/SkinGodot.tscn"
+const CLASSIC_IMAGE: String = "res://[Scenes]/Fin/classical.png"
+const GODOT_IMAGE: String = "res://[Scenes]/Fin/godot.png"
+const CAMERA_TRANSITION_DURATION: float = 0.45
+const COLLAPSED_PANEL_TOP: float = -180.0
+const OPEN_PANEL_TOP: float = -430.0
+
+@onready var panel: PanelContainer = $Panel
+@onready var skin_button: Button = $Panel/Contents/CurrentRow/SkinButton
+@onready var current_preview: TextureRect = $Panel/Contents/CurrentRow/CurrentPreview
+@onready var current_name: Label = $Panel/Contents/CurrentRow/CurrentInfo/CurrentName
+@onready var current_detail: Label = $Panel/Contents/CurrentRow/CurrentInfo/CurrentDetail
+@onready var options: VBoxContainer = $Panel/Contents/Options
+@onready var classic_button: Button = $Panel/Contents/Options/Cards/ClassicButton
+@onready var godot_button: Button = $Panel/Contents/Options/Cards/GodotButton
+@onready var classic_selected_bar: ColorRect = $Panel/Contents/Options/Cards/ClassicButton/CardContent/ClassicSelectedBar
+@onready var godot_selected_bar: ColorRect = $Panel/Contents/Options/Cards/GodotButton/CardContent/GodotSelectedBar
+@onready var input_blocker: Control = $InputBlocker
+@onready var modal_dimmer: ColorRect = $ModalDimmer
+
+var player: Player = null
+var godot_skin: GodotCharacter = null
+var gameplay_camera: Camera3D = null
+var preview_camera: Camera3D = null
+var camera_tween: Tween = null
+var original_camera_position: Vector3 = Vector3.ZERO
+var original_camera_rotation: Vector3 = Vector3.ZERO
+var original_camera_saved: bool = false
+var current_skin: String = GODOT_SKIN_ID
+var locked: bool = false
+
+func _ready() -> void:
+	player = get_tree().current_scene.get_node_or_null("BasicOBJ_Group/Player") as Player
+	panel.offset_top = COLLAPSED_PANEL_TOP
+	options.visible = false
+	input_blocker.visible = false
+	modal_dimmer.visible = false
+	classic_button.pressed.connect(_select_classic)
+	godot_button.pressed.connect(_select_godot)
+	input_blocker.gui_input.connect(_on_input_blocker_gui_input)
+	gameplay_camera = get_tree().current_scene.get_node_or_null(
+		"BasicOBJ_Group/CameraRoot/Rotator/Scale/Camera3D") as Camera3D
+	preview_camera = get_tree().current_scene.get_node_or_null(
+		"BasicOBJ_Group/Camera3D") as Camera3D
+	_update_selection_visual()
+	if player:
+		player.on_player_start.connect(_lock_selection)
+		_select_godot.call_deferred()
+
+func _toggle_options() -> void:
+	if locked:
+		return
+	if options.visible:
+		_close_options()
+	else:
+		_open_options()
+
+func _on_input_blocker_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton \
+			and event.pressed \
+			and event.button_index == MOUSE_BUTTON_LEFT:
+		_close_options()
+	elif event is InputEventScreenTouch and event.pressed:
+		_close_options()
+
+func _open_options() -> void:
+	_save_original_camera_pose()
+	panel.offset_top = OPEN_PANEL_TOP
+	options.visible = true
+	input_blocker.visible = true
+	modal_dimmer.visible = true
+	_tween_camera_to(preview_camera)
+
+func _close_options() -> void:
+	options.visible = false
+	panel.offset_top = COLLAPSED_PANEL_TOP
+	input_blocker.visible = false
+	modal_dimmer.visible = false
+	if original_camera_saved and gameplay_camera:
+		_tween_camera_to_pose(original_camera_position, original_camera_rotation)
+
+func _save_original_camera_pose() -> void:
+	if original_camera_saved or not gameplay_camera:
+		return
+	original_camera_position = gameplay_camera.global_position
+	original_camera_rotation = gameplay_camera.global_rotation
+	original_camera_saved = true
+
+func _tween_camera_to(target_camera: Camera3D) -> void:
+	if target_camera:
+		_tween_camera_to_pose(target_camera.global_position, target_camera.global_rotation)
+
+func _tween_camera_to_pose(target_position: Vector3, target_rotation: Vector3) -> void:
+	if not gameplay_camera:
+		return
+	if camera_tween:
+		camera_tween.kill()
+	camera_tween = create_tween().set_parallel(true)
+	camera_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	camera_tween.tween_property(gameplay_camera, "global_position", target_position,
+			CAMERA_TRANSITION_DURATION)
+	camera_tween.tween_property(gameplay_camera, "global_rotation", target_rotation,
+			CAMERA_TRANSITION_DURATION)
+
+func _select_classic() -> void:
+	if not player or locked:
+		return
+	player.reset_henshin_state()
+	_remove_godot_skin()
+	current_skin = CLASSIC_SKIN
+	_update_selection_visual()
+	if options.visible:
+		_tween_camera_to(preview_camera)
+
+func _select_godot() -> void:
+	if not player or locked:
+		return
+	_remove_godot_skin()
+	player.reset_henshin_state()
+	var skin_scene: PackedScene = load(GODOT_SKIN) as PackedScene
+	if not skin_scene:
+		push_error("SkinSelector: unable to load " + GODOT_SKIN)
+		return
+	godot_skin = skin_scene.instantiate() as GodotCharacter
+	if not godot_skin:
+		push_error("SkinSelector: invalid Godot skin scene")
+		return
+	godot_skin.name = "SkinGodot"
+	player.add_child(godot_skin)
+	player.enable_henshin(godot_skin, Vector3.ZERO, false, false, 0.1)
+	player.onturn.connect(godot_skin.play_turn)
+	player.on_game_over.connect(godot_skin.play_die)
+	current_skin = GODOT_SKIN_ID
+	_update_selection_visual()
+	if options.visible:
+		_tween_camera_to(preview_camera)
+
+func _remove_godot_skin() -> void:
+	if is_instance_valid(godot_skin):
+		godot_skin.queue_free()
+	godot_skin = null
+	if not player:
+		return
+	var existing: Node = player.get_node_or_null("SkinGodot")
+	if existing:
+		existing.queue_free()
+
+func _update_selection_visual() -> void:
+	var is_classic: bool = current_skin == CLASSIC_SKIN
+	var preview_texture: Texture2D = load(CLASSIC_IMAGE if is_classic else GODOT_IMAGE) as Texture2D
+	current_preview.texture = preview_texture
+	current_name.text = "经典" if is_classic else "Godot"
+	current_detail.text = "经典角色" if is_classic else "低多边形角色"
+	classic_selected_bar.visible = is_classic
+	godot_selected_bar.visible = not is_classic
+
+func _lock_selection() -> void:
+	locked = true
+	options.visible = false
+	input_blocker.visible = false
+	modal_dimmer.visible = false
+	hide()

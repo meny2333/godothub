@@ -1,0 +1,25 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://qoemls2vvo30"]
+
+[ext_resource type="Shader" uid="uid://bxhwhd8bxd8q" path="res://[Scenes]/Fin/water.gdshader" id="1"]
+
+[resource]
+render_priority = 1
+shader = ExtResource("1")
+shader_parameter/wave_0 = Vector4(0.3, 2, 1, 0)
+shader_parameter/wave_1 = Vector4(0.2, 1.5, 0.8, 2.5)
+shader_parameter/wave_2 = Vector4(0.15, 1, 1.2, 5)
+shader_parameter/wave_3 = Vector4(0.1, 0.8, 0.6, 8)
+shader_parameter/noise_scale = 1.0
+shader_parameter/noise_strength = 0.3
+shader_parameter/albedo = Color(0.76, 0.94, 0.93, 0.8)
+shader_parameter/metallic = 0.1
+shader_parameter/roughness = 0.3
+shader_parameter/specular = 0.5
+shader_parameter/water_level = 0.0
+shader_parameter/scale = 1.0
+shader_parameter/edge_threshold = 0.999999977648
+shader_parameter/edge_softness = 0.5
+shader_parameter/foam_color = Color(1, 1, 1, 1)
+shader_parameter/ssr_max_travel = 24
+shader_parameter/depth_tolerance = 0.2
+shader_parameter/ssr_fresnel_power = 3.0

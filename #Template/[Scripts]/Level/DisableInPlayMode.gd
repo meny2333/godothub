@@ -1,5 +1,6 @@
 extends Node
 @export var disableInPlayMode: bool = true
-func _ready():
+
+func _ready() -> void:
 	if not Engine.is_editor_hint() and disableInPlayMode:
-		self.visible = false
+		self.queue_free()

@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cvmx4fulel4b8"]
+
+[ext_resource type="Script" uid="uid://vlybexv8s118" path="res://[Scenes]/Fin/GodotFakePlayer.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://bw3tmlp8k6hi" path="res://[Scenes]/Fin/Character/SkinGodot.tscn" id="2_character"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_body"]
+
+[node name="GodotFakePlayer" type="CharacterBody3D" unique_id=254038494]
+collision_mask = 2
+
+[node name="GodotFakePlayerComponent" type="Node3D" parent="." unique_id=1954371817 node_paths=PackedStringArray("godotCharacter")]
+script = ExtResource("1_script")
+godotCharacter = NodePath("../GodotCharacter")
+firstDirection = Vector3(0, 0, 0)
+secondDirection = Vector3(0, 90, 0)
+
+[node name="GodotCharacter" parent="." unique_id=1377887965 instance=ExtResource("2_character")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1869146143]
+shape = SubResource("BoxShape3D_body")

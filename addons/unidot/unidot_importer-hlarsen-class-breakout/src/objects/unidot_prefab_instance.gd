@@ -562,7 +562,7 @@ var rootOrder: int:
 	get:
 		return 0  # no idea..
 
-func get_gameObject() -> UnidotGameObject:
+func get_gameObject():
 	return self
 
 var parent_ref: Array:  # UnidotRef
@@ -600,4 +600,3 @@ var is_legacy_parent_prefab: bool:
 		# the legacy "prefab parent" object has a m_RootGameObject reference, but you can determine that
 		# the same way modern prefabs do, the only GameObject whose Transform has m_Father == null
 		return keys.get("m_IsPrefabParent", false)
-

@@ -254,14 +254,14 @@ static func GameOverNormal(complete: bool) -> void:
 		var p: Player = Player.instance
 		var music_player: AudioStreamPlayer = p.get_node_or_null("MusicPlayer") as AudioStreamPlayer
 		if music_player and music_player.stream:
-			var total_sec: float = p.level_data.levelTotalTime if p.level_data and p.level_data.useCustomLevelTime else music_player.stream.get_length()
+			var total_sec: float = p.levelData.levelTotalTime if p.levelData and p.levelData.useCustomLevelTime else music_player.stream.get_length()
 			var current_sec: float = music_player.get_playback_position()
 			percent = int((current_sec / total_sec) * 100) if total_sec > 0 else 0
 
 	if GameState == GameStatus.Died or GameState == GameStatus.Completed or GameState == GameStatus.Moving:
 		if Player.instance and Player.instance.has_method("get_block_count"):
 			pass
-		# 触发UI显示，由gameui.gd监听on_game_end信号
+		# 触发UI显示，由LevelUI.gd监听on_game_end信号
 		is_end = true
 		if Player.instance:
 			Player.instance.on_game_end.emit()

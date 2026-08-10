@@ -1,0 +1,600 @@
+[gd_scene format=3 uid="uid://c3fosloqsr26b"]
+
+[ext_resource type="Script" uid="uid://i0an8f1engmx" path="res://[Scenes]/MainMenu/MainMenu.gd" id="1_menu"]
+[ext_resource type="Script" uid="uid://cvr3fdljdn8qq" path="res://[Scenes]/MainMenu/EchoBackdrop.gd" id="2_backdrop"]
+[ext_resource type="FontFile" uid="uid://cofd0gpguc54l" path="res://#Template/[Resources]/GUI/MiSans-Normal.ttf" id="3_font"]
+[ext_resource type="FontFile" uid="uid://cfyw78f6iowmi" path="res://#Template/[Resources]/GUI/CaviarDreams.TTF" id="4_display"]
+[ext_resource type="PackedScene" path="res://[Scenes]/MainMenu/MirrorCarousel.tscn" id="5_carousel"]
+
+[sub_resource type="StyleBoxFlat" id="StyleNav"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(0.06, 0.075, 0.09, 0.72)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.84, 0.86, 0.18)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleClear"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleNavHover"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(0.12, 0.14, 0.16, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.93, 0.74, 0.36, 0.65)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleGrabber"]
+bg_color = Color(0.91, 0.73, 0.39, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleSlider"]
+bg_color = Color(0.22, 0.25, 0.28, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="Theme" id="MenuTheme"]
+default_font = ExtResource("3_font")
+default_font_size = 16
+Button/colors/font_color = Color(0.92, 0.93, 0.93, 1)
+Button/colors/font_disabled_color = Color(0.58, 0.61, 0.64, 0.72)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/styles/disabled = SubResource("StyleNav")
+Button/styles/focus = SubResource("StyleClear")
+Button/styles/hover = SubResource("StyleNavHover")
+Button/styles/normal = SubResource("StyleNav")
+Button/styles/pressed = SubResource("StyleNavHover")
+HSlider/styles/grabber = SubResource("StyleGrabber")
+HSlider/styles/grabber_area = SubResource("StyleSlider")
+HSlider/styles/grabber_area_highlight = SubResource("StyleSlider")
+HSlider/styles/grabber_highlight = SubResource("StyleGrabber")
+HSlider/styles/slider = SubResource("StyleSlider")
+OptionButton/styles/focus = SubResource("StyleClear")
+OptionButton/styles/hover = SubResource("StyleNavHover")
+OptionButton/styles/normal = SubResource("StyleNav")
+OptionButton/styles/pressed = SubResource("StyleNavHover")
+
+[sub_resource type="StyleBoxFlat" id="StylePrimary"]
+content_margin_left = 24.0
+content_margin_top = 14.0
+content_margin_right = 24.0
+content_margin_bottom = 14.0
+bg_color = Color(0.89, 0.68, 0.31, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StylePrimaryHover"]
+content_margin_left = 24.0
+content_margin_top = 14.0
+content_margin_right = 24.0
+content_margin_bottom = 14.0
+bg_color = Color(0.98, 0.82, 0.5, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleSelection"]
+bg_color = Color(0.04, 0.055, 0.068, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.89, 0.68, 0.31, 0.28)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StylePanel"]
+bg_color = Color(0.035, 0.047, 0.059, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.77, 0.83, 0.87, 0.2)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="MainMenu" type="Control" unique_id=559539783]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("MenuTheme")
+script = ExtResource("1_menu")
+
+[node name="Backdrop" type="Control" parent="." unique_id=2048546460]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_backdrop")
+
+[node name="DarkVeil" type="ColorRect" parent="." unique_id=1091013310]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.01, 0.014, 0.018, 0.42)
+
+[node name="SafeMargin" type="MarginContainer" parent="." unique_id=1771743401]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 24.0
+offset_right = -30.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Layout" type="VBoxContainer" parent="SafeMargin" unique_id=1213790602]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TopBar" type="HBoxContainer" parent="SafeMargin/Layout" unique_id=1031427722]
+custom_minimum_size = Vector2(0, 54)
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="Brand" type="VBoxContainer" parent="SafeMargin/Layout/TopBar" unique_id=66411636]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="BrandTitle" type="Label" parent="SafeMargin/Layout/TopBar/Brand" unique_id=2111469106]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.82, 0.54, 1)
+theme_override_fonts/font = ExtResource("4_display")
+theme_override_font_sizes/font_size = 24
+text = "滞后"
+
+[node name="BrandSubtitle" type="Label" parent="SafeMargin/Layout/TopBar/Brand" unique_id=1171394103]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.75, 0.77, 1)
+theme_override_font_sizes/font_size = 11
+text = "DELAY / 回声比此刻慢一拍"
+
+[node name="ChaptersButton" type="Button" parent="SafeMargin/Layout/TopBar" unique_id=302114021]
+custom_minimum_size = Vector2(92, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "章节"
+
+[node name="LanguageButton" type="Button" parent="SafeMargin/Layout/TopBar" unique_id=844775249]
+custom_minimum_size = Vector2(62, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "EN"
+
+[node name="SettingsButton" type="Button" parent="SafeMargin/Layout/TopBar" unique_id=2023872417]
+custom_minimum_size = Vector2(92, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "设置"
+
+[node name="ScreenArea" type="Control" parent="SafeMargin/Layout" unique_id=1144383606]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HomeScreen" type="Control" parent="SafeMargin/Layout/ScreenArea" unique_id=405015645]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HomeContent" type="VBoxContainer" parent="SafeMargin/Layout/ScreenArea/HomeScreen" unique_id=953825927]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = -196.0
+offset_right = 680.0
+offset_bottom = 196.0
+grow_vertical = 2
+theme_override_constants/separation = 14
+
+[node name="Kicker" type="Label" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent" unique_id=1437067286]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.72, 0.36, 1)
+theme_override_font_sizes/font_size = 13
+text = "一段关于时间、记忆与错过的旅程"
+uppercase = true
+
+[node name="Title" type="Label" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent" unique_id=1973912508]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.96, 0.93, 1)
+theme_override_font_sizes/font_size = 52
+text = "追上那个
+迟到的自己"
+
+[node name="Rule" type="ColorRect" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent" unique_id=1959504545]
+custom_minimum_size = Vector2(128, 2)
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+color = Color(0.91, 0.69, 0.32, 0.9)
+
+[node name="Body" type="Label" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent" unique_id=547179918]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.79, 0.81, 0.82, 1)
+theme_override_font_sizes/font_size = 17
+text = "行动滞后于意志，记忆滞后于时光。
+跟紧那个迟到的回声，它知道真正的路。"
+autowrap_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent" unique_id=1670336105]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ExploreButton" type="Button" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent/Actions" unique_id=253867817]
+custom_minimum_size = Vector2(164, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.08, 0.07, 0.05, 1)
+theme_override_colors/font_hover_color = Color(0.08, 0.07, 0.05, 1)
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StylePrimary")
+theme_override_styles/pressed = SubResource("StylePrimaryHover")
+theme_override_styles/hover = SubResource("StylePrimaryHover")
+text = "选择章节"
+
+[node name="QuickStartButton" type="Button" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent/Actions" unique_id=661761412]
+custom_minimum_size = Vector2(190, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "继续当前流程"
+
+[node name="Footnote" type="Label" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent" unique_id=1999986967]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.58, 0.61, 1)
+theme_override_font_sizes/font_size = 11
+text = "点击转向 · 在节拍抵达之前作出选择"
+
+[node name="ChapterScreen" type="Control" parent="SafeMargin/Layout/ScreenArea" unique_id=837353448]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChapterContent" type="VBoxContainer" parent="SafeMargin/Layout/ScreenArea/ChapterScreen" unique_id=1899576316]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 10.0
+offset_right = -12.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 14
+
+[node name="HeadingRow" type="HBoxContainer" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent" unique_id=1776841180]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="BackButton" type="Button" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow" unique_id=886736849]
+custom_minimum_size = Vector2(86, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "返回"
+
+[node name="HeadingCopy" type="VBoxContainer" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow" unique_id=1211647576]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChapterKicker" type="Label" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow/HeadingCopy" unique_id=988911774]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.35, 1)
+theme_override_font_sizes/font_size = 11
+text = "四个场景槽位"
+
+[node name="ChapterTitle" type="Label" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow/HeadingCopy" unique_id=1076688465]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.96, 0.94, 1)
+theme_override_font_sizes/font_size = 27
+text = "选择你要进入的回声"
+
+[node name="MirrorCarousel" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent" unique_id=69092473 instance=ExtResource("5_carousel")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SelectionPanel" type="PanelContainer" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent" unique_id=923488477]
+custom_minimum_size = Vector2(0, 116)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleSelection")
+
+[node name="SelectionMargin" type="MarginContainer" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel" unique_id=412854391]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="SelectionRow" type="HBoxContainer" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel/SelectionMargin" unique_id=1871596226]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Copy" type="VBoxContainer" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel/SelectionMargin/SelectionRow" unique_id=1502142736]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SelectedIndex" type="Label" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel/SelectionMargin/SelectionRow/Copy" unique_id=372648791]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.7, 0.34, 1)
+theme_override_font_sizes/font_size = 10
+text = "CHAPTER 01"
+
+[node name="SelectedTitle" type="Label" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel/SelectionMargin/SelectionRow/Copy" unique_id=710038608]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.96, 0.94, 1)
+theme_override_font_sizes/font_size = 22
+text = "初滞"
+
+[node name="SelectedDescription" type="Label" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel/SelectionMargin/SelectionRow/Copy" unique_id=880854637]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.69, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 13
+text = "世界开始变慢，你还没意识到。当前版本从这里进入完整 Fin 流程。"
+autowrap_mode = 2
+
+[node name="LaunchButton" type="Button" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel/SelectionMargin/SelectionRow" unique_id=123674461]
+custom_minimum_size = Vector2(150, 52)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.08, 0.07, 0.05, 1)
+theme_override_colors/font_hover_color = Color(0.08, 0.07, 0.05, 1)
+theme_override_styles/normal = SubResource("StylePrimary")
+theme_override_styles/pressed = SubResource("StylePrimaryHover")
+theme_override_styles/hover = SubResource("StylePrimaryHover")
+text = "进入场景"
+
+[node name="SettingsShade" type="ColorRect" parent="." unique_id=246358319]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.005, 0.008, 0.012, 0.68)
+
+[node name="SettingsPanel" type="PanelContainer" parent="." unique_id=180727155]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.54
+anchor_top = 0.04
+anchor_right = 0.98
+anchor_bottom = 0.96
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StylePanel")
+
+[node name="PanelMargin" type="MarginContainer" parent="SettingsPanel" unique_id=1576530934]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="SettingsContent" type="VBoxContainer" parent="SettingsPanel/PanelMargin" unique_id=949616615]
+layout_mode = 2
+theme_override_constants/separation = 13
+
+[node name="Header" type="HBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=116595501]
+layout_mode = 2
+
+[node name="SettingsTitle" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent/Header" unique_id=486274798]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.96, 0.94, 1)
+theme_override_font_sizes/font_size = 30
+text = "设置"
+
+[node name="CloseButton" type="Button" parent="SettingsPanel/PanelMargin/SettingsContent/Header" unique_id=1562402192]
+custom_minimum_size = Vector2(76, 40)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "关闭"
+
+[node name="SettingsIntro" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=647759618]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
+theme_override_font_sizes/font_size = 13
+text = "调整画面与音画同步。改动会立即保存。"
+autowrap_mode = 2
+
+[node name="Divider" type="ColorRect" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=291192861]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.72, 0.76, 0.78, 0.16)
+
+[node name="LanguageRow" type="HBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=1764396847]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent/LanguageRow" unique_id=288964754]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "语言"
+vertical_alignment = 1
+
+[node name="LanguageValue" type="Button" parent="SettingsPanel/PanelMargin/SettingsContent/LanguageRow" unique_id=1625966515]
+custom_minimum_size = Vector2(132, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "中文"
+
+[node name="QualityRow" type="HBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=681313156]
+layout_mode = 2
+
+[node name="QualityLabel" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent/QualityRow" unique_id=1817280870]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "画质"
+vertical_alignment = 1
+
+[node name="QualityOption" type="OptionButton" parent="SettingsPanel/PanelMargin/SettingsContent/QualityRow" unique_id=159546102]
+custom_minimum_size = Vector2(132, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
+[node name="AntiAliasingRow" type="HBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=1108483386]
+layout_mode = 2
+
+[node name="AntiAliasingLabel" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent/AntiAliasingRow" unique_id=756323375]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "抗锯齿"
+vertical_alignment = 1
+
+[node name="AntiAliasingOption" type="OptionButton" parent="SettingsPanel/PanelMargin/SettingsContent/AntiAliasingRow" unique_id=702316521]
+custom_minimum_size = Vector2(132, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
+[node name="VolumeBlock" type="VBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=1950631639]
+layout_mode = 2
+
+[node name="VolumeHeader" type="HBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent/VolumeBlock" unique_id=1321816286]
+layout_mode = 2
+
+[node name="VolumeTitle" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent/VolumeBlock/VolumeHeader" unique_id=542262210]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "音量"
+
+[node name="VolumeValue" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent/VolumeBlock/VolumeHeader" unique_id=1780333899]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.71, 0.36, 1)
+text = "100%"
+
+[node name="VolumeSlider" type="HSlider" parent="SettingsPanel/PanelMargin/SettingsContent/VolumeBlock" unique_id=1312050281]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="LatencyBlock" type="VBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=1350441415]
+layout_mode = 2
+
+[node name="LatencyHeader" type="HBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent/LatencyBlock" unique_id=1300706683]
+layout_mode = 2
+
+[node name="LatencyTitle" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyHeader" unique_id=1182006420]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "音画延迟"
+
+[node name="LatencyValue" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyHeader" unique_id=1007426170]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.71, 0.36, 1)
+text = "+0 ms"
+
+[node name="LatencySlider" type="HSlider" parent="SettingsPanel/PanelMargin/SettingsContent/LatencyBlock" unique_id=1962745304]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+min_value = -5.0
+max_value = 5.0
+step = 0.001
+
+[node name="ShadowToggle" type="CheckButton" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=416688738]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "阴影"
+
+[node name="PostToggle" type="CheckButton" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=1936690295]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "后处理"
+
+[node name="SettingsSpacer" type="Control" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=905432749]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SettingsNote" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=1691068973]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.5, 0.53, 1)
+theme_override_font_sizes/font_size = 11
+text = "ESC 可关闭面板"
+horizontal_alignment = 2
+
+[node name="TransitionLayer" type="ColorRect" parent="." unique_id=1713130889]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.015, 0.02, 0.026, 1)
+
+[node name="StatusLabel" type="Label" parent="." unique_id=2024315477]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -30.0
+offset_right = 220.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.94, 0.8, 0.52, 1)
+theme_override_font_sizes/font_size = 18
+text = "正在进入回声…"
+horizontal_alignment = 1
+vertical_alignment = 1
