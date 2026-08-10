@@ -7,7 +7,7 @@
 [ext_resource type="Material" uid="uid://doxmslr5ic6ox" path="res://#Template/[Materials]/Obstacle.tres" id="5_42eh5"]
 [ext_resource type="Script" uid="uid://dwvw82b5c55ey" path="res://#Template/[Scripts]/Settings/LevelData.gd" id="6_6umwh"]
 [ext_resource type="AudioStream" uid="uid://0pejlu2afsll" path="res://[Scenes]/Fin/Peaceful_Stagnation.mp3" id="6_42eh5"]
-[ext_resource type="Material" path="res://#Template/[Materials]/Pyramid.tres" id="6_il0am"]
+[ext_resource type="Material" uid="uid://cr35f8sijc5gw" path="res://#Template/[Materials]/Pyramid.tres" id="6_il0am"]
 
 [sub_resource type="Resource" id="Resource_efp58"]
 script = ExtResource("1_y60ok")
