@@ -39,6 +39,9 @@ func _ready() -> void:
 	_set_world_rotation(firstDirection)
 	state = FakePlayer.State.Stopped
 	_setup_collision_layers()
+	if synchronismWithPlayer:
+		# Follow Player.onturn so synchronized FakePlayers also work with autoplay.
+		call_deferred("_connect_player_turn")
 
 	if godotCharacter == null and _body:
 		godotCharacter = _body.get_node_or_null("GodotCharacter") as GodotCharacter
@@ -65,6 +68,23 @@ func _create_tail() -> void:
 	pass
 
 
+func _connect_player_turn() -> void:
+	if not synchronismWithPlayer:
+		return
+	var player: Player = Player.instance
+	if not player:
+		if is_inside_tree():
+			call_deferred("_connect_player_turn")
+		return
+	if player and not player.onturn.is_connected(_on_player_turn):
+		player.onturn.connect(_on_player_turn)
+
+
+func _on_player_turn() -> void:
+	if state == FakePlayer.State.Moving:
+		_create_turn_trigger()
+
+
 func set_reset_data(data: Dictionary) -> void:
 	super.set_reset_data(data)
 	_sync_animation_state(true)
@@ -86,3 +106,12 @@ func _sync_animation_state(force: bool = false) -> void:
 		godotCharacter.set_moving(state == FakePlayer.State.Moving)
 	_was_dead = false
 	_last_visual_state = state
+
+
+func _exit_tree() -> void:
+	if Engine.is_editor_hint():
+		return
+	var player: Player = Player.instance
+	if player and player.onturn.is_connected(_on_player_turn):
+		player.onturn.disconnect(_on_player_turn)
+	super._exit_tree()

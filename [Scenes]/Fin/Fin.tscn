@@ -2429,7 +2429,7 @@ material_override = SubResource("StandardMaterial3D_fqkyq")
 mesh = SubResource("BoxMesh_avxh5")
 
 [node name="DistantPillar_03" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=1432356013]
-transform = Transform3D(0.62932044, 0, 0.7771459, 0, 1, 0, -0.7771459, 0, 0.62932044, 69.4467, 5, 81.44462)
+transform = Transform3D(0.62932044, 0, 0.7771459, 0, 1, 0, -0.7771459, 0, 0.62932044, 52.80822, 5, 86.62264)
 material_override = SubResource("StandardMaterial3D_2yiaw")
 mesh = SubResource("BoxMesh_64jkl")
 
@@ -4154,7 +4154,7 @@ transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, 473.13403, 2.6432838, 543.030
 transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, 488.70908, 2.6432838, 531.78204)
 
 [node name="Rock_Arch_03" parent="Scene_Group/part3" unique_id=929746157 instance=ExtResource("19_64jkl")]
-transform = Transform3D(1.5988964, 0, 0.8508169, 0, 2.4990606, 0, -1.5696582, 0, 0.86666507, 490.33835, 2.797966, 549.1126)
+transform = Transform3D(1.5988964, 0, 0.8508169, 0, 2.7118003, 0, -1.5696582, 0, 0.86666507, 490.33835, 2.797966, 549.1126)
 
 [node name="Trigger3" parent="Scene_Group/part3" unique_id=987630040 instance=ExtResource("7_vxmub")]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 372.5404, -0.5, 431.25748)
@@ -4472,7 +4472,7 @@ script = ExtResource("9_p78jh")
 transform_type = 1
 start_value = Vector3(329.25458, 11.95, 478.87408)
 end_offset = Vector3(-117.372314, 0, 114.837524)
-duration = 10.0
+duration = 7.0
 
 [node name="Road 271" parent="Scene_Group/part3/beginwall" unique_id=848517432 instance=ExtResource("6_mot87")]
 transform = Transform3D(-69.93464, 0, 71.478294, 0, 3, 0, -71.478294, 0, -69.93464, 428.43918, -2.0500002, 378.05096)
@@ -4507,7 +4507,7 @@ script = ExtResource("9_p78jh")
 transform_type = 1
 start_value = Vector3(419.39218, 11.95, 390.6831)
 end_offset = Vector3(123.2507, 0, -120.58893)
-duration = 10.0
+duration = 7.0
 
 [node name="p1mirrorr" type="Node3D" parent="Scene_Group/part3" unique_id=826884805]
 transform = Transform3D(14.53, 0, 0, 0, 3, 0, 0, 0, 4.8, 335.956, 0.5, 408.31714)
@@ -4693,7 +4693,7 @@ transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, -0.18945313, 0, 27.64975)
 [node name="scale2" type="Node3D" parent="Scene_Group/part3/Pyramid/Right" index="0" unique_id=1354666676]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0.18859863, -0.24061584, 0)
 script = ExtResource("37_qmtuy")
-end_offset = Vector3(-1, -1, -1)
+end_offset = Vector3(-1, 1, -1)
 
 [node name="OpenTrigger" parent="Scene_Group/part3/Pyramid" index="2" unique_id=608483111]
 transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 0, 0, 97.31479)
