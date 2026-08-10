@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://qoemls2vvo30"]
 
-[ext_resource type="Shader" uid="uid://bxhwhd8bxd8q" path="res://#Template/[Materials]/water.gdshader" id="1"]
+[ext_resource type="Shader" uid="uid://bxhwhd8bxd8q" path="res://[Scenes]/Fin/water.gdshader" id="1"]
 
 [resource]
 render_priority = 1

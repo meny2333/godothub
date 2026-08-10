@@ -4,6 +4,7 @@ extends Node3D
 ## 作为 BaseTrigger 的子节点使用，由父节点负责碰撞检测。
 
 const GODOT_CHARACTER_SCENE: PackedScene = preload("res://[Scenes]/Fin/Character/SkinGodot.tscn")
+const CLICK_SUCCESS_EFFECT_SCENE: PackedScene = preload("res://[Scenes]/Fin/GodotCharacterClickEffect.tscn")
 const RUN_ANIMATION: StringName = &"run"
 const SUMMON_PROMPT: String = "点击呼唤回声"
 const PROMPT_GROUP: StringName = &"spawn_godot_character_prompt"
@@ -159,9 +160,27 @@ func _begin_click_prompt(_player: Player) -> void:
 
 
 func _accept_target_click() -> void:
+	var effect_position: Vector3 = global_position
+	if is_instance_valid(_spawned_character):
+		effect_position = _spawned_character.global_position
+	_spawn_click_success_effect(effect_position)
 	_hide_click_indicator()
 	_set_slow_motion(false)
 	_finish_interaction()
+
+
+func _spawn_click_success_effect(world_position: Vector3) -> void:
+	var scene_root: Node = get_tree().current_scene
+	if scene_root == null:
+		return
+
+	var effect: Node3D = CLICK_SUCCESS_EFFECT_SCENE.instantiate() as Node3D
+	if effect == null:
+		push_warning("SpawnGodotCharacter: failed to instantiate click success effect")
+		return
+
+	scene_root.add_child(effect)
+	effect.global_position = world_position
 
 
 func _is_click_on_spawned_character(click_position: Vector2) -> bool:
