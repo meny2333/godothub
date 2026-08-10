@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://brdmblcywuklx" path="res://#Template/Player.tscn" id="1_a0tgy"]
 [ext_resource type="Resource" uid="uid://csjpmhojb1kp8" path="res://[Scenes]/Fin/Fin.tres" id="2_fqiow"]
 [ext_resource type="PackedScene" uid="uid://be4vgpeo0nv84" path="res://#Template/CameraRoot.tscn" id="3_ndfec"]
-[ext_resource type="PackedScene" uid="uid://wx3awwdt8xdy" path="res://#Template/[Resources]/GAMEUI.tscn" id="4_vxmub"]
+[ext_resource type="PackedScene" uid="uid://wx3awwdt8xdy" path="res://#Template/[Resources]/LevelUI.tscn" id="4_vxmub"]
 [ext_resource type="PackedScene" uid="uid://car71stqmy3mh" path="res://#Template/Obstacle.tscn" id="6_fqiow"]
 [ext_resource type="PackedScene" uid="uid://cmson0cneufxo" path="res://#Template/Ground.tscn" id="6_mot87"]
 [ext_resource type="PackedScene" uid="uid://b5hb8j8w782ki" path="res://#Template/Trigger.tscn" id="7_vxmub"]
@@ -213,6 +213,35 @@ material = SubResource("StandardMaterial3D_64jkl")
 [sub_resource type="Curve" id="Curve_l0yca"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.27956986, 0.49650347), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
+
+[sub_resource type="Resource" id="Resource_asbnh"]
+resource_local_to_scene = true
+script = ExtResource("41_kgxq2")
+offset = Vector3(5, 0, -5)
+rotation = Vector3(53.999996, -45, 0)
+fov = 80.0
+
+[sub_resource type="Resource" id="Resource_k328y"]
+resource_local_to_scene = true
+script = ExtResource("42_71skv")
+
+[sub_resource type="Resource" id="Resource_ibqeg"]
+resource_local_to_scene = true
+script = ExtResource("18_q5ls4")
+fog_color = Color(0.2815144, 0.30412945, 0.5089116, 1)
+
+[sub_resource type="Resource" id="Resource_x5efu"]
+resource_local_to_scene = true
+script = ExtResource("43_dbrwa")
+rotation = Vector3(-60.000114, 149.99977, 0)
+color = Color(1, 0.8784314, 0.627451, 1)
+shadow_strength = 1.0
+
+[sub_resource type="Resource" id="Resource_upgj5"]
+resource_local_to_scene = true
+script = ExtResource("44_pyhya")
+intensity = 0.75
+ambient_color = Color(0.44705883, 0.5137255, 0.5686275, 1)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_asbnh"]
 _surfaces = [{
@@ -436,7 +465,7 @@ fog_color = Color(0.2627451, 0.23137255, 0.20392157, 1)
 [sub_resource type="Resource" id="Resource_t3bbx"]
 resource_local_to_scene = true
 script = ExtResource("43_dbrwa")
-rotation = Vector3(-60.000107, 149.99976, 0)
+rotation = Vector3(-60.000114, 149.99977, 0)
 color = Color(1, 0.8784314, 0.627451, 1)
 shadow_strength = 1.0
 
@@ -449,8 +478,8 @@ ambient_color = Color(0.44705883, 0.5137255, 0.5686275, 1)
 [sub_resource type="Resource" id="Resource_yupjy"]
 resource_local_to_scene = true
 script = ExtResource("41_kgxq2")
-offset = Vector3(0, -9.045085, 0)
-rotation = Vector3(53.999996, 12.891356, 0)
+offset = Vector3(0, -8.805589, 0)
+rotation = Vector3(53.999996, 16.124556, 0)
 fov = 80.0
 
 [sub_resource type="Resource" id="Resource_vxvnq"]
@@ -460,9 +489,9 @@ script = ExtResource("42_71skv")
 [sub_resource type="Resource" id="Resource_5f3e2"]
 resource_local_to_scene = true
 script = ExtResource("18_q5ls4")
-fog_color = Color(0.3717546, 0.43528503, 0.56103444, 1)
-start = 13.555555
-end = 95.96667
+fog_color = Color(0.37433884, 0.439041, 0.56252706, 1)
+start = 13.227816
+end = 95.27841
 
 [sub_resource type="Resource" id="Resource_vhve0"]
 resource_local_to_scene = true
@@ -510,8 +539,8 @@ ambient_color = Color(0.44705883, 0.5137255, 0.5686275, 1)
 [sub_resource type="Resource" id="Resource_turwb"]
 resource_local_to_scene = true
 script = ExtResource("41_kgxq2")
-offset = Vector3(-3, -3, -3)
-rotation = Vector3(30, -135, 0)
+offset = Vector3(0, -3, 0)
+rotation = Vector3(39.999996, 45, 0)
 fov = 80.0
 
 [sub_resource type="Resource" id="Resource_dtlcg"]
@@ -527,7 +556,7 @@ end = 100.0
 [sub_resource type="Resource" id="Resource_5q2c6"]
 resource_local_to_scene = true
 script = ExtResource("43_dbrwa")
-rotation = Vector3(-60.000107, 149.99976, 0)
+rotation = Vector3(-60.0001, 149.99974, 0)
 color = Color(1, 0.8784314, 0.627451, 1)
 shadow_strength = 1.0
 
@@ -2905,6 +2934,15 @@ visible = false
 [node name="HeartCheckpoint" parent="Scene_Group/part2/Scene_001" unique_id=1805653336 instance=ExtResource("40_qmtuy")]
 transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 200.39151, 0, 302.19336)
 
+[node name="HeartCheckpoint" parent="Scene_Group/part2/Scene_001/HeartCheckpoint/Area3D" index="3"]
+AutoRecord = false
+GameTime = 41.827847
+camera_new = SubResource("Resource_asbnh")
+camera_old = SubResource("Resource_k328y")
+fog = SubResource("Resource_ibqeg")
+light = SubResource("Resource_x5efu")
+ambient = SubResource("Resource_upgj5")
+
 [node name="Rock_Round_l_01" parent="Scene_Group/part2" unique_id=87967593 instance=ExtResource("23_skowm")]
 transform = Transform3D(2.365147, -0.7638754, 1.3798475e-05, 0.68336576, 2.1433198, -1.0877166, 0.33021727, 1.0357015, 2.250972, 236.81676, 0.8507111, 335.12564)
 
@@ -4635,19 +4673,19 @@ transform = Transform3D(-4.3711392e-08, 0, 0.2933332, 0, 1, 0, -3.125002, 0, -4.
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 491.425, -0.28812408, 638.1084)
 
 [node name="Left" parent="Scene_Group/part3/Pyramid" index="0" unique_id=920015160]
-transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, -0.189368, -0.24, 0)
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, -6.1035156e-05, -0.23999977, 27.64975)
 
 [node name="scale" type="Node3D" parent="Scene_Group/part3/Pyramid/Left" index="0" unique_id=740528817]
 script = ExtResource("37_qmtuy")
 end_offset = Vector3(1, 1, 1)
 
 [node name="Right" parent="Scene_Group/part3/Pyramid" index="1" unique_id=971480060]
-transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, -0.18945313, 0, 27.64975)
 
 [node name="scale2" type="Node3D" parent="Scene_Group/part3/Pyramid/Right" index="0" unique_id=1354666676]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0.18859863, -0.24061584, 0)
 script = ExtResource("37_qmtuy")
-end_offset = Vector3(-1, 1, -1)
+end_offset = Vector3(-1, -1, -1)
 
 [node name="OpenTrigger" parent="Scene_Group/part3/Pyramid" index="2" unique_id=608483111]
 transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 0, 0, 97.31479)
@@ -4905,10 +4943,10 @@ targetPlayer = NodePath("../../../../BasicOBJ_Group/GodotFakePlayer/GodotFakePla
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262.94263, 0, 377.3116)
 
 [node name="Area3D" parent="collection/Crown" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -262.94263, 0, -373.1668)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -262.94263, 0, -377.3116)
 
 [node name="CrownCheckpoint" parent="collection/Crown/Area3D" index="3"]
-GameTime = 24.801792
+GameTime = 53.260773
 direction = 1
 camera_new = SubResource("Resource_5m3wr")
 camera_old = SubResource("Resource_a6r3i")
@@ -4923,7 +4961,7 @@ transform = Transform3D(-0.70710665, 2.9802322e-08, -0.70710677, 0, 0.9999999, 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120.821655, 0, 225.13351)
 
 [node name="CrownCheckpoint" parent="collection/Crown2/Area3D" index="3"]
-GameTime = 28.679546
+GameTime = 28.702766
 camera_new = SubResource("Resource_yupjy")
 camera_old = SubResource("Resource_vxvnq")
 fog = SubResource("Resource_5f3e2")
@@ -4938,7 +4976,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 390.9224, 14, 450.54376)
 
 [node name="HeartCheckpoint" parent="collection/HeartCheckpoint/Area3D" index="3"]
 AutoRecord = false
-GameTime = 41.726234
+GameTime = 69.912384
 camera_new = SubResource("Resource_q2oci")
 camera_old = SubResource("Resource_ykiuf")
 fog = SubResource("Resource_lsatc")
@@ -4949,8 +4987,7 @@ ambient = SubResource("Resource_6cqu1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 470.78702, 14, 527.4917)
 
 [node name="HeartCheckpoint" parent="collection/HeartCheckpoint2/Area3D" index="3"]
-AutoRecord = false
-GameTime = 41.726234
+GameTime = 82.8488
 camera_new = SubResource("Resource_turwb")
 camera_old = SubResource("Resource_dtlcg")
 fog = SubResource("Resource_f1kye")
@@ -5111,6 +5148,7 @@ reason = 2
 [editable path="BasicOBJ_Group/GodotFakePlayer"]
 [editable path="Scene_Group/part1/Scene_001/Ground_Mountain_m_02"]
 [editable path="Scene_Group/part1/Scene_001/Ground_Mountain_m_04"]
+[editable path="Scene_Group/part2/Scene_001/HeartCheckpoint"]
 [editable path="Scene_Group/part3/Pyramid"]
 [editable path="collection/Crown"]
 [editable path="collection/Crown2"]
