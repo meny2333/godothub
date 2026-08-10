@@ -3107,6 +3107,14 @@ offset = Vector3(15, 3, 15)
 camera_rotation = Vector3(10, 45, 0)
 duration = 5.0
 
+[node name="Trigger10" parent="Scene_Group/part3" unique_id=1865795109 instance=ExtResource("7_vxmub")]
+transform = Transform3D(2.5, 0, 0, 0, 12.136228, 0, 0, 0, 2.5, 562.1175, 4.116871, 617.8667)
+
+[node name="cam" type="Node3D" parent="Scene_Group/part3/Trigger10" unique_id=1739388619]
+script = ExtResource("16_0ru4s")
+camera_rotation = Vector3(30, 45, 0)
+duration = 5.0
+
 [node name="MirrorShatterTrigger" parent="Scene_Group/part3" unique_id=736546739 instance=ExtResource("7_vxmub")]
 transform = Transform3D(7.071068, 0, 1.767767, 0, 2.5, 0, -7.071068, 0, 1.767767, 448.10184, 3.0517578e-05, 506.97974)
 one_shot = true
@@ -3952,7 +3960,7 @@ transform = Transform3D(15.000001, 0, 0, 0, 3.0000002, 0, 0, 0, 4.7999973, 349.5
 transform = Transform3D(0.08650803, 0, 0.087534964, 0, 0.83051825, 0, -0.22154102, 0, 0.03183819, 11.914663, 1.270484, 38.805107)
 
 [node name="Mountain_04" parent="Scene_Group/part3/p2mirrorl" unique_id=318880381 instance=ExtResource("20_avxh5")]
-transform = Transform3D(0.042276323, 0, 0.17463727, 0, 0.1273576, 0, -0.07614669, 0, 0.09695788, 503.5503, 13.28116, 571.6836)
+transform = Transform3D(0.042276323, 0, 0.17463727, 0, 0.1273576, 0, -0.07614669, 0, 0.09695788, 515.11975, 13.28116, 581.6994)
 top_level = true
 
 [node name="Road 210" parent="Scene_Group/part3/p2mirrorl" unique_id=307582809 instance=ExtResource("6_mot87")]
@@ -4146,7 +4154,7 @@ transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, 473.13403, 2.6432838, 543.030
 transform = Transform3D(8, 0, 0, 0, 2, 0, 0, 0, 8, 488.70908, 2.6432838, 531.78204)
 
 [node name="Rock_Arch_03" parent="Scene_Group/part3" unique_id=929746157 instance=ExtResource("19_64jkl")]
-transform = Transform3D(1.5988964, 0, 0.8508169, 0, 2.7428677, 0, -1.5696582, 0, 0.86666507, 490.33835, 2.797966, 549.1126)
+transform = Transform3D(1.5988964, 0, 0.8508169, 0, 2.4990606, 0, -1.5696582, 0, 0.86666507, 490.33835, 2.797966, 549.1126)
 
 [node name="Trigger3" parent="Scene_Group/part3" unique_id=987630040 instance=ExtResource("7_vxmub")]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 372.5404, -0.5, 431.25748)
@@ -4987,6 +4995,7 @@ ambient = SubResource("Resource_6cqu1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 470.78702, 14, 527.4917)
 
 [node name="HeartCheckpoint" parent="collection/HeartCheckpoint2/Area3D" index="3"]
+AutoRecord = false
 GameTime = 82.8488
 camera_new = SubResource("Resource_turwb")
 camera_old = SubResource("Resource_dtlcg")
