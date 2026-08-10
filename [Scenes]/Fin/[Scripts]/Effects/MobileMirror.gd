@@ -5,6 +5,9 @@ signal shattered
 
 const MIRROR_VISUAL_LAYER: int = 1 << 19
 const MIN_REFLECTION_EDGE: int = 64
+const FRAGMENT_ALPHA: float = 0.85
+const FRAGMENT_BORDER_ALPHA: float = 0.85
+const FRAGMENT_BORDER_WIDTH: float = 0.018
 
 ## 主视口到反射视口的分辨率比例。
 @export_range(0.1, 1.0, 0.05) var resolutionScale: float = 0.5
@@ -261,6 +264,13 @@ func _spawnTriangleFragment(
 	meshInstance.material_override = fragmentMaterial
 	meshInstance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	fragment.add_child(meshInstance)
+	var borderMeshInstance: MeshInstance3D = MeshInstance3D.new()
+	borderMeshInstance.name = "Border"
+	borderMeshInstance.layers = MIRROR_VISUAL_LAYER
+	borderMeshInstance.mesh = _createTriangleBorderMesh(vertices, FRAGMENT_BORDER_WIDTH, halfThickness + 0.002)
+	borderMeshInstance.material_override = _createFragmentBorderMaterial()
+	borderMeshInstance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	fragment.add_child(borderMeshInstance)
 	var collisionShape: CollisionShape3D = CollisionShape3D.new()
 	collisionShape.name = "Collision"
 	collisionShape.shape = fragmentShape
@@ -294,7 +304,53 @@ func _createFragmentMaterial() -> ShaderMaterial:
 	var material: ShaderMaterial = sourceMaterial.duplicate() as ShaderMaterial
 	material.set_shader_parameter("reflection_texture", _reflectionViewport.get_texture())
 	material.set_shader_parameter("frame_width", 0.0)
+	material.set_shader_parameter("fragment_alpha", FRAGMENT_ALPHA)
 	return material
+
+
+func _createFragmentBorderMaterial() -> StandardMaterial3D:
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.albedo_color = Color(0.055, 0.075, 0.095, FRAGMENT_BORDER_ALPHA)
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	return material
+
+
+func _createTriangleBorderMesh(vertices: PackedVector3Array, width: float, depth: float) -> ArrayMesh:
+	var borderVertices: PackedVector3Array = PackedVector3Array()
+	for edgeIndex: int in range(3):
+		var start: Vector3 = vertices[edgeIndex]
+		var end: Vector3 = vertices[(edgeIndex + 1) % 3]
+		var edge: Vector3 = end - start
+		var edgeLength: float = edge.length()
+		if edgeLength <= 0.0001:
+			continue
+		var normal: Vector3 = Vector3(-edge.y, edge.x, 0.0).normalized() * width
+		var depthOffset: Vector3 = Vector3(0.0, 0.0, depth)
+		borderVertices.append(start + normal + depthOffset)
+		borderVertices.append(end + normal + depthOffset)
+		borderVertices.append(end - normal + depthOffset)
+		borderVertices.append(start - normal + depthOffset)
+
+	var indices: PackedInt32Array = PackedInt32Array()
+	for quadIndex: int in range(borderVertices.size() / 4):
+		var baseIndex: int = quadIndex * 4
+		indices.append_array(PackedInt32Array([
+			baseIndex, baseIndex + 1, baseIndex + 2,
+			baseIndex, baseIndex + 2, baseIndex + 3
+		]))
+	var normals: PackedVector3Array = PackedVector3Array()
+	for vertex: Vector3 in borderVertices:
+		normals.append(Vector3.FORWARD)
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = borderVertices
+	arrays[Mesh.ARRAY_INDEX] = indices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	var mesh: ArrayMesh = ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
 
 
 func _disableReflection() -> void:

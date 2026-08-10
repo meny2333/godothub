@@ -579,6 +579,9 @@ environment = SubResource("Environment_ys6ci")
 [node name="GodotFakePlayer" parent="BasicOBJ_Group" unique_id=1000564597 instance=ExtResource("23_paapq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 529.4991, 14.053633, 585.98016)
 
+[node name="GodotFakePlayerComponent" parent="BasicOBJ_Group/GodotFakePlayer" index="0" unique_id=1954371817]
+characterOpacity = null
+
 [node name="GodotCharacter" parent="BasicOBJ_Group/GodotFakePlayer" index="1" unique_id=1377887965]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 529.4991, 14.053633, 585.98016)
 top_level = true
@@ -2068,11 +2071,11 @@ transform = Transform3D(-7.229466, 0, -6.9090385, 0, 10, 0, 6.9090385, 0, -7.229
 transform = Transform3D(-0.9762272, 0, 0.21674973, 0, 1, 0, -0.21674973, 0, -0.9762272, 33.066017, 0, 53.91807)
 
 [node name="MirrorShatterTrigger4" parent="Scene_Group/part1/Scene_001" unique_id=608483111 instance=ExtResource("7_vxmub")]
-transform = Transform3D(1.767767, 0, 1.767767, 0, 2.5, 0, -1.767767, 0, 1.767767, 0.4735589, 3.0517578e-05, 76.57399)
+transform = Transform3D(14.142136, 0, 1.767767, 0, 10, 0, -14.142136, 0, 1.767767, 0.474, 0, 76.574)
 one_shot = true
 
 [node name="MobileMirror2" parent="Scene_Group/part1/Scene_001/MirrorShatterTrigger4" unique_id=557164345 instance=ExtResource("8_uc76h")]
-transform = Transform3D(8.879252, 0, -1.5022163, 0, 4, 0, 3.598012, 0, 3.707202, -0.07609823, 5, 0.32080895)
+transform = Transform3D(0.9268005, 0, -0.37555405, 0, 1, 0, 0.37555405, 0, 0.9268005, 0, 1.377733, 0)
 fragmentGravity = 0.0
 
 [node name="ShatterMirror" type="Node3D" parent="Scene_Group/part1/Scene_001/MirrorShatterTrigger4" unique_id=503674308]
@@ -3153,11 +3156,11 @@ script = ExtResource("11_qvjd2")
 targetMirrorPath = NodePath("../MobileMirror2")
 
 [node name="MirrorShatterTrigger4" parent="Scene_Group/part3" unique_id=217917739 instance=ExtResource("7_vxmub")]
-transform = Transform3D(0, 0, 2.5, 0, 2.5, 0, -9.398581, 0, 0, 584.91583, 3.0517578e-05, 638.5251)
+transform = Transform3D(0, 0, 2.5, 0, 2.5, 0, -9.398581, 0, 0, 582.3838, 3.0517578e-05, 638.5251)
 one_shot = true
 
 [node name="MobileMirror2" parent="Scene_Group/part3/MirrorShatterTrigger4" unique_id=592322598 instance=ExtResource("8_uc76h")]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 5, 7.830957)
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 5, 0)
 fragmentGravity = 2.0
 
 [node name="ShatterMirror" type="Node3D" parent="Scene_Group/part3/MirrorShatterTrigger4" unique_id=367347191]
