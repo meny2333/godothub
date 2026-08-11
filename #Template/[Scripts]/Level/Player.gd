@@ -130,27 +130,12 @@ func _ready() -> void:
 		var overlay: DebugOverlay = debug_overlay_scene.instantiate()
 		add_child(overlay)
 
-	# 实例化 StartPage（启动界面）
-	var start_page_scene: PackedScene = load("res://#Template/[Resources]/StartPage.tscn") as PackedScene
-	if start_page_scene and not Engine.is_editor_hint():
-		# 加载持久化设置（对齐 Unity PlayerPrefs）
+	if not Engine.is_editor_hint():
+		# StartPage is disabled, but its persisted settings still apply.
 		var saved: Dictionary = SetLatency.load_settings()
 		musicDelay = saved.delay
 		musicVolume = saved.volume
 		GraphicsQuality.load_settings()
-
-		var page: StartPage = start_page_scene.instantiate()
-		add_child(page)
-		page.set_setting("latency", musicDelay)
-		page.set_setting("volume", musicVolume)
-		page.set_setting("quality", GraphicsQuality.get_quality_label())
-		page.set_setting("antialiasing", GraphicsQuality.get_antialiasing_label())
-		page.shadow_checkbox.button_pressed = GraphicsQuality.shadows_enabled
-		page.post_checkbox.button_pressed = GraphicsQuality.post_process_enabled
-		page.start_requested.connect(_on_start_from_startpage)
-		page.setting_changed.connect(_on_setting_changed)
-		page.shadow_toggled.connect(_on_shadow_toggled)
-		page.post_toggled.connect(_on_post_toggled)
 		GraphicsQuality.apply_to_scene(get_viewport(), get_tree(), get_scene_environment())
 	if not Engine.is_editor_hint():
 		call_deferred("_clear_scene_reload_guard")
@@ -215,8 +200,14 @@ func _move_head(delta: float) -> void:
 	var forward: Vector3 = basis * Vector3.BACK
 	position += forward * speed * delta
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if not Engine.is_editor_hint():
+		if event is InputEventMouseButton and get_viewport().gui_get_hovered_control():
+			return
+		var skin_selector: Node = get_tree().current_scene.get_node_or_null("SkinSelector")
+		if skin_selector and skin_selector.has_method("consumes_turn_input") \
+				and bool(skin_selector.call("consumes_turn_input", event)):
+			return
 		# StartPage 显示时，鼠标点击由 StartPage 的信号处理
 		if not is_start and event is InputEventMouseButton:
 			var page: CanvasLayer = get_node_or_null("StartPage") as CanvasLayer

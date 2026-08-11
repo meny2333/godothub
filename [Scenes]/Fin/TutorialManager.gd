@@ -2,17 +2,34 @@
 extends Node
 class_name TutorialManager
 
-## Part 1 教程层：监听 Player 事件，并用 BasicOBJ_Group/AnimationPlayer 控制节奏。
+## Fin 的 Part 1 教程层：监听 Player 事件，并用 BasicOBJ_Group/AnimationPlayer 控制节奏。
 ## 不修改 Player.gd，也不把 GuidanceBox 的触发逻辑改成教程逻辑。
 
 enum TutorialStage { INTRO, TURN_PROMPT, RHYTHM, FIRST_STALL, STALL_ADAPT, COMPLETE }
 
-const INTRO_TEXT := "世界开始变慢，你还没意识到。"
-const TURN_TEXT := "你试着移动——身体比意识慢了一拍。"
-const RHYTHM_TEXT := "跟着这个世界的脉搏，慢慢来。"
-const FIRST_STALL_TEXT := "它停下来了。不是故障，是这个世界在呼吸。"
-const ADAPT_TEXT := "你开始习惯它的节奏——滞后，但可预测。"
-const COMPLETE_TEXT := "前方的路，似乎有另一个你在等待。"
+const SETTINGS_PATH: String = "user://settings.cfg"
+const UI_SECTION: String = "ui"
+const LANGUAGE_KEY: String = "language"
+const CHINESE_LANGUAGE: String = "zh"
+const ENGLISH_LANGUAGE: String = "en"
+const CLICK_INDICATOR_TEXT: StringName = &"click_indicator"
+const INTRO_TEXT: StringName = &"intro"
+const TURN_TEXT: StringName = &"turn"
+const RHYTHM_TEXT: StringName = &"rhythm"
+const FIRST_STALL_TEXT: StringName = &"first_stall"
+const ADAPT_TEXT: StringName = &"adapt"
+const COMPLETE_TEXT: StringName = &"complete"
+const SUMMON_PROMPT_TEXT: StringName = &"summon_prompt"
+const NARRATIVE_TEXTS: Dictionary = {
+	INTRO_TEXT: {CHINESE_LANGUAGE: "世界开始变慢，你还没意识到。", ENGLISH_LANGUAGE: "The world begins to slow before you notice."},
+	TURN_TEXT: {CHINESE_LANGUAGE: "你试着移动——身体比意识慢了一拍。", ENGLISH_LANGUAGE: "You try to move - your body trails your mind by a beat."},
+	RHYTHM_TEXT: {CHINESE_LANGUAGE: "跟着这个世界的脉搏，慢慢来。", ENGLISH_LANGUAGE: "Follow this world's pulse. Take it slow."},
+	FIRST_STALL_TEXT: {CHINESE_LANGUAGE: "它停下来了。不是故障，是这个世界在呼吸。", ENGLISH_LANGUAGE: "It has stopped. Not a malfunction - this world is breathing."},
+	ADAPT_TEXT: {CHINESE_LANGUAGE: "你开始习惯它的节奏——滞后，但可预测。", ENGLISH_LANGUAGE: "You are learning its rhythm: delayed, yet predictable."},
+	COMPLETE_TEXT: {CHINESE_LANGUAGE: "前方的路，似乎有另一个你在等待。", ENGLISH_LANGUAGE: "Ahead, it seems another you is waiting."},
+	SUMMON_PROMPT_TEXT: {CHINESE_LANGUAGE: "点击呼唤回声", ENGLISH_LANGUAGE: "Click to summon the echo."},
+	CLICK_INDICATOR_TEXT: {CHINESE_LANGUAGE: "点击", ENGLISH_LANGUAGE: "CLICK"},
+}
 
 @export var animation_player_path: NodePath = NodePath("../AnimationPlayer")
 @export var player_path: NodePath = NodePath("../Player")
@@ -51,9 +68,11 @@ var level_data: LevelData
 @onready var narrative_ui: CanvasLayer = get_node_or_null("NarrativeUI") as CanvasLayer
 var guidance_nodes: Array[Node3D] = []
 var click_indicator: Panel
+var click_indicator_label: Label
 var click_indicator_tween: Tween
 var click_indicator_world_position: Vector3 = Vector3.ZERO
 var click_indicator_has_world_position: bool = false
+var _language: String = CHINESE_LANGUAGE
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
@@ -65,6 +84,7 @@ func _ready() -> void:
 
 func _deferred_bind() -> void:
 	await get_tree().process_frame
+	_refresh_language()
 	player = get_node_or_null(player_path)
 	animation_player = get_node_or_null(animation_player_path) as AnimationPlayer
 	narrative_label = get_node_or_null("NarrativeUI/NarrativeLabel") as Label
@@ -203,13 +223,14 @@ func _trigger_stall() -> void:
 	if stall_count >= 3 and stage == TutorialStage.STALL_ADAPT:
 		_set_stage(TutorialStage.COMPLETE, COMPLETE_TEXT)
 
-func _set_stage(next_stage: TutorialStage, text: String) -> void:
+func _set_stage(next_stage: TutorialStage, text_key: StringName) -> void:
 	stage = next_stage
-	_show_narrative(text)
+	_show_narrative(_get_text(text_key))
 
 
 func show_narrative(text: String) -> void:
-	_show_narrative(text)
+	_refresh_language()
+	_show_narrative(_translate_external_narrative(text))
 
 
 func set_tutorial_slow_motion(slow: bool) -> void:
@@ -217,6 +238,7 @@ func set_tutorial_slow_motion(slow: bool) -> void:
 
 
 func show_click_indicator(world_position: Vector3) -> void:
+	_refresh_language()
 	_ensure_click_indicator()
 	if click_indicator == null:
 		return
@@ -268,17 +290,17 @@ func _ensure_click_indicator() -> void:
 	style.set_corner_radius_all(56)
 	click_indicator.add_theme_stylebox_override("panel", style)
 
-	var label: Label = Label.new()
-	label.text = "点击"
-	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.add_theme_font_size_override("font_size", 22)
-	label.add_theme_color_override("font_color", Color(1.0, 0.98, 0.82, 1.0))
-	label.add_theme_color_override("font_outline_color", Color(0.08, 0.12, 0.2, 0.95))
-	label.add_theme_constant_override("outline_size", 6)
-	click_indicator.add_child(label)
+	click_indicator_label = Label.new()
+	click_indicator_label.text = _get_text(CLICK_INDICATOR_TEXT)
+	click_indicator_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	click_indicator_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	click_indicator_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	click_indicator_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	click_indicator_label.add_theme_font_size_override("font_size", 22)
+	click_indicator_label.add_theme_color_override("font_color", Color(1.0, 0.98, 0.82, 1.0))
+	click_indicator_label.add_theme_color_override("font_outline_color", Color(0.08, 0.12, 0.2, 0.95))
+	click_indicator_label.add_theme_constant_override("outline_size", 6)
+	click_indicator.add_child(click_indicator_label)
 	narrative_ui.add_child(click_indicator)
 	click_indicator.visible = false
 
@@ -313,6 +335,27 @@ func _show_narrative(text: String) -> void:
 	tween.tween_property(narrative_label, "modulate:a", 1.0, 0.35)
 	tween.tween_interval(narrative_hold)
 	tween.tween_property(narrative_label, "modulate:a", 0.0, 0.65)
+
+
+func _refresh_language() -> void:
+	var config: ConfigFile = ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	_language = ENGLISH_LANGUAGE if str(config.get_value(UI_SECTION, LANGUAGE_KEY, CHINESE_LANGUAGE)) == ENGLISH_LANGUAGE else CHINESE_LANGUAGE
+	if click_indicator_label:
+		click_indicator_label.text = _get_text(CLICK_INDICATOR_TEXT)
+
+
+func _get_text(text_key: StringName) -> String:
+	var translations: Dictionary = NARRATIVE_TEXTS.get(text_key, {}) as Dictionary
+	return str(translations.get(_language, translations.get(CHINESE_LANGUAGE, "")))
+
+
+func _translate_external_narrative(text: String) -> String:
+	for text_key: StringName in NARRATIVE_TEXTS:
+		var translations: Dictionary = NARRATIVE_TEXTS[text_key] as Dictionary
+		if text == str(translations.get(CHINESE_LANGUAGE, "")) or text == str(translations.get(ENGLISH_LANGUAGE, "")):
+			return _get_text(text_key)
+	return text
 
 func _exit_tree() -> void:
 	if Engine.is_editor_hint():

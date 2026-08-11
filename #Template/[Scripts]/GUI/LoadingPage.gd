@@ -1,14 +1,25 @@
 extends CanvasLayer
 class_name LoadingPage
 
+const SETTINGS_PATH: String = "user://settings.cfg"
+const UI_SECTION: String = "ui"
+const LANGUAGE_KEY: String = "language"
+
 @onready var root: Control = $Root
 @onready var background: ColorRect = $Root/Background
 @onready var rotator: TextureRect = $Root/Rotator
 @onready var loading_text: Label = $Root/LoadingText
 
 func _ready() -> void:
+	_apply_language()
 	root.modulate.a = 0.0
 	set_process(true)
+
+func _apply_language() -> void:
+	var config: ConfigFile = ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	var is_chinese: bool = str(config.get_value(UI_SECTION, LANGUAGE_KEY, "zh")) != "en"
+	loading_text.text = "加载中" if is_chinese else "LOADING..."
 
 func reveal(background_color: Color) -> Tween:
 	background.color = background_color

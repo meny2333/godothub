@@ -129,7 +129,7 @@ func _populate_about_from_level_data() -> void:
 	# 设置标题
 	var title_node: Node = about_content.find_child("about_title", true)
 	if title_node is Label:
-		title_node.text = ld.levelTitle
+		title_node.text = ld.get_localized_title()
 
 	# 设置作者列表（带可点击 URL，与 Unity 版 StartPage 一致）
 	var author_container: Node = about_content.find_child("about_authors", true)
