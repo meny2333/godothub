@@ -3,14 +3,18 @@ extends Control
 const SETTINGS_PATH: String = "user://settings.cfg"
 const UI_SECTION: String = "ui"
 const PROGRESS_SECTION: String = "progress"
+const UNLOCKED_STAGE_COUNT_KEY: String = "unlocked_stage_count"
+const FULL_MODE_UNLOCKED_KEY: String = "full_mode_unlocked"
 const STAGE_COUNT: int = 4
 const FIN_SCENE_PATH: String = "res://[Scenes]/Fin/Fin.tscn"
+const ECHO_REALM_SCENE_PATH: String = "res://[Scenes]/EchoRealm/EchoRealm.tscn"
 const FIN_STAGE_ENTRY_META: StringName = &"fin_stage_entry"
+const FULL_LEVEL_JUST_UNLOCKED_META: StringName = &"full_level_just_unlocked"
 const STAGE_SCENE_PATHS: Array[String] = [
 	FIN_SCENE_PATH,
 	FIN_SCENE_PATH,
 	FIN_SCENE_PATH,
-	FIN_SCENE_PATH,
+	ECHO_REALM_SCENE_PATH,
 ]
 
 const STAGE_TITLES_ZH: Array[String] = ["初滞", "回声", "终章", "回声之境"]
@@ -21,13 +25,13 @@ const STAGE_DESCRIPTIONS_ZH: Array[String] = [
 	"世界开始变慢，你还没意识到。",
 	"那些你以为已经过去的，正在追上你。",
 	"你以为已经抵达，但真正的答案还在更远处。",
-	"迟到的温柔，终于抵达。完整 Fin 关卡。",
+	"迟到的温柔，终于抵达。",
 ]
 const STAGE_DESCRIPTIONS_EN: Array[String] = [
 	"The world begins to slow before you notice.",
 	"What you thought was gone is catching up.",
 	"You thought you had arrived, but the answer waits farther on.",
-	"The tenderness that arrived late is finally here. The complete Fin level.",
+	"The tenderness that arrived late is finally here.",
 ]
 const MENU_MUSIC_FADE_DURATION: float = 0.45
 
@@ -73,6 +77,7 @@ var _music_delay: float = 0.0
 var _music_volume: float = 1.0
 var _settings_open: bool = false
 var _launching: bool = false
+var _unlocked_stage_count: int = 1
 var _full_mode_unlocked: bool = false
 var _music_tween: Tween
 var _music_request: int = 0
@@ -82,7 +87,10 @@ func _ready() -> void:
 	_connect_controls()
 	_populate_options()
 	_apply_language()
-	carousel.call("set_full_mode_unlocked", _full_mode_unlocked)
+	var full_level_just_unlocked: bool = get_tree().root.has_meta(FULL_LEVEL_JUST_UNLOCKED_META)
+	if full_level_just_unlocked:
+		get_tree().root.remove_meta(FULL_LEVEL_JUST_UNLOCKED_META)
+	carousel.call("set_full_mode_unlocked", _is_stage_unlocked(STAGE_COUNT - 1) and not full_level_just_unlocked)
 	_select_stage(0)
 	chapter_screen.visible = false
 	settings_shade.visible = false
@@ -91,6 +99,21 @@ func _ready() -> void:
 	status_label.visible = false
 	await get_tree().process_frame
 	_animate_intro()
+	if full_level_just_unlocked:
+		await _play_full_level_unlock()
+
+func _play_full_level_unlock() -> void:
+	chapter_screen.visible = true
+	home_screen.visible = false
+	_selected_stage = STAGE_COUNT - 1
+	if backdrop.has_method("set_stage"):
+		backdrop.call("set_stage", _selected_stage)
+	carousel.call("set_selected", _selected_stage, false)
+	_update_selected_stage_copy()
+	_sync_menu_music(true)
+	await carousel.call("play_unlock")
+	_update_carousel_copy()
+	_update_selected_stage_copy()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
@@ -104,7 +127,7 @@ func _connect_controls() -> void:
 	language_button.pressed.connect(_toggle_language)
 	settings_button.pressed.connect(_open_settings)
 	explore_button.pressed.connect(_show_chapters)
-	quick_start_button.pressed.connect(_launch_stage.bind(0))
+	quick_start_button.pressed.connect(_launch_latest_unlocked_stage)
 	back_button.pressed.connect(_show_home)
 	launch_button.pressed.connect(_launch_selected_stage)
 	settings_close_button.pressed.connect(_close_settings)
@@ -120,7 +143,12 @@ func _load_preferences() -> void:
 	var config: ConfigFile = ConfigFile.new()
 	config.load(SETTINGS_PATH)
 	_is_chinese = str(config.get_value(UI_SECTION, "language", "zh")) != "en"
-	_full_mode_unlocked = bool(config.get_value(PROGRESS_SECTION, "full_mode_unlocked", false))
+	_full_mode_unlocked = bool(config.get_value(PROGRESS_SECTION, FULL_MODE_UNLOCKED_KEY, false))
+	_unlocked_stage_count = clampi(int(config.get_value(
+		PROGRESS_SECTION,
+		UNLOCKED_STAGE_COUNT_KEY,
+		1
+	)), 1, STAGE_COUNT)
 	var audio_settings: Dictionary = SetLatency.load_settings()
 	_music_delay = float(audio_settings.get("delay", 0.0))
 	_music_volume = float(audio_settings.get("volume", 1.0))
@@ -216,7 +244,7 @@ func _select_stage(index: int) -> void:
 
 func _sync_menu_music(force_unlock_music: bool = false) -> void:
 	var target_stream: AudioStream = preload("res://[Scenes]/Begin.ogg")
-	if force_unlock_music or (_selected_stage == STAGE_COUNT - 1 and _full_mode_unlocked):
+	if force_unlock_music or (_selected_stage == STAGE_COUNT - 1 and _is_stage_unlocked(_selected_stage)):
 		target_stream = preload("res://[Scenes]/Unlock.ogg")
 	_music_request += 1
 	_play_menu_music(target_stream, _music_request)
@@ -255,13 +283,13 @@ func _update_carousel_copy() -> void:
 	var statuses: Array[String] = []
 	for index: int in range(STAGE_COUNT):
 		var status: String = "可进入" if _is_chinese else "PLAYABLE"
-		if index >= 0 and index < 3:
-			status = "可进入" if _is_chinese else "PLAYABLE"
-		if index == STAGE_COUNT - 1:
+		if not _is_stage_unlocked(index):
+			status = "通过上一段解锁" if _is_chinese else "COMPLETE THE PREVIOUS PART"
+		elif index == STAGE_COUNT - 1:
 			if _full_mode_unlocked:
-				status = "完整模式已解锁" if _is_chinese else "FULL MODE UNLOCKED"
+				status = "完整内容已解锁" if _is_chinese else "FULL EXPERIENCE UNLOCKED"
 			else:
-				status = "完整模式锁定" if _is_chinese else "FULL MODE LOCKED"
+				status = "回声之境已解锁" if _is_chinese else "ECHO REALM UNLOCKED"
 		statuses.append(status)
 	carousel.call("configure_copy", titles, subtitles, statuses)
 
@@ -271,13 +299,14 @@ func _update_selected_stage_copy() -> void:
 	selected_index_label.text = "CHAPTER %02d" % (_selected_stage + 1)
 	selected_title_label.text = titles[_selected_stage]
 	selected_description_label.text = descriptions[_selected_stage]
-	var scene_available: bool = not STAGE_SCENE_PATHS[_selected_stage].is_empty()
-	var can_unlock: bool = _selected_stage == STAGE_COUNT - 1 and not _full_mode_unlocked
-	launch_button.disabled = not scene_available and not can_unlock
-	if can_unlock:
-		launch_button.text = "解锁完整关卡" if _is_chinese else "UNLOCK FULL MODE"
-	elif scene_available:
+	var scene_path: String = _get_stage_scene_path(_selected_stage)
+	var scene_available: bool = not scene_path.is_empty()
+	var stage_unlocked: bool = _is_stage_unlocked(_selected_stage)
+	launch_button.disabled = not scene_available or not stage_unlocked
+	if scene_available and stage_unlocked:
 		launch_button.text = "进入场景" if _is_chinese else "ENTER SCENE"
+	elif not stage_unlocked:
+		launch_button.text = "尚未解锁" if _is_chinese else "LOCKED"
 	else:
 		launch_button.text = "制作中" if _is_chinese else "COMING SOON"
 
@@ -334,30 +363,25 @@ func _update_setting_values() -> void:
 	latency_value.text = "%+d ms" % roundi(_music_delay * 1000.0)
 
 func _launch_selected_stage() -> void:
-	if _selected_stage == STAGE_COUNT - 1 and not _full_mode_unlocked:
-		launch_button.disabled = true
-		_sync_menu_music(true)
-		await carousel.call("play_unlock")
-		_full_mode_unlocked = true
-		_save_full_mode_progress()
-		_update_carousel_copy()
-		_update_selected_stage_copy()
-		_sync_menu_music()
-		return
 	_launch_stage(_selected_stage)
 
-func _save_full_mode_progress() -> void:
-	var config: ConfigFile = ConfigFile.new()
-	config.load(SETTINGS_PATH)
-	config.set_value(PROGRESS_SECTION, "full_mode_unlocked", _full_mode_unlocked)
-	var error: Error = config.save(SETTINGS_PATH)
-	if error != OK:
-		push_error("MainMenu.gd: failed to save progress (%s)" % error_string(error))
+func _launch_latest_unlocked_stage() -> void:
+	_launch_stage(_unlocked_stage_count - 1)
+
+func _is_stage_unlocked(index: int) -> bool:
+	return index >= 0 and index < _unlocked_stage_count
+
+func _get_stage_scene_path(index: int) -> String:
+	if index < 0 or index >= STAGE_SCENE_PATHS.size():
+		return ""
+	if index == STAGE_COUNT - 1 and _full_mode_unlocked:
+		return FIN_SCENE_PATH
+	return STAGE_SCENE_PATHS[index]
 
 func _launch_stage(index: int) -> void:
-	if _launching or index < 0 or index >= STAGE_SCENE_PATHS.size():
+	if _launching or index < 0 or index >= STAGE_SCENE_PATHS.size() or not _is_stage_unlocked(index):
 		return
-	var scene_path: String = STAGE_SCENE_PATHS[index]
+	var scene_path: String = _get_stage_scene_path(index)
 	if scene_path.is_empty():
 		return
 	_launching = true

@@ -384,9 +384,8 @@ func revive() -> void:
 		var music_time: float = LevelManager.music_checkpoint_time
 		if music_time > 0.0 and main_line.levelData and main_line.levelData.levelAudioClip:
 			music_player.stream = main_line.levelData.levelAudioClip
-			# Play then immediately pause to set the position
-			music_player.play(music_time)
-			music_player.stream_paused = true
+			# Playback starts on Player's first turn. Starting a paused stream here
+			# is resumed when the opening intertitle unpauses the scene tree.
 
 	# Restore animation to checkpoint position (paused, waiting for player to start)
 	if main_line.animation_node and main_line.animation_node.has_animation("level"):

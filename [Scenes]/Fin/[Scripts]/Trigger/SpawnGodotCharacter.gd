@@ -9,10 +9,12 @@ const RUN_ANIMATION: StringName = &"run"
 const SUMMON_PROMPT: String = "点击呼唤回声"
 const PROMPT_GROUP: StringName = &"spawn_godot_character_prompt"
 
+signal click_succeeded
+
 ## 角色移动的全局方向；使用前会归一化。
 @export var direction: Vector3 = Vector3.BACK
 ## 每秒移动距离。
-@export var speed: float = 5.0
+@export var speed: float = 3.0
 ## 实例存在时间（秒）。
 @export_range(0.0, 60.0, 0.1, "or_greater") var duration: float = 2.0
 ## 横轴为归一化生命周期，纵轴 0 表示透明、1 表示不透明。
@@ -22,7 +24,7 @@ const PROMPT_GROUP: StringName = &"spawn_godot_character_prompt"
 ## 角色生成后等待多久再显示点击提示并进入慢速。
 @export_range(0.0, 10.0, 0.1, "or_greater") var prompt_delay: float = 1.5
 ## 进入提示后，玩家必须在此时间内成功转向。
-@export_range(0.1, 10.0, 0.1, "or_greater") var response_timeout: float = 3.0
+@export_range(0.1, 10.0, 0.1, "or_greater") var response_timeout: float = 1.0
 ## 点击位置距离角色投影点的最大像素距离。
 @export_range(16.0, 256.0, 4.0, "or_greater") var click_radius: float = 72.0
 ## 场景没有 TutorialManager 时使用的备用慢速倍率。
@@ -129,7 +131,7 @@ func _wait_for_click_timeout(token: int, player: Player) -> void:
 	_spawn_character()
 	_set_slow_motion(false)
 	_finish_interaction()
-	if is_instance_valid(player) and player.is_live:
+	if not _uses_part_sync() and is_instance_valid(player) and player.is_live:
 		player.die()
 
 
@@ -164,6 +166,7 @@ func _accept_target_click() -> void:
 	if is_instance_valid(_spawned_character):
 		effect_position = _spawned_character.global_position
 	_spawn_click_success_effect(effect_position)
+	click_succeeded.emit()
 	_hide_click_indicator()
 	_set_slow_motion(false)
 	_finish_interaction()
@@ -228,6 +231,13 @@ func _find_tutorial_manager() -> Node:
 	if manager == null:
 		manager = scene_root.find_child("TutorialManager", true, false)
 	return manager
+
+func _uses_part_sync() -> bool:
+	var scene_root: Node = get_tree().current_scene
+	if scene_root == null or not scene_root.has_meta("fin_stage_entry"):
+		return false
+	var stage_index: int = int(scene_root.get_meta("fin_stage_entry"))
+	return stage_index > 0 and stage_index < 3
 
 
 func _show_prompt() -> void:

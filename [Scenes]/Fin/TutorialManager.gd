@@ -20,6 +20,7 @@ const FIRST_STALL_TEXT: StringName = &"first_stall"
 const ADAPT_TEXT: StringName = &"adapt"
 const COMPLETE_TEXT: StringName = &"complete"
 const SUMMON_PROMPT_TEXT: StringName = &"summon_prompt"
+signal opening_intertitle_continue_requested
 const NARRATIVE_TEXTS: Dictionary = {
 	INTRO_TEXT: {CHINESE_LANGUAGE: "世界开始变慢，你还没意识到。", ENGLISH_LANGUAGE: "The world begins to slow before you notice."},
 	TURN_TEXT: {CHINESE_LANGUAGE: "你试着移动——身体比意识慢了一拍。", ENGLISH_LANGUAGE: "You try to move - your body trails your mind by a beat."},
@@ -73,10 +74,14 @@ var click_indicator_tween: Tween
 var click_indicator_world_position: Vector3 = Vector3.ZERO
 var click_indicator_has_world_position: bool = false
 var _language: String = CHINESE_LANGUAGE
+var _tutorial_enabled: bool = true
+var _waiting_for_opening_intertitle: bool = false
+var _opening_intertitle_input_consumed: bool = false
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_deferred_bind()
 	if narrative_label:
 		narrative_label.modulate.a = 0.0
@@ -105,6 +110,8 @@ func _deferred_bind() -> void:
 	if level_data:
 		_level_time_scale = level_data.timeScale
 		_time_scale_value = _level_time_scale
+	if not _tutorial_enabled:
+		return
 	# 不依赖启动点击信号，避免 Player 在管理器连接前已经发出 on_player_start。
 	_tutorial_started = true
 	_set_stage(TutorialStage.INTRO, INTRO_TEXT)
@@ -118,7 +125,7 @@ func _deferred_bind() -> void:
 func _process(delta: float) -> void:
 	if click_indicator and click_indicator.visible:
 		_position_click_indicator()
-	if Engine.is_editor_hint() or not _tutorial_started or stage == TutorialStage.COMPLETE:
+	if Engine.is_editor_hint() or not _tutorial_enabled or not _tutorial_started or stage == TutorialStage.COMPLETE:
 		return
 	elapsed += delta
 	_update_guidance_turn_window()
@@ -140,14 +147,14 @@ func _update_guidance_turn_window() -> void:
 			return
 
 func _on_player_start() -> void:
-	if _tutorial_started:
+	if not _tutorial_enabled or _tutorial_started:
 		return
 	_tutorial_started = true
 	elapsed = 0.0
 	_set_stage(TutorialStage.INTRO, INTRO_TEXT)
 
 func _on_turn() -> void:
-	if not _tutorial_started:
+	if not _tutorial_enabled or not _tutorial_started:
 		return
 	# 每个 GuidanceBox 前的窗口都预先减速；完成转向后恢复并继续节奏教学。
 	if _active_guidance_index >= 0:
@@ -235,6 +242,102 @@ func show_narrative(text: String) -> void:
 
 func set_tutorial_slow_motion(slow: bool) -> void:
 	_set_slow_motion(slow)
+
+func set_tutorial_enabled(enabled: bool) -> void:
+	_tutorial_enabled = enabled
+	_tutorial_started = enabled
+	if not enabled and narrative_label:
+		narrative_label.modulate.a = 0.0
+
+func show_opening_intertitle(title: String, body: String) -> void:
+	_refresh_language()
+	var was_tree_paused: bool = get_tree().paused
+	get_tree().paused = true
+	var layer: CanvasLayer = CanvasLayer.new()
+	layer.layer = 128
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(layer)
+	var blackout: ColorRect = ColorRect.new()
+	blackout.color = Color.BLACK
+	blackout.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	blackout.mouse_filter = Control.MOUSE_FILTER_STOP
+	layer.add_child(blackout)
+	var center: CenterContainer = CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(center)
+	var copy: VBoxContainer = VBoxContainer.new()
+	copy.add_theme_constant_override("separation", 14)
+	copy.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	copy.modulate.a = 0.0
+	center.add_child(copy)
+	var title_label: Label = Label.new()
+	title_label.text = title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 32)
+	title_label.add_theme_color_override("font_color", Color(0.97, 0.95, 0.86, 1.0))
+	copy.add_child(title_label)
+	var body_label: Label = Label.new()
+	body_label.text = body
+	body_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body_label.custom_minimum_size = Vector2(360.0, 0.0)
+	body_label.add_theme_font_size_override("font_size", 17)
+	body_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.8, 1.0))
+	copy.add_child(body_label)
+	var continue_label: Label = Label.new()
+	continue_label.text = "点击或按任意键继续" if _language == CHINESE_LANGUAGE else "CLICK OR PRESS ANY KEY TO CONTINUE"
+	continue_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	continue_label.add_theme_font_size_override("font_size", 13)
+	continue_label.add_theme_color_override("font_color", Color(0.58, 0.65, 0.69, 1.0))
+	continue_label.modulate.a = 0.0
+	copy.add_child(continue_label)
+	var opening_tween: Tween = create_tween()
+	opening_tween.set_ignore_time_scale(true)
+	opening_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	opening_tween.tween_property(copy, "modulate:a", 1.0, 0.4).set_delay(0.16)
+	opening_tween.tween_interval(2.0)
+	await opening_tween.finished
+	_waiting_for_opening_intertitle = true
+	var prompt_tween: Tween = create_tween()
+	prompt_tween.set_ignore_time_scale(true)
+	prompt_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	prompt_tween.tween_property(continue_label, "modulate:a", 1.0, 0.25)
+	await opening_intertitle_continue_requested
+	var closing_tween: Tween = create_tween().set_parallel()
+	closing_tween.set_ignore_time_scale(true)
+	closing_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	closing_tween.tween_property(copy, "modulate:a", 0.0, 0.35)
+	closing_tween.tween_property(blackout, "modulate:a", 0.0, 0.45)
+	await closing_tween.finished
+	layer.queue_free()
+	get_tree().paused = was_tree_paused
+
+func _input(event: InputEvent) -> void:
+	if not _waiting_for_opening_intertitle:
+		return
+	var should_continue: bool = false
+	if event is InputEventKey:
+		var key_event: InputEventKey = event as InputEventKey
+		should_continue = key_event.pressed and not key_event.echo
+	elif event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+		should_continue = mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT
+	if not should_continue:
+		return
+	_waiting_for_opening_intertitle = false
+	# Keep this event consumed through Player._unhandled_input(). The signal
+	# resumes the scene, so set_input_as_handled() alone is not sufficient.
+	_opening_intertitle_input_consumed = true
+	call_deferred("_clear_opening_intertitle_input_consumed")
+	get_viewport().set_input_as_handled()
+	opening_intertitle_continue_requested.emit()
+
+func consumes_turn_input(event: InputEvent) -> bool:
+	return _opening_intertitle_input_consumed and event.is_action_pressed("turn")
+
+func _clear_opening_intertitle_input_consumed() -> void:
+	_opening_intertitle_input_consumed = false
 
 
 func show_click_indicator(world_position: Vector3) -> void:

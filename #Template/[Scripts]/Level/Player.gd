@@ -208,6 +208,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		if skin_selector and skin_selector.has_method("consumes_turn_input") \
 				and bool(skin_selector.call("consumes_turn_input", event)):
 			return
+		var tutorial_manager: Node = get_tree().current_scene.get_node_or_null(
+				"BasicOBJ_Group/TutorialManager")
+		if tutorial_manager and tutorial_manager.has_method("consumes_turn_input") \
+				and bool(tutorial_manager.call("consumes_turn_input", event)):
+			return
 		# StartPage 显示时，鼠标点击由 StartPage 的信号处理
 		if not is_start and event is InputEventMouseButton:
 			var page: CanvasLayer = get_node_or_null("StartPage") as CanvasLayer
@@ -666,7 +671,9 @@ func _play_music_from_level_data() -> void:
 		$MusicPlayer.volume_db = linear_to_db(max(musicVolume, 0.001))
 	elif not $MusicPlayer.playing:
 		$MusicPlayer.stream = levelData.levelAudioClip
-		var start_time: float = levelData.get_audio_start_time()
+		var start_time: float = LevelManager.music_checkpoint_time
+		if start_time <= 0.0:
+			start_time = levelData.get_audio_start_time()
 		_play_music(start_time)
 
 ## 播放音乐，补偿系统音频延迟（AudioServer）并应用用户音量设置

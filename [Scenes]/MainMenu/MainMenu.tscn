@@ -382,7 +382,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.69, 0.72, 0.75, 1)
 theme_override_font_sizes/font_size = 13
-text = "世界开始变慢，你还没意识到。当前版本从这里进入完整 Fin 流程。"
+text = "世界开始变慢，你还没意识到。当前版本从这里开始。"
 autowrap_mode = 2
 
 [node name="LaunchButton" type="Button" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel/SelectionMargin/SelectionRow" unique_id=123674461]

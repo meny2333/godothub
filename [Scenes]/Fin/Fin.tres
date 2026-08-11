@@ -42,10 +42,10 @@ metadata/_custom_type_script = "uid://cpejwvo4pns1"
 [resource]
 script = ExtResource("6_6umwh")
 saveID = 1
-levelTitleKey = "FinFull"
+levelTitleKey = "EchoRealm"
 levelAudioClip = ExtResource("6_42eh5")
 colors = Array[ExtResource("2_42eh5")]([SubResource("Resource_wej6y"), SubResource("Resource_6jkf8"), SubResource("Resource_y60ok"), SubResource("Resource_sw8gx")])
-levelTitle = "Fin · 完整关卡"
-levelTitleZh = "Fin · 完整关卡"
-levelTitleEn = "FIN · FULL LEVEL"
+levelTitle = "回声之境"
+levelTitleZh = "回声之境"
+levelTitleEn = "ECHO REALM"
 authors = Array[ExtResource("1_y60ok")]([SubResource("Resource_efp58")])

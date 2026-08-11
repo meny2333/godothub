@@ -4,6 +4,7 @@ const MAIN_MENU_SCENE_PATH: String = "res://[Scenes]/MainMenu/MainMenu.tscn"
 const SETTINGS_PATH: String = "user://settings.cfg"
 const UI_SECTION: String = "ui"
 const LANGUAGE_KEY: String = "language"
+const FIN_STAGE_ENTRY_META: StringName = &"fin_stage_entry"
 
 var levelname: String = "level name"
 var _shown: bool = false
@@ -103,6 +104,7 @@ func _on_gamereplay_pressed() -> void:
 	if _replay_requested:
 		return
 	_replay_requested = true
+	_preserve_scene_entry_metadata()
 	LevelManager.reset_to_defaults()
 
 	# Wait for a previous scene switch to settle before reading current_scene.
@@ -130,6 +132,12 @@ func _on_gamereplay_pressed() -> void:
 	else:
 		_replay_requested = false
 		push_error("LevelUI.gd: Player.instance 为空，无法重新加载关卡")
+
+func _preserve_scene_entry_metadata() -> void:
+	var current_scene: Node = get_tree().current_scene
+	if not is_instance_valid(current_scene) or not current_scene.has_meta(FIN_STAGE_ENTRY_META):
+		return
+	get_tree().root.set_meta(FIN_STAGE_ENTRY_META, int(current_scene.get_meta(FIN_STAGE_ENTRY_META)))
 
 func _get_loading_background_color() -> Color:
 	var camera: Camera3D = get_viewport().get_camera_3d()
