@@ -164,9 +164,22 @@ volumetric_fog_enabled = true
 volumetric_fog_density = 0.015
 volumetric_fog_albedo = Color(0.47058824, 0.5529412, 0.6117647, 1)
 
+[sub_resource type="Resource" id="Resource_vh88h"]
+script = ExtResource("21_de2cj")
+fog_color = Color(0.27726257, 6.6420434e-05, 0.28750497, 1)
+metadata/_custom_type_script = "uid://bfhukfse7kskq"
+
 [sub_resource type="Resource" id="Resource_l0yca"]
 script = ExtResource("21_de2cj")
-fog_color = Color(0.2815144, 0.30412945, 0.5089116, 1)
+fog_color = Color(0.27726257, 6.6420434e-05, 0.28750497, 1)
+start = 10.0
+end = 30.0
+metadata/_custom_type_script = "uid://bfhukfse7kskq"
+
+[sub_resource type="Resource" id="Resource_k0n3m"]
+script = ExtResource("21_de2cj")
+start = 10.0
+end = 30.0
 metadata/_custom_type_script = "uid://bfhukfse7kskq"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tgeva"]
@@ -513,6 +526,36 @@ _data = {
 &"new_animation": SubResource("Animation_a6r3i")
 }
 
+[sub_resource type="Resource" id="Resource_4rax4"]
+resource_local_to_scene = true
+script = ExtResource("35_onvpv")
+rotation = Vector3(53.999996, 45, 0)
+fov = 80.0
+
+[sub_resource type="Resource" id="Resource_f55rb"]
+resource_local_to_scene = true
+script = ExtResource("36_76lin")
+
+[sub_resource type="Resource" id="Resource_os608"]
+resource_local_to_scene = true
+script = ExtResource("21_de2cj")
+fog_color = Color(0.4392157, 0.53333336, 0.6, 1)
+start = 5.0
+end = 78.0
+
+[sub_resource type="Resource" id="Resource_80b1g"]
+resource_local_to_scene = true
+script = ExtResource("37_y4hd3")
+rotation = Vector3(-60.000114, 149.99977, 0)
+color = Color(1, 0.8784314, 0.627451, 1)
+shadow_strength = 1.0
+
+[sub_resource type="Resource" id="Resource_7fb3i"]
+resource_local_to_scene = true
+script = ExtResource("38_mvna1")
+intensity = 0.75
+ambient_color = Color(0.44705883, 0.5137255, 0.5686275, 1)
+
 [node name="LevelHolder" type="Node3D" unique_id=542804875]
 script = ExtResource("1_4e5ux")
 
@@ -669,10 +712,11 @@ transform = Transform2D(1, 0, 0, 1, 0, -100)
 [node name="Scene_001" type="Node3D" parent="Scene_Group/part1" unique_id=514366687]
 
 [node name="GroundDown" parent="Scene_Group/part1/Scene_001" unique_id=755968428 instance=ExtResource("8_i2q1u")]
-transform = Transform3D(300, 0, 0, 0, 1, 0, 0, 0, 300, -9.698, -1, 74.236)
+transform = Transform3D(300, 0, 0, 0, 1, 0, 0, 0, 300, -24.025446, -1, 74.236)
 script = ExtResource("14_rd300")
 transform_type = 1
-end_offset = Vector3(0, -100, 0)
+end_offset = Vector3(0, -1000, 0)
+duration = 10.0
 
 [node name="Node3D" type="Node3D" parent="Scene_Group/part1/Scene_001" unique_id=1607013115]
 
@@ -1219,8 +1263,32 @@ script = ExtResource("16_eu17p")
 
 [node name="fog" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle7/Trigger" unique_id=206887848]
 script = ExtResource("20_2u72o")
+fog_settings = SubResource("Resource_vh88h")
+duration = 3.0
+
+[node name="Trigger2" parent="Scene_Group/part1/Scene_003/Obstacle7" unique_id=608483111 instance=ExtResource("15_g1avl")]
+transform = Transform3D(-1.3659809e-08, 0, 3.338627, 0, 1.25, 0, -0.3125, 0, -1.4593603e-07, 0.27934504, 0.75, -1.854249)
+
+[node name="fog" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle7/Trigger2" unique_id=281547968]
+script = ExtResource("20_2u72o")
 fog_settings = SubResource("Resource_l0yca")
-duration = 6.0
+duration = 3.0
+
+[node name="Trigger3" parent="Scene_Group/part1/Scene_003/Obstacle7" unique_id=501932962 instance=ExtResource("15_g1avl")]
+transform = Transform3D(-5.6803515e-08, 0, 3.338627, 0, 1.25, 0, -1.2995129, 0, -1.4593603e-07, 0.2793448, -53.0454, -8.187667)
+
+[node name="fog" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle7/Trigger3" unique_id=1823772938]
+script = ExtResource("20_2u72o")
+fog_settings = SubResource("Resource_k0n3m")
+duration = 3.0
+
+[node name="Trigger4" parent="Scene_Group/part1/Scene_003/Obstacle7" unique_id=1311660664 instance=ExtResource("15_g1avl")]
+transform = Transform3D(1.2995129, 0, 0, 0, 1.25, 0, -3.5527137e-15, 0, 3.338627, 0.27934474, -69.247894, -9.768596)
+
+[node name="fog" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle7/Trigger4" unique_id=1859496770]
+script = ExtResource("20_2u72o")
+fog_settings = SubResource("Resource_k0n3m")
+duration = 3.0
 
 [node name="localpos" type="Node3D" parent="Scene_Group/part1/Scene_003/Obstacle7" unique_id=23586531]
 script = ExtResource("14_rd300")
@@ -1335,7 +1403,7 @@ material_override = SubResource("StandardMaterial3D_34yn8")
 mesh = SubResource("SphereMesh_qmtuy")
 
 [node name="part2" type="Node3D" parent="Scene_Group" unique_id=1768586916]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.269989, -49.82583, -46.779938)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.269989, -17.490406, -46.779938)
 
 [node name="Scene_001" type="Node3D" parent="Scene_Group/part2" unique_id=1808317222]
 
@@ -1349,7 +1417,7 @@ transform = Transform3D(-0.03783623, 0, 0.69897664, 0, 0.26023933, 0, -0.6989766
 transform = Transform3D(-0.292298, 0, -0.8512119, 0, 0.41151822, 0, 0.8512119, 0, -0.292298, 260.18454, -2.0816267, 325.10425)
 
 [node name="Mountain_05" parent="Scene_Group/part2/Scene_001" unique_id=556283894 instance=ExtResource("26_gy7to")]
-transform = Transform3D(0.23218115, 0, -0.86953545, 0, 0.9, 0, 0.86953545, 0, 0.23218115, 145.21327, -37.34423, 265.5177)
+transform = Transform3D(0.23218115, 0, -0.86953545, 0, 0.9, 0, 0.86953545, 0, 0.23218115, 149.14803, -37.34423, 263.1651)
 
 [node name="Mountain_02" parent="Scene_Group/part2/Scene_001" unique_id=1451457453 instance=ExtResource("26_gy7to")]
 transform = Transform3D(-0.07735488, 0, 0.7962513, 0, 0.3665505, 0, -0.7962513, 0, -0.07735488, 212.94748, -7.27264, 353.97293)
@@ -3997,10 +4065,10 @@ transform = Transform3D(-8.742278e-08, 0, 1.5991344, 0, 1, 0, -2, 0, -6.990039e-
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 14.500019, 128.04683, -1, 205.28879)
 
 [node name="Road 49" parent="RoadHolder" unique_id=195116263 instance=ExtResource("8_i2q1u")]
-transform = Transform3D(-8.742278e-08, 0, 87.89923, 0, 1, 0, -2, 0, -3.842197e-06, 169.80325, -148.66362, 211.53917)
+transform = Transform3D(-8.742278e-08, 0, 87.89923, 0, 1, 0, -2, 0, -3.842197e-06, 169.80325, -160.86095, 211.53917)
 
 [node name="Road 50" parent="RoadHolder" unique_id=1377652037 instance=ExtResource("8_i2q1u")]
-transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 14.92776, 212.75587, -148.66362, 218.00345)
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 14.92776, 212.75587, -160.86095, 218.00345)
 
 [node name="Trigger" parent="." unique_id=220756990 instance=ExtResource("15_g1avl")]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 126.47189, 0.23943257, 197.40912)
@@ -4023,6 +4091,19 @@ speed = 8
 
 [node name="HeartCheckpoint" parent="." unique_id=1336568975 instance=ExtResource("34_0darq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 72.59031, 0, 177.11818)
+
+[node name="Area3D" parent="HeartCheckpoint" index="0"]
+top_level = true
+
+[node name="HeartCheckpoint" parent="HeartCheckpoint/Area3D" index="3"]
+AutoRecord = false
+GameTime = 20.677334
+direction = 1
+camera_new = SubResource("Resource_4rax4")
+camera_old = SubResource("Resource_f55rb")
+fog = SubResource("Resource_os608")
+light = SubResource("Resource_80b1g")
+ambient = SubResource("Resource_7fb3i")
 
 [connection signal="triggered" from="Scene_Group/part1/Scene_001/Node3D/Obstacle/Trigger/event" to="Scene_Group/part1/Scene_001/Node3D/Obstacle/localpos" method="Trigger"]
 [connection signal="triggered" from="Scene_Group/part1/Scene_001/Node3D/Obstacle/Trigger/event" to="Scene_Group/part1/Scene_001/Node3D/Obstacle2/localpos" method="Trigger"]
@@ -4066,3 +4147,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 72.59031, 0, 177.11818)
 [editable path="Scene_Group/part2/Pyramid"]
 [editable path="Scene_Group/part3/Pyramid"]
 [editable path="Scene_Group/part3/Pyramid2"]
+[editable path="HeartCheckpoint"]

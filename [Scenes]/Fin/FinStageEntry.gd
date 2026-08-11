@@ -14,6 +14,8 @@ const PART3_MIRROR_FIN_PATH: NodePath = NodePath("Scene_Group/part3/p2mirrorl/fi
 const PART3_FINACTIVE_PATH: NodePath = NodePath("Scene_Group/part3/finactive")
 const PART2_CHECKPOINT_PATH: NodePath = NodePath("collection/Crown2/Area3D/CrownCheckpoint")
 const PART3_CHECKPOINT_PATH: NodePath = NodePath("collection/Crown/Area3D/CrownCheckpoint")
+const ECHO_REALM_SCENE_PATH: String = "res://[Scenes]/EchoRealm/EchoRealm.tscn"
+const ECHO_REALM_STAGE_INDEX: int = 3
 const MAIN_MENU_SCENE_PATH: String = "res://[Scenes]/MainMenu/MainMenu.tscn"
 const SETTINGS_PATH: String = "user://settings.cfg"
 const UI_SECTION: String = "ui"
@@ -40,9 +42,13 @@ func _ready() -> void:
 
 func _apply_menu_stage_entry() -> void:
 	var scene_tree: SceneTree = get_tree()
+	var current_scene: Node = scene_tree.current_scene
 	if scene_tree.root.has_meta(FIN_STAGE_ENTRY_META):
 		_stage_index = clampi(int(scene_tree.root.get_meta(FIN_STAGE_ENTRY_META)), 0, STAGE_COUNT - 1)
 		scene_tree.root.remove_meta(FIN_STAGE_ENTRY_META)
+	elif current_scene != null and current_scene.scene_file_path == ECHO_REALM_SCENE_PATH:
+		# Directly running EchoRealm has no menu metadata; use its full-content entry.
+		_stage_index = ECHO_REALM_STAGE_INDEX
 	# Preserve the resolved stage during this scene's lifetime so replay can
 	# recreate the same entry point after reload.
 	get_tree().current_scene.set_meta(FIN_STAGE_ENTRY_META, _stage_index)
