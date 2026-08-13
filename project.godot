@@ -65,4 +65,6 @@ turn={
 [rendering]
 
 renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
 occlusion_culling/use_occlusion_culling=true
+textures/vram_compression/import_etc2_astc=true
