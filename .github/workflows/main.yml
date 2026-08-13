@@ -1,0 +1,360 @@
+name: Secure Export
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release tag (for example, v1.0.0-test)
+        required: true
+        default: v1.0.0-test
+      prerelease:
+        description: Mark the GitHub release as a prerelease
+        type: boolean
+        default: true
+      platform:
+        description: Export one platform or all configured platforms
+        type: choice
+        options:
+          - all
+          - windows
+          - linux
+          - android
+          - web
+        default: all
+      secure_ref:
+        description: godot-secure branch or tag containing Secure Builds
+        required: true
+        default: master
+
+env:
+  SECURE_REPOSITORY: meny2333/godot-secure
+
+jobs:
+  secure-engine:
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Build and download secure engine artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GODOT_SECURE_TOKEN || github.token }}
+        run: |
+          bash .github/scripts/fetch_secure_artifacts.sh \
+            secure_builds.yml \
+            "$SECURE_REPOSITORY" \
+            "${{ inputs.secure_ref }}" \
+            "$RUNNER_TEMP/secure-engine" \
+            gdkey-secure-linux-editor \
+            gdkey-secure-linux-template-release \
+            gdkey-secure-windows-editor \
+            gdkey-secure-windows-template-release \
+            gdkey-secure-android-arm64 \
+            gdkey-secure-web
+
+      - name: Upload secure engine artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: secure-engine
+          path: ${{ runner.temp }}/secure-engine
+          if-no-files-found: error
+          retention-days: 1
+
+  export-windows:
+    if: inputs.platform == 'all' || inputs.platform == 'windows'
+    needs: secure-engine
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    env:
+      SCRIPT_AES256_ENCRYPTION_KEY: ${{ secrets.SCRIPT_AES256_ENCRYPTION_KEY }}
+      GODOT_SCRIPT_ENCRYPTION_KEY: ${{ secrets.SCRIPT_AES256_ENCRYPTION_KEY }}
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Download secure engine artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: secure-engine
+          path: engine
+
+      - name: Export encrypted Windows package
+        shell: pwsh
+        run: |
+          if ($env:GODOT_SCRIPT_ENCRYPTION_KEY -notmatch '^[0-9a-fA-F]{64}$') {
+            throw 'SCRIPT_AES256_ENCRYPTION_KEY must contain exactly 64 hexadecimal characters.'
+          }
+
+          $editor = Get-ChildItem engine\gdkey-secure-windows-editor -Recurse -File -Filter *.exe |
+            Where-Object { $_.Name -match 'editor' } |
+            Select-Object -First 1
+          $template = Get-ChildItem engine\gdkey-secure-windows-template-release -Recurse -File -Filter *.exe |
+            Where-Object { $_.Name -match 'template_release' } |
+            Select-Object -First 1
+          if ($null -eq $editor -or $null -eq $template) {
+            throw 'Secure Windows editor or release template was not found.'
+          }
+
+          $version = ((& $editor.FullName --version 2>&1 | Select-Object -First 1) -replace '\s.*$', '')
+          $version = $version -replace '\.gh\..*$', ''
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            throw "Unable to determine the secure Godot version from: $version"
+          }
+
+          $templateRoot = Join-Path $env:RUNNER_TEMP "godot-data\Godot\export_templates\$version"
+          New-Item -ItemType Directory -Force -Path $templateRoot | Out-Null
+          Copy-Item $template.FullName (Join-Path $templateRoot 'windows_debug_x86_64.exe') -Force
+          Copy-Item $template.FullName (Join-Path $templateRoot 'windows_release_x86_64.exe') -Force
+          $env:APPDATA = Join-Path $env:RUNNER_TEMP 'godot-data'
+          New-Item -ItemType Directory -Force -Path build | Out-Null
+          & $editor.FullName --headless --path . --export-release 'Windows Desktop' (Join-Path $env:GITHUB_WORKSPACE 'build\Godothub.exe')
+          if ($LASTEXITCODE -ne 0) {
+            throw "Windows export failed with exit code $LASTEXITCODE."
+          }
+          $executable = Join-Path $env:GITHUB_WORKSPACE 'build\Godothub.exe'
+          if (-not (Test-Path $executable)) {
+            throw 'Windows export did not create the executable with the embedded PCK.'
+          }
+          $packagePath = Join-Path $env:RUNNER_TEMP 'Godothub-windows.zip'
+          Compress-Archive -Path (Join-Path $env:GITHUB_WORKSPACE 'build\*') -DestinationPath $packagePath -Force
+          Move-Item $packagePath (Join-Path $env:GITHUB_WORKSPACE 'build\Godothub-windows.zip') -Force
+
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-windows
+          path: build/Godothub-windows.zip
+          if-no-files-found: error
+
+  export-web:
+    if: inputs.platform == 'all' || inputs.platform == 'web'
+    needs: secure-engine
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      SCRIPT_AES256_ENCRYPTION_KEY: ${{ secrets.SCRIPT_AES256_ENCRYPTION_KEY }}
+      GODOT_SCRIPT_ENCRYPTION_KEY: ${{ secrets.SCRIPT_AES256_ENCRYPTION_KEY }}
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Download secure engine artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: secure-engine
+          path: engine
+
+      - name: Export encrypted Web package
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$GODOT_SCRIPT_ENCRYPTION_KEY" =~ ^[0-9a-fA-F]{64}$ ]]; then
+            echo 'SCRIPT_AES256_ENCRYPTION_KEY must contain exactly 64 hexadecimal characters.' >&2
+            exit 1
+          fi
+
+          editor="$(find engine/gdkey-secure-linux-editor -type f -iname '*editor*' -print -quit)"
+          if [[ -z "$editor" ]]; then
+            echo 'Secure Linux editor was not found.' >&2
+            exit 1
+          fi
+          chmod +x "$editor"
+
+          version="$($editor --version | awk 'NR == 1 { print $1 }')"
+          version="${version%%.gh.*}"
+          if [[ -z "$version" ]]; then
+            echo "Unable to determine the secure Godot version from: $version" >&2
+            exit 1
+          fi
+
+          export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
+          template_root="$XDG_DATA_HOME/godot/export_templates/$version"
+          mkdir -p "$template_root"
+          web_template="$(find engine/gdkey-secure-web -type f -name '*.zip' -print -quit)"
+          if [[ -z "$web_template" ]]; then
+            echo 'Secure Web release template was not found.' >&2
+            exit 1
+          fi
+          cp "$web_template" "$template_root/web_debug.zip"
+          cp "$web_template" "$template_root/web_release.zip"
+          mkdir -p build/web
+          "$editor" --headless --path . --export-release Web build/web/index.html
+          tar -czf build/Godothub-web.tar.gz -C build/web .
+
+      - name: Upload Web package
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-web
+          path: build/Godothub-web.tar.gz
+          if-no-files-found: error
+
+  export-android:
+    if: inputs.platform == 'all' || inputs.platform == 'android'
+    needs: secure-engine
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      SCRIPT_AES256_ENCRYPTION_KEY: ${{ secrets.SCRIPT_AES256_ENCRYPTION_KEY }}
+      GODOT_SCRIPT_ENCRYPTION_KEY: ${{ secrets.SCRIPT_AES256_ENCRYPTION_KEY }}
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Download secure engine artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: secure-engine
+          path: engine
+
+      - name: Export encrypted Android package
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$GODOT_SCRIPT_ENCRYPTION_KEY" =~ ^[0-9a-fA-F]{64}$ ]]; then
+            echo 'SCRIPT_AES256_ENCRYPTION_KEY must contain exactly 64 hexadecimal characters.' >&2
+            exit 1
+          fi
+
+          editor="$(find engine/gdkey-secure-linux-editor -type f -iname '*editor*' -print -quit)"
+          if [[ -z "$editor" ]]; then
+            echo 'Secure Linux editor was not found.' >&2
+            exit 1
+          fi
+          chmod +x "$editor"
+
+          version="$($editor --version | awk 'NR == 1 { print $1 }')"
+          version="${version%%.gh.*}"
+          if [[ -z "$version" ]]; then
+            echo "Unable to determine the secure Godot version from: $version" >&2
+            exit 1
+          fi
+
+          export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
+          template_root="$XDG_DATA_HOME/godot/export_templates/$version"
+          mkdir -p "$template_root"
+          android_template="$(find engine/gdkey-secure-android-arm64 -type f -name '*.apk' -print -quit)"
+          if [[ -z "$android_template" ]]; then
+            echo 'Secure Android release template was not found.' >&2
+            exit 1
+          fi
+          cp "$android_template" "$template_root/android_debug.apk"
+          cp "$android_template" "$template_root/android_release.apk"
+          mkdir -p build
+          "$editor" --headless --path . --export-release Android build/Godothub.apk
+
+          if unzip -Z1 build/Godothub.apk | grep -Eq '^assets/(project\.godot|Scripts/|Scenes/|#Template/|\[Scenes\]/|\[Scripts\]/)'; then
+            echo 'Android package contains raw project paths; encrypted PCK export was not applied.' >&2
+            exit 1
+          fi
+
+      - name: Upload Android package
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-android
+          path: build/Godothub.apk
+          if-no-files-found: error
+
+  export-linux:
+    if: inputs.platform == 'all' || inputs.platform == 'linux'
+    needs: secure-engine
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      SCRIPT_AES256_ENCRYPTION_KEY: ${{ secrets.SCRIPT_AES256_ENCRYPTION_KEY }}
+      GODOT_SCRIPT_ENCRYPTION_KEY: ${{ secrets.SCRIPT_AES256_ENCRYPTION_KEY }}
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Download secure engine artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: secure-engine
+          path: engine
+
+      - name: Export encrypted Linux package
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$GODOT_SCRIPT_ENCRYPTION_KEY" =~ ^[0-9a-fA-F]{64}$ ]]; then
+            echo 'SCRIPT_AES256_ENCRYPTION_KEY must contain exactly 64 hexadecimal characters.' >&2
+            exit 1
+          fi
+
+          editor="$(find engine/gdkey-secure-linux-editor -type f -iname '*editor*' -print -quit)"
+          template="$(find engine/gdkey-secure-linux-template-release -type f -iname '*template_release*' -print -quit)"
+          if [[ -z "$editor" || -z "$template" ]]; then
+            echo 'Secure Linux editor or release template was not found.' >&2
+            exit 1
+          fi
+          chmod +x "$editor" "$template"
+
+          version="$("$editor" --version | awk 'NR == 1 { print $1 }')"
+          version="${version%%.gh.*}"
+          if [[ -z "$version" ]]; then
+            echo 'Unable to determine the secure Godot version.' >&2
+            exit 1
+          fi
+
+          export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
+          template_root="$XDG_DATA_HOME/godot/export_templates/$version"
+          mkdir -p "$template_root"
+          cp "$template" "$template_root/linux_debug.x86_64"
+          cp "$template" "$template_root/linux_release.x86_64"
+
+          mkdir -p build
+          "$editor" --headless --path . --export-release 'Linux/X11' build/Godothub.x86_64
+          test -f build/Godothub.x86_64
+          package_path="$RUNNER_TEMP/Godothub-linux.tar.gz"
+          tar -czf "$package_path" -C build .
+          mv "$package_path" build/Godothub-linux.tar.gz
+
+      - name: Upload Linux package
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-linux
+          path: build/Godothub-linux.tar.gz
+          if-no-files-found: error
+
+  release:
+    if: |
+      always() &&
+      ((inputs.platform == 'all' && needs.export-windows.result == 'success' && needs.export-web.result == 'success' && needs.export-android.result == 'success' && needs.export-linux.result == 'success') ||
+       (inputs.platform == 'windows' && needs.export-windows.result == 'success') ||
+       (inputs.platform == 'linux' && needs.export-linux.result == 'success') ||
+       (inputs.platform == 'web' && needs.export-web.result == 'success') ||
+       (inputs.platform == 'android' && needs.export-android.result == 'success'))
+    needs: [export-windows, export-web, export-android, export-linux]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: package-*
+          path: release-artifacts
+          merge-multiple: true
+
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1.18.0
+        with:
+          token: ${{ github.token }}
+          generateReleaseNotes: true
+          tag: ${{ inputs.version }}
+          name: Release ${{ inputs.version }}
+          prerelease: ${{ inputs.prerelease }}
+          artifacts: release-artifacts/*
