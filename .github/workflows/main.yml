@@ -47,7 +47,7 @@ jobs:
           Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/$env:GODOT_VERSION/Godot_v$env:GODOT_VERSION_export_templates.tpz" -OutFile templates.tpz
           $templatesDir = Join-Path $env:APPDATA "Godot\export_templates\4.7.stable"
           New-Item -ItemType Directory -Force -Path $templatesDir | Out-Null
-          tar -xf templates.tpz -C $templatesDir
+          Expand-Archive templates.tpz -DestinationPath $templatesDir
           Move-Item (Join-Path $templatesDir "templates/*") $templatesDir -Force
           Remove-Item (Join-Path $templatesDir "templates") -Recurse -Force
 
@@ -92,7 +92,7 @@ jobs:
           export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
           templates_dir="$XDG_DATA_HOME/godot/export_templates/4.7.stable"
           mkdir -p "$templates_dir"
-          tar -xf templates.tpz -C "$templates_dir"
+          unzip -o -q templates.tpz -d "$templates_dir"
           mv "$templates_dir"/templates/* "$templates_dir"
           rm -rf "$templates_dir/templates"
 
@@ -138,7 +138,7 @@ jobs:
           export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
           templates_dir="$XDG_DATA_HOME/godot/export_templates/4.7.stable"
           mkdir -p "$templates_dir"
-          tar -xf templates.tpz -C "$templates_dir"
+          unzip -o -q templates.tpz -d "$templates_dir"
           mv "$templates_dir"/templates/* "$templates_dir"
           rm -rf "$templates_dir/templates"
 
@@ -177,7 +177,7 @@ jobs:
           export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
           templates_dir="$XDG_DATA_HOME/godot/export_templates/4.7.stable"
           mkdir -p "$templates_dir"
-          tar -xf templates.tpz -C "$templates_dir"
+          unzip -o -q templates.tpz -d "$templates_dir"
           mv "$templates_dir"/templates/* "$templates_dir"
           rm -rf "$templates_dir/templates"
 
