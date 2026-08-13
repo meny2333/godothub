@@ -35,6 +35,21 @@ jobs:
           sudo apt install -y wine64 wine32
           echo "WINE_PATH=$(which wine)" >> $GITHUB_OUTPUT
 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Generate Android signing keystore
+        run: |
+          keytool -genkeypair -v \
+            -keystore android.keystore \
+            -alias godothub \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass godothub123 -keypass godothub123 \
+            -dname "CN=Godothub, OU=Godothub, O=Godothub, L=City, ST=State, C=US"
+
       - name: Export Game
         id: export
         uses: firebelley/godot-export@v7.0.0
@@ -45,7 +60,7 @@ jobs:
           relative_export_path: ./build
           archive_output: true
           wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
-          presets_to_export: Windows Desktop,Linux/X11,Web
+          presets_to_export: Windows Desktop,Linux/X11,Web,Android
 
       - name: Create Release
         uses: ncipollo/release-action@v1.18.0
