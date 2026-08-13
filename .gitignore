@@ -2,3 +2,6 @@
 .*/
 !.github/
 !.githooks/
+!.godot/
+# Never commit credentials
+.godot/export_credentials.cfg

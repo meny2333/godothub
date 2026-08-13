@@ -1,0 +1,8 @@
+LowPolyTerrainManager
+Node3D
+AnimationPlayer
+MeshInstance3D
+StaticBody3D
+CollisionShape3D
+Camera3D
+Control
