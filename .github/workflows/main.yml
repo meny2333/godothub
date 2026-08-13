@@ -38,13 +38,13 @@ jobs:
       - name: Download Godot editor
         shell: pwsh
         run: |
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/$env:GODOT_VERSION/Godot_v$env:GODOT_VERSION_win64.exe.zip" -OutFile editor.zip
+          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/${env:GODOT_VERSION}/Godot_v${env:GODOT_VERSION}_win64.exe.zip" -OutFile editor.zip
           Expand-Archive editor.zip -DestinationPath editor
 
       - name: Download export templates
         shell: pwsh
         run: |
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/$env:GODOT_VERSION/Godot_v$env:GODOT_VERSION_export_templates.tpz" -OutFile templates.tpz
+          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/${env:GODOT_VERSION}/Godot_v${env:GODOT_VERSION}_export_templates.tpz" -OutFile templates.tpz
           $templatesDir = Join-Path $env:APPDATA "Godot\export_templates\4.7.stable"
           New-Item -ItemType Directory -Force -Path $templatesDir | Out-Null
           Expand-Archive templates.tpz -DestinationPath $templatesDir
