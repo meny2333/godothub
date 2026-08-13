@@ -1,6 +1,8 @@
 extends Area3D
 class_name GuidanceBox
 
+signal activated
+
 @export var trigger_distance: float = 1.0
 @export var appear_distance: float = 600.0
 @export var can_be_triggered: bool = true
@@ -64,6 +66,7 @@ func _process(_delta: float) -> void:
 
 func _trigger() -> void:
 	triggered = true
+	activated.emit()
 	set_process(false)
 	_disappear(true)
 	var effect: Node3D = _trigger_effect.instantiate() as Node3D

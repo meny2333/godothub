@@ -103,6 +103,7 @@ var _tail_pool: ObjectPool = ObjectPool.new(TAIL_POOL_SIZE)
 var _tail_body_pool: ObjectPool = ObjectPool.new(TAIL_POOL_SIZE)
 
 func _ready() -> void:
+	add_to_group("Player")
 	instance = self
 	if not Engine.is_editor_hint():
 		if not LevelManager.camera_checkpoint.has_checkpoint:
@@ -129,27 +130,12 @@ func _ready() -> void:
 		var overlay: DebugOverlay = debug_overlay_scene.instantiate()
 		add_child(overlay)
 
-	# 实例化 StartPage（启动界面）
-	var start_page_scene: PackedScene = load("res://#Template/[Resources]/StartPage.tscn") as PackedScene
-	if start_page_scene and not Engine.is_editor_hint():
-		# 加载持久化设置（对齐 Unity PlayerPrefs）
+	if not Engine.is_editor_hint():
+		# StartPage is disabled, but its persisted settings still apply.
 		var saved: Dictionary = SetLatency.load_settings()
 		musicDelay = saved.delay
 		musicVolume = saved.volume
 		GraphicsQuality.load_settings()
-
-		var page: StartPage = start_page_scene.instantiate()
-		add_child(page)
-		page.set_setting("latency", musicDelay)
-		page.set_setting("volume", musicVolume)
-		page.set_setting("quality", GraphicsQuality.get_quality_label())
-		page.set_setting("antialiasing", GraphicsQuality.get_antialiasing_label())
-		page.shadow_checkbox.button_pressed = GraphicsQuality.shadows_enabled
-		page.post_checkbox.button_pressed = GraphicsQuality.post_process_enabled
-		page.start_requested.connect(_on_start_from_startpage)
-		page.setting_changed.connect(_on_setting_changed)
-		page.shadow_toggled.connect(_on_shadow_toggled)
-		page.post_toggled.connect(_on_post_toggled)
 		GraphicsQuality.apply_to_scene(get_viewport(), get_tree(), get_scene_environment())
 	if not Engine.is_editor_hint():
 		call_deferred("_clear_scene_reload_guard")
@@ -214,8 +200,19 @@ func _move_head(delta: float) -> void:
 	var forward: Vector3 = basis * Vector3.BACK
 	position += forward * speed * delta
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if not Engine.is_editor_hint():
+		if event is InputEventMouseButton and get_viewport().gui_get_hovered_control():
+			return
+		var skin_selector: Node = get_tree().current_scene.get_node_or_null("SkinSelector")
+		if skin_selector and skin_selector.has_method("consumes_turn_input") \
+				and bool(skin_selector.call("consumes_turn_input", event)):
+			return
+		var tutorial_manager: Node = get_tree().current_scene.get_node_or_null(
+				"BasicOBJ_Group/TutorialManager")
+		if tutorial_manager and tutorial_manager.has_method("consumes_turn_input") \
+				and bool(tutorial_manager.call("consumes_turn_input", event)):
+			return
 		# StartPage 显示时，鼠标点击由 StartPage 的信号处理
 		if not is_start and event is InputEventMouseButton:
 			var page: CanvasLayer = get_node_or_null("StartPage") as CanvasLayer
@@ -594,6 +591,12 @@ func _resume_managed_animators() -> void:
 		if animator and not animator.current_animation.is_empty():
 			animator.play()
 
+func _resume_fake_players() -> void:
+	for fake_node: Node in get_tree().get_nodes_in_group("fake_players"):
+		var fake: FakePlayer = fake_node as FakePlayer
+		if fake and fake.playing:
+			fake.state = FakePlayer.State.Moving
+
 func _play_land_effect() -> void:
 	if is_instance_valid(land_effect):
 		land_effect.restart()
@@ -634,12 +637,14 @@ func turn() -> void:
 		if _delay_applied:
 			_play_music_from_level_data()
 			LevelManager.GameState = LevelManager.GameStatus.Playing
+			_resume_fake_players()
 			velocity = to_global(Vector3(0, 0, 1) * speed) - position
 			new_line()
 		elif musicDelay > 0:
 			_delay_applied = true
 			# 正值：线立即移动，音乐延后播放（对齐 Unity delay > 0 分支）
 			LevelManager.GameState = LevelManager.GameStatus.Playing
+			_resume_fake_players()
 			velocity = to_global(Vector3(0, 0, 1) * speed) - position
 			new_line()
 			get_tree().create_timer(musicDelay).timeout.connect(_play_music_from_level_data)
@@ -652,6 +657,7 @@ func turn() -> void:
 			_delay_applied = true
 			# 零值：音画同步启动（原行为）
 			LevelManager.GameState = LevelManager.GameStatus.Playing
+			_resume_fake_players()
 			velocity = to_global(Vector3(0, 0, 1) * speed) - position
 			new_line()
 			_play_music_from_level_data()
@@ -665,7 +671,9 @@ func _play_music_from_level_data() -> void:
 		$MusicPlayer.volume_db = linear_to_db(max(musicVolume, 0.001))
 	elif not $MusicPlayer.playing:
 		$MusicPlayer.stream = levelData.levelAudioClip
-		var start_time: float = levelData.get_audio_start_time()
+		var start_time: float = LevelManager.music_checkpoint_time
+		if start_time <= 0.0:
+			start_time = levelData.get_audio_start_time()
 		_play_music(start_time)
 
 ## 播放音乐，补偿系统音频延迟（AudioServer）并应用用户音量设置
@@ -684,6 +692,7 @@ func _play_music(start_time: float) -> void:
 ## musicDelay < 0 时：timer 回调，启动游戏移动（对齐 Unity delay < 0 分支的 yield 之后逻辑）
 func _start_game_after_delay() -> void:
 	LevelManager.GameState = LevelManager.GameStatus.Playing
+	_resume_fake_players()
 	velocity = to_global(Vector3(0, 0, 1) * speed) - position
 
 	new_line()
@@ -701,7 +710,10 @@ func die(spawn_particles: bool = true, death_state: LevelManager.GameStatus = Le
 		if death_state == LevelManager.GameStatus.Died:
 			velocity = Vector3.ZERO
 		if animation_node: animation_node.pause()
-		LevelManager.GameOverNormal(false)
+		if is_instance_valid(LevelManager.current_checkpoint):
+			LevelManager.GameOverRevive()
+		else:
+			LevelManager.GameOverNormal(false)
 		AudioManager.fade_out()
 		if spawn_particles:
 			$AudioStreamPlayer.play()

@@ -4,6 +4,10 @@ extends Resource
 
 ## 关卡数据资源，用于存储关卡配置
 
+const SETTINGS_PATH: String = "user://settings.cfg"
+const UI_SECTION: String = "ui"
+const LANGUAGE_KEY: String = "language"
+
 @export var saveID: int = 0
 @export var levelTitleKey: String = "LevelName"
 @export var speed: float = 12.0
@@ -19,7 +23,17 @@ extends Resource
 
 @export var colors: Array[SingleColor] = []
 @export var levelTitle: String = "LevelName"
+@export var levelTitleZh: String = ""
+@export var levelTitleEn: String = ""
 @export var authors: Array[AuthorInfo] = []
+
+
+func get_localized_title() -> String:
+	var config: ConfigFile = ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	var is_chinese: bool = str(config.get_value(UI_SECTION, LANGUAGE_KEY, "zh")) != "en"
+	var localized_title: String = levelTitleZh if is_chinese else levelTitleEn
+	return localized_title if not localized_title.is_empty() else levelTitle
 
 
 ## 应用关卡数据到游戏

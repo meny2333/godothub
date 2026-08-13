@@ -32,4 +32,6 @@ levelTitleKey = "Sample"
 levelAudioClip = ExtResource("5_0jt0t")
 colors = Array[ExtResource("2_fgp04")]([SubResource("Resource_c57ag"), SubResource("Resource_tno1u")])
 levelTitle = "测试场景"
+levelTitleZh = "测试场景"
+levelTitleEn = "SAMPLE SCENE"
 authors = Array[ExtResource("1_erimn")]([SubResource("Resource_1icaj")])

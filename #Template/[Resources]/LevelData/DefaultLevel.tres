@@ -7,3 +7,5 @@
 [resource]
 script = ExtResource("1_abc123")
 levelTitle = "默认关卡"
+levelTitleZh = "默认关卡"
+levelTitleEn = "DEFAULT LEVEL"

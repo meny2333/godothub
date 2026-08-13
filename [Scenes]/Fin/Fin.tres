@@ -7,7 +7,7 @@
 [ext_resource type="Material" uid="uid://doxmslr5ic6ox" path="res://#Template/[Materials]/Obstacle.tres" id="5_42eh5"]
 [ext_resource type="Script" uid="uid://dwvw82b5c55ey" path="res://#Template/[Scripts]/Settings/LevelData.gd" id="6_6umwh"]
 [ext_resource type="AudioStream" uid="uid://0pejlu2afsll" path="res://[Scenes]/Fin/Peaceful_Stagnation.mp3" id="6_42eh5"]
-[ext_resource type="Material" uid="uid://b8qq4p3m4h7x" path="res://Assets/Low Poly Rocks Pack/Bonus Assets/Meshes/Pyramid/extracted/Pyramid.default.material" id="6_il0am"]
+[ext_resource type="Material" uid="uid://cr35f8sijc5gw" path="res://#Template/[Materials]/Pyramid.tres" id="6_il0am"]
 
 [sub_resource type="Resource" id="Resource_efp58"]
 script = ExtResource("1_y60ok")
@@ -36,14 +36,16 @@ metadata/_custom_type_script = "uid://cpejwvo4pns1"
 [sub_resource type="Resource" id="Resource_sw8gx"]
 script = ExtResource("2_42eh5")
 material = ExtResource("6_il0am")
-color = Color(0.32915837, 0.3291584, 0.3291584, 1)
+color = Color(0.058420584, 0.0584206, 0.058420606, 1)
 metadata/_custom_type_script = "uid://cpejwvo4pns1"
 
 [resource]
 script = ExtResource("6_6umwh")
 saveID = 1
-levelTitleKey = "Sample"
+levelTitleKey = "EchoRealm"
 levelAudioClip = ExtResource("6_42eh5")
 colors = Array[ExtResource("2_42eh5")]([SubResource("Resource_wej6y"), SubResource("Resource_6jkf8"), SubResource("Resource_y60ok"), SubResource("Resource_sw8gx")])
-levelTitle = "Fin"
+levelTitle = "回声之境"
+levelTitleZh = "回声之境"
+levelTitleEn = "ECHO REALM"
 authors = Array[ExtResource("1_y60ok")]([SubResource("Resource_efp58")])

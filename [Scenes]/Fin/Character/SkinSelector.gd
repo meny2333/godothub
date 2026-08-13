@@ -4,17 +4,21 @@ class_name SkinSelector
 const CLASSIC_SKIN: String = "classic"
 const GODOT_SKIN_ID: String = "godot"
 const GODOT_SKIN: String = "res://[Scenes]/Fin/Character/SkinGodot.tscn"
-const CLASSIC_IMAGE: String = "res://[Scenes]/Fin/classical.png"
-const GODOT_IMAGE: String = "res://[Scenes]/Fin/godot.png"
+const CLASSIC_IMAGE: String = "res://[Scenes]/Fin/classical-transparent.png"
+const GODOT_IMAGE: String = "res://[Scenes]/Fin/godot-transparent.png"
 const CAMERA_TRANSITION_DURATION: float = 0.45
 const COLLAPSED_PANEL_TOP: float = -180.0
 const OPEN_PANEL_TOP: float = -430.0
+const SETTINGS_PATH: String = "user://settings.cfg"
+const UI_SECTION: String = "ui"
+const FIN_STAGE_ENTRY_META: StringName = &"fin_stage_entry"
+const PART1_STAGE_INDEX: int = 0
+const FULL_LEVEL_STAGE_INDEX: int = 3
 
 @onready var panel: PanelContainer = $Panel
 @onready var skin_button: Button = $Panel/Contents/CurrentRow/SkinButton
 @onready var current_preview: TextureRect = $Panel/Contents/CurrentRow/CurrentPreview
 @onready var current_name: Label = $Panel/Contents/CurrentRow/CurrentInfo/CurrentName
-@onready var current_detail: Label = $Panel/Contents/CurrentRow/CurrentInfo/CurrentDetail
 @onready var options: VBoxContainer = $Panel/Contents/Options
 @onready var classic_button: Button = $Panel/Contents/Options/Cards/ClassicButton
 @onready var godot_button: Button = $Panel/Contents/Options/Cards/GodotButton
@@ -33,6 +37,7 @@ var original_camera_rotation: Vector3 = Vector3.ZERO
 var original_camera_saved: bool = false
 var current_skin: String = GODOT_SKIN_ID
 var locked: bool = false
+var is_chinese: bool = true
 
 func _ready() -> void:
 	player = get_tree().current_scene.get_node_or_null("BasicOBJ_Group/Player") as Player
@@ -40,6 +45,10 @@ func _ready() -> void:
 	options.visible = false
 	input_blocker.visible = false
 	modal_dimmer.visible = false
+	var settings: ConfigFile = ConfigFile.new()
+	settings.load(SETTINGS_PATH)
+	is_chinese = str(settings.get_value(UI_SECTION, "language", "zh")) != "en"
+	_apply_language()
 	classic_button.pressed.connect(_select_classic)
 	godot_button.pressed.connect(_select_godot)
 	input_blocker.gui_input.connect(_on_input_blocker_gui_input)
@@ -60,6 +69,17 @@ func _toggle_options() -> void:
 	else:
 		_open_options()
 
+func consumes_turn_input(event: InputEvent) -> bool:
+	if locked or not visible:
+		return false
+	if options.visible:
+		return event is InputEventMouseButton or event is InputEventScreenTouch
+	if event is InputEventMouseButton:
+		return event.pressed and panel.get_global_rect().has_point(event.position)
+	if event is InputEventScreenTouch:
+		return event.pressed and panel.get_global_rect().has_point(event.position)
+	return false
+
 func _on_input_blocker_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton \
 			and event.pressed \
@@ -74,15 +94,23 @@ func _open_options() -> void:
 	options.visible = true
 	input_blocker.visible = true
 	modal_dimmer.visible = true
-	_tween_camera_to(preview_camera)
+	if _allows_camera_preview():
+		_tween_camera_to(preview_camera)
 
 func _close_options() -> void:
 	options.visible = false
 	panel.offset_top = COLLAPSED_PANEL_TOP
 	input_blocker.visible = false
 	modal_dimmer.visible = false
-	if original_camera_saved and gameplay_camera:
+	if _allows_camera_preview() and original_camera_saved and gameplay_camera:
 		_tween_camera_to_pose(original_camera_position, original_camera_rotation)
+
+func _allows_camera_preview() -> bool:
+	var current_scene: Node = get_tree().current_scene
+	if not is_instance_valid(current_scene):
+		return false
+	var stage_index: int = int(current_scene.get_meta(FIN_STAGE_ENTRY_META, PART1_STAGE_INDEX))
+	return stage_index == PART1_STAGE_INDEX or stage_index == FULL_LEVEL_STAGE_INDEX
 
 func _save_original_camera_pose() -> void:
 	if original_camera_saved or not gameplay_camera:
@@ -114,7 +142,7 @@ func _select_classic() -> void:
 	_remove_godot_skin()
 	current_skin = CLASSIC_SKIN
 	_update_selection_visual()
-	if options.visible:
+	if options.visible and _allows_camera_preview():
 		_tween_camera_to(preview_camera)
 
 func _select_godot() -> void:
@@ -137,7 +165,7 @@ func _select_godot() -> void:
 	player.on_game_over.connect(godot_skin.play_die)
 	current_skin = GODOT_SKIN_ID
 	_update_selection_visual()
-	if options.visible:
+	if options.visible and _allows_camera_preview():
 		_tween_camera_to(preview_camera)
 
 func _remove_godot_skin() -> void:
@@ -154,10 +182,23 @@ func _update_selection_visual() -> void:
 	var is_classic: bool = current_skin == CLASSIC_SKIN
 	var preview_texture: Texture2D = load(CLASSIC_IMAGE if is_classic else GODOT_IMAGE) as Texture2D
 	current_preview.texture = preview_texture
-	current_name.text = "经典" if is_classic else "Godot"
-	current_detail.text = "经典角色" if is_classic else "低多边形角色"
+	current_name.text = ("经典" if is_chinese else "CLASSIC") if is_classic else "Godot"
 	classic_selected_bar.visible = is_classic
 	godot_selected_bar.visible = not is_classic
+
+func _apply_language() -> void:
+	$Panel/Contents/Header/TitleStack/Title.text = "皮肤" if is_chinese else "SKINS"
+	$Panel/Contents/CurrentRow/CurrentInfo/CurrentCaption.text = "当前使用" if is_chinese else "CURRENT"
+	skin_button.text = "更换" if is_chinese else "CHANGE"
+	skin_button.tooltip_text = "打开皮肤选择" if is_chinese else "OPEN SKIN SELECTOR"
+	$Panel/Contents/Options/OptionsHeader/Title.text = "选择角色外观" if is_chinese else "CHOOSE A SKIN"
+	$Panel/Contents/Options/OptionsHeader/Hint.text = "游戏开始前" if is_chinese else "BEFORE START"
+	$Panel/Contents/Options/Cards/ClassicButton/CardContent/Name.text = "经典" if is_chinese else "CLASSIC"
+	$Panel/Contents/Options/Cards/ClassicButton/CardContent/Detail.text = "原始角色" if is_chinese else "ORIGINAL FORM"
+	$Panel/Contents/Options/Cards/GodotButton/CardContent/Detail.text = "低多边形角色" if is_chinese else "LOW-POLY FORM"
+	$Panel/Contents/Options/BottomHint.text = "点击面板外区域关闭" if is_chinese else "CLICK OUTSIDE TO CLOSE"
+	classic_button.tooltip_text = "选择经典皮肤" if is_chinese else "SELECT CLASSIC SKIN"
+	godot_button.tooltip_text = "选择 Godot 皮肤" if is_chinese else "SELECT GODOT SKIN"
 
 func _lock_selection() -> void:
 	locked = true

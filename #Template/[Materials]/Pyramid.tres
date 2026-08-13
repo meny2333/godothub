@@ -1,6 +1,5 @@
-[gd_resource type="StandardMaterial3D" format=3]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cr35f8sijc5gw"]
 
 [resource]
 resource_name = "Pyramid"
-albedo_color = Color(0.5647059, 0.5647059, 0.5647059, 1)
-roughness = 1.0
+albedo_color = Color(0.058420584, 0.0584206, 0.058420606, 1)

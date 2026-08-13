@@ -5,6 +5,7 @@ extends FakePlayer
 ## FakePlayer movement with the Fin Godot character visual and animation behavior.
 
 @export var godotCharacter: GodotCharacter
+@export_range(0.0, 1.0, 0.01) var characterOpacity: float = 0.5
 
 var _last_visual_state: FakePlayer.State = FakePlayer.State.Stopped
 var _was_dead: bool = false
@@ -39,12 +40,16 @@ func _ready() -> void:
 	_set_world_rotation(firstDirection)
 	state = FakePlayer.State.Stopped
 	_setup_collision_layers()
+	if synchronismWithPlayer:
+		# Follow Player.onturn so synchronized FakePlayers also work with autoplay.
+		call_deferred("_connect_player_turn")
 
 	if godotCharacter == null and _body:
 		godotCharacter = _body.get_node_or_null("GodotCharacter") as GodotCharacter
 	if godotCharacter == null:
 		push_error("GodotFakePlayer requires a GodotCharacter below its CharacterBody3D host")
 		return
+	_make_character_transparent_unshaded(godotCharacter)
 	call_deferred("_sync_animation_state", true)
 
 
@@ -65,6 +70,23 @@ func _create_tail() -> void:
 	pass
 
 
+func _connect_player_turn() -> void:
+	if not synchronismWithPlayer:
+		return
+	var player: Player = Player.instance
+	if not player:
+		if is_inside_tree():
+			call_deferred("_connect_player_turn")
+		return
+	if player and not player.onturn.is_connected(_on_player_turn):
+		player.onturn.connect(_on_player_turn)
+
+
+func _on_player_turn() -> void:
+	if state == FakePlayer.State.Moving:
+		_create_turn_trigger()
+
+
 func set_reset_data(data: Dictionary) -> void:
 	super.set_reset_data(data)
 	_sync_animation_state(true)
@@ -82,7 +104,46 @@ func _sync_animation_state(force: bool = false) -> void:
 		_last_visual_state = state
 		return
 
-	if force or _was_dead or state != _last_visual_state:
-		godotCharacter.set_moving(state == FakePlayer.State.Moving)
+	if state == FakePlayer.State.Stopped:
+		_ensure_idle_animation()
+	elif force or _was_dead or state != _last_visual_state:
+		godotCharacter.set_moving(true)
 	_was_dead = false
 	_last_visual_state = state
+
+
+func _ensure_idle_animation() -> void:
+	var animation_player: AnimationPlayer = godotCharacter.animation_player
+	if animation_player == null or animation_player.current_animation != GodotCharacter.IDLE_ANIMATION:
+		godotCharacter.play_idle()
+
+
+func _make_character_transparent_unshaded(character: Node) -> void:
+	if character is MeshInstance3D:
+		_prepare_mesh_materials(character as MeshInstance3D)
+	for child: Node in character.get_children():
+		_make_character_transparent_unshaded(child)
+
+
+func _prepare_mesh_materials(mesh_instance: MeshInstance3D) -> void:
+	if mesh_instance.mesh == null:
+		return
+	for surface_index: int in range(mesh_instance.mesh.get_surface_count()):
+		var source_material: Material = mesh_instance.get_active_material(surface_index)
+		if source_material is BaseMaterial3D:
+			var material: BaseMaterial3D = source_material.duplicate() as BaseMaterial3D
+			material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			var color: Color = material.albedo_color
+			color.a = characterOpacity
+			material.albedo_color = color
+			mesh_instance.set_surface_override_material(surface_index, material)
+
+
+func _exit_tree() -> void:
+	if Engine.is_editor_hint():
+		return
+	var player: Player = Player.instance
+	if player and player.onturn.is_connected(_on_player_turn):
+		player.onturn.disconnect(_on_player_turn)
+	super._exit_tree()
