@@ -7,14 +7,13 @@ const UNLOCKED_STAGE_COUNT_KEY: String = "unlocked_stage_count"
 const FULL_MODE_UNLOCKED_KEY: String = "full_mode_unlocked"
 const STAGE_COUNT: int = 4
 const FIN_SCENE_PATH: String = "res://[Scenes]/Fin/Fin.tscn"
-const ECHO_REALM_SCENE_PATH: String = "res://[Scenes]/EchoRealm/EchoRealm.tscn"
 const FIN_STAGE_ENTRY_META: StringName = &"fin_stage_entry"
 const FULL_LEVEL_JUST_UNLOCKED_META: StringName = &"full_level_just_unlocked"
 const STAGE_SCENE_PATHS: Array[String] = [
 	FIN_SCENE_PATH,
 	FIN_SCENE_PATH,
 	FIN_SCENE_PATH,
-	ECHO_REALM_SCENE_PATH,
+	FIN_SCENE_PATH,
 ]
 
 const STAGE_TITLES_ZH: Array[String] = ["初滞", "回声", "终章", "回声之境"]
@@ -374,8 +373,6 @@ func _is_stage_unlocked(index: int) -> bool:
 func _get_stage_scene_path(index: int) -> String:
 	if index < 0 or index >= STAGE_SCENE_PATHS.size():
 		return ""
-	if index == STAGE_COUNT - 1 and _full_mode_unlocked:
-		return FIN_SCENE_PATH
 	return STAGE_SCENE_PATHS[index]
 
 func _launch_stage(index: int) -> void:
