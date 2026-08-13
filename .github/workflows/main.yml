@@ -11,220 +11,48 @@ on:
         description: Mark the GitHub release as a prerelease
         type: boolean
         default: true
-      platform:
-        description: Export one platform or all configured platforms
-        type: choice
-        options:
-          - all
-          - windows
-          - linux
-          - android
-          - web
-        default: all
 
 env:
   GODOT_VERSION: 4.7-stable
 
 jobs:
-  export-windows:
-    if: inputs.platform == 'all' || inputs.platform == 'windows'
-    runs-on: windows-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
-
-      - name: Download Godot editor
-        shell: pwsh
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/${env:GODOT_VERSION}/Godot_v${env:GODOT_VERSION}_win64.exe.zip" -OutFile editor.zip
-          Expand-Archive editor.zip -DestinationPath editor
-
-      - name: Download export templates
-        shell: pwsh
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/${env:GODOT_VERSION}/Godot_v${env:GODOT_VERSION}_export_templates.tpz" -OutFile templates.tpz
-          $templatesDir = Join-Path $env:APPDATA "Godot\export_templates\4.7.stable"
-          New-Item -ItemType Directory -Force -Path $templatesDir | Out-Null
-          Expand-Archive templates.tpz -DestinationPath $templatesDir
-          Move-Item (Join-Path $templatesDir "templates/*") $templatesDir -Force
-          Remove-Item (Join-Path $templatesDir "templates") -Recurse -Force
-
-      - name: Export Windows package
-        shell: pwsh
-        run: |
-          $editor = Get-ChildItem editor -Recurse -File -Filter *.exe | Select-Object -First 1
-          New-Item -ItemType Directory -Force -Path build | Out-Null
-          & $editor.FullName --headless --path . --export-release 'Windows Desktop' (Join-Path $env:GITHUB_WORKSPACE 'build\Godothub.exe')
-          if ($LASTEXITCODE -ne 0) {
-            throw "Windows export failed with exit code $LASTEXITCODE."
-          }
-          $packagePath = Join-Path $env:RUNNER_TEMP 'Godothub-windows.zip'
-          Compress-Archive -Path (Join-Path $env:GITHUB_WORKSPACE 'build\*') -DestinationPath $packagePath -Force
-          Move-Item $packagePath (Join-Path $env:GITHUB_WORKSPACE 'build\Godothub-windows.zip') -Force
-
-      - name: Upload Windows package
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-windows
-          path: build/Godothub-windows.zip
-          if-no-files-found: error
-
-  export-web:
-    if: inputs.platform == 'all' || inputs.platform == 'web'
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
-
-      - name: Download Godot editor
-        run: |
-          curl -sL -o editor.zip "https://github.com/godotengine/godot/releases/download/$GODOT_VERSION/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
-          unzip -o editor.zip
-          find . -maxdepth 1 -type f -iname '*linux*' -exec chmod +x {} \;
-
-      - name: Download export templates
-        run: |
-          curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/$GODOT_VERSION/Godot_v${GODOT_VERSION}_export_templates.tpz"
-          export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
-          templates_dir="$XDG_DATA_HOME/godot/export_templates/4.7.stable"
-          mkdir -p "$templates_dir"
-          unzip -o -q templates.tpz -d "$templates_dir"
-          mv "$templates_dir"/templates/* "$templates_dir"
-          rm -rf "$templates_dir/templates"
-
-      - name: Export Web package
-        run: |
-          export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
-          editor="$(find . -maxdepth 1 -type f -iname 'Godot_v*_linux.x86_64' -print -quit)"
-          mkdir -p build/web
-          "$editor" --headless --path . --export-release Web build/web/index.html
-          tar -czf build/Godothub-web.tar.gz -C build/web .
-
-      - name: Upload Web package
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-web
-          path: build/Godothub-web.tar.gz
-          if-no-files-found: error
-
-  export-android:
-    if: inputs.platform == 'all' || inputs.platform == 'android'
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Download Godot editor
-        run: |
-          curl -sL -o editor.zip "https://github.com/godotengine/godot/releases/download/$GODOT_VERSION/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
-          unzip -o editor.zip
-          find . -maxdepth 1 -type f -iname '*linux*' -exec chmod +x {} \;
-
-      - name: Download export templates
-        run: |
-          curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/$GODOT_VERSION/Godot_v${GODOT_VERSION}_export_templates.tpz"
-          export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
-          templates_dir="$XDG_DATA_HOME/godot/export_templates/4.7.stable"
-          mkdir -p "$templates_dir"
-          unzip -o -q templates.tpz -d "$templates_dir"
-          mv "$templates_dir"/templates/* "$templates_dir"
-          rm -rf "$templates_dir/templates"
-
-      - name: Export Android package
-        run: |
-          export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
-          editor="$(find . -maxdepth 1 -type f -iname 'Godot_v*_linux.x86_64' -print -quit)"
-          mkdir -p build
-          "$editor" --headless --path . --export-release Android build/Godothub.apk
-
-      - name: Upload Android package
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-android
-          path: build/Godothub.apk
-          if-no-files-found: error
-
-  export-linux:
-    if: inputs.platform == 'all' || inputs.platform == 'linux'
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
-
-      - name: Download Godot editor
-        run: |
-          curl -sL -o editor.zip "https://github.com/godotengine/godot/releases/download/$GODOT_VERSION/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
-          unzip -o editor.zip
-          find . -maxdepth 1 -type f -iname '*linux*' -exec chmod +x {} \;
-
-      - name: Download export templates
-        run: |
-          curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/$GODOT_VERSION/Godot_v${GODOT_VERSION}_export_templates.tpz"
-          export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
-          templates_dir="$XDG_DATA_HOME/godot/export_templates/4.7.stable"
-          mkdir -p "$templates_dir"
-          unzip -o -q templates.tpz -d "$templates_dir"
-          mv "$templates_dir"/templates/* "$templates_dir"
-          rm -rf "$templates_dir/templates"
-
-      - name: Export Linux package
-        run: |
-          export XDG_DATA_HOME="$RUNNER_TEMP/godot-data"
-          editor="$(find . -maxdepth 1 -type f -iname 'Godot_v*_linux.x86_64' -print -quit)"
-          mkdir -p build
-          "$editor" --headless --path . --export-release 'Linux/X11' build/Godothub.x86_64
-          test -f build/Godothub.x86_64
-          package_path="$RUNNER_TEMP/Godothub-linux.tar.gz"
-          tar -czf "$package_path" -C build .
-          mv "$package_path" build/Godothub-linux.tar.gz
-
-      - name: Upload Linux package
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-linux
-          path: build/Godothub-linux.tar.gz
-          if-no-files-found: error
-
-  release:
-    if: |
-      always() &&
-      ((inputs.platform == 'all' && needs.export-windows.result == 'success' && needs.export-web.result == 'success' && needs.export-android.result == 'success' && needs.export-linux.result == 'success') ||
-       (inputs.platform == 'windows' && needs.export-windows.result == 'success') ||
-       (inputs.platform == 'linux' && needs.export-linux.result == 'success') ||
-       (inputs.platform == 'web' && needs.export-web.result == 'success') ||
-       (inputs.platform == 'android' && needs.export-android.result == 'success'))
-    needs: [export-windows, export-web, export-android, export-linux]
-    runs-on: ubuntu-24.04
+  export_game:
+    runs-on: ubuntu-latest
+    name: Export Game Job
     permissions:
       contents: write
     steps:
-      - name: Download packages
-        uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v5
         with:
-          pattern: package-*
-          path: release-artifacts
-          merge-multiple: true
+          fetch-depth: 0
 
-      - name: Create GitHub release
+      - name: Install Wine
+        id: wine_install
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y wine64 wine32
+          echo "WINE_PATH=$(which wine)" >> $GITHUB_OUTPUT
+
+      - name: Export Game
+        id: export
+        uses: firebelley/godot-export@v7.0.0
+        with:
+          godot_executable_download_url: https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip
+          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz
+          relative_project_path: ./
+          relative_export_path: ./build
+          archive_output: true
+          wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
+          presets_to_export: Windows Desktop,Linux/X11,Web
+
+      - name: Create Release
         uses: ncipollo/release-action@v1.18.0
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           generateReleaseNotes: true
           tag: ${{ inputs.version }}
           name: Release ${{ inputs.version }}
           prerelease: ${{ inputs.prerelease }}
-          artifacts: release-artifacts/*
+          artifacts: ${{ steps.export.outputs.archive_directory }}/*
