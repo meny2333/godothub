@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ew4guqhxh80q"
 path.s3tc="res://.godot/imported/Tree_Pack_Pallete.png-d86b829b302c908aba24c5e8c728f86e.s3tc.ctex"
+path.etc2="res://.godot/imported/Tree_Pack_Pallete.png-d86b829b302c908aba24c5e8c728f86e.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/LowPolyNaturePack4Seasons/w_Pallete/Textures/Tree_Pack_Pallete.png"
-dest_files=["res://.godot/imported/Tree_Pack_Pallete.png-d86b829b302c908aba24c5e8c728f86e.s3tc.ctex"]
+dest_files=["res://.godot/imported/Tree_Pack_Pallete.png-d86b829b302c908aba24c5e8c728f86e.s3tc.ctex", "res://.godot/imported/Tree_Pack_Pallete.png-d86b829b302c908aba24c5e8c728f86e.etc2.ctex"]
 
 [params]
 

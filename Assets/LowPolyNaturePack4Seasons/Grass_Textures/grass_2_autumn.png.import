@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ct6vsp6d0bkwb"
 path.s3tc="res://.godot/imported/grass_2_autumn.png-2423ae00d33694abdd58742f9df6d8ad.s3tc.ctex"
+path.etc2="res://.godot/imported/grass_2_autumn.png-2423ae00d33694abdd58742f9df6d8ad.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/LowPolyNaturePack4Seasons/Grass_Textures/grass_2_autumn.png"
-dest_files=["res://.godot/imported/grass_2_autumn.png-2423ae00d33694abdd58742f9df6d8ad.s3tc.ctex"]
+dest_files=["res://.godot/imported/grass_2_autumn.png-2423ae00d33694abdd58742f9df6d8ad.s3tc.ctex", "res://.godot/imported/grass_2_autumn.png-2423ae00d33694abdd58742f9df6d8ad.etc2.ctex"]
 
 [params]
 

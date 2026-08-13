@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cf87xybn6y5ok"
 path.s3tc="res://.godot/imported/Flower_camomile.png-246c4b65c6fc38bb4c9b2ce3efc5b8e1.s3tc.ctex"
+path.etc2="res://.godot/imported/Flower_camomile.png-246c4b65c6fc38bb4c9b2ce3efc5b8e1.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/LowPolyNaturePack4Seasons/Grass_Textures/Flower_camomile.png"
-dest_files=["res://.godot/imported/Flower_camomile.png-246c4b65c6fc38bb4c9b2ce3efc5b8e1.s3tc.ctex"]
+dest_files=["res://.godot/imported/Flower_camomile.png-246c4b65c6fc38bb4c9b2ce3efc5b8e1.s3tc.ctex", "res://.godot/imported/Flower_camomile.png-246c4b65c6fc38bb4c9b2ce3efc5b8e1.etc2.ctex"]
 
 [params]
 

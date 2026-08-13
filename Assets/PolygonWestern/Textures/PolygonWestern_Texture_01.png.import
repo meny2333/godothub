@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://c7nyjej0r0nb8"
 path.s3tc="res://.godot/imported/PolygonWestern_Texture_01.png-61a57de3600c04b4e8d4ad96b26a9b5f.s3tc.ctex"
+path.etc2="res://.godot/imported/PolygonWestern_Texture_01.png-61a57de3600c04b4e8d4ad96b26a9b5f.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/PolygonWestern/Textures/PolygonWestern_Texture_01.png"
-dest_files=["res://.godot/imported/PolygonWestern_Texture_01.png-61a57de3600c04b4e8d4ad96b26a9b5f.s3tc.ctex"]
+dest_files=["res://.godot/imported/PolygonWestern_Texture_01.png-61a57de3600c04b4e8d4ad96b26a9b5f.s3tc.ctex", "res://.godot/imported/PolygonWestern_Texture_01.png-61a57de3600c04b4e8d4ad96b26a9b5f.etc2.ctex"]
 
 [params]
 

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://fwqt6bo765h4"
 path.s3tc="res://.godot/imported/FireParticleSystem.png-09c209dd5f2b5dbc506126a0dc2e6cce.s3tc.ctex"
+path.etc2="res://.godot/imported/FireParticleSystem.png-09c209dd5f2b5dbc506126a0dc2e6cce.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/Low Poly Rocks Pack/Bonus Assets/Textures/FireParticleSystem.png"
-dest_files=["res://.godot/imported/FireParticleSystem.png-09c209dd5f2b5dbc506126a0dc2e6cce.s3tc.ctex"]
+dest_files=["res://.godot/imported/FireParticleSystem.png-09c209dd5f2b5dbc506126a0dc2e6cce.s3tc.ctex", "res://.godot/imported/FireParticleSystem.png-09c209dd5f2b5dbc506126a0dc2e6cce.etc2.ctex"]
 
 [params]
 

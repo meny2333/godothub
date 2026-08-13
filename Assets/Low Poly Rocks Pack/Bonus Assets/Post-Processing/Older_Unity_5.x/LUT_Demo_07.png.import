@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://r3486x0xm066"
 path.s3tc="res://.godot/imported/LUT_Demo_07.png-6c23d04e97050c6e3997b06918fe7659.s3tc.ctex"
+path.etc2="res://.godot/imported/LUT_Demo_07.png-6c23d04e97050c6e3997b06918fe7659.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/Low Poly Rocks Pack/Bonus Assets/Post-Processing/Older_Unity_5.x/LUT_Demo_07.png"
-dest_files=["res://.godot/imported/LUT_Demo_07.png-6c23d04e97050c6e3997b06918fe7659.s3tc.ctex"]
+dest_files=["res://.godot/imported/LUT_Demo_07.png-6c23d04e97050c6e3997b06918fe7659.s3tc.ctex", "res://.godot/imported/LUT_Demo_07.png-6c23d04e97050c6e3997b06918fe7659.etc2.ctex"]
 
 [params]
 

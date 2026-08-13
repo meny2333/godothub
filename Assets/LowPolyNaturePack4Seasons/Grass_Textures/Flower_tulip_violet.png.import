@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bdquhf8xuxw0k"
 path.s3tc="res://.godot/imported/Flower_tulip_violet.png-57d51eaa47010b84da510fd82c66aa54.s3tc.ctex"
+path.etc2="res://.godot/imported/Flower_tulip_violet.png-57d51eaa47010b84da510fd82c66aa54.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/LowPolyNaturePack4Seasons/Grass_Textures/Flower_tulip_violet.png"
-dest_files=["res://.godot/imported/Flower_tulip_violet.png-57d51eaa47010b84da510fd82c66aa54.s3tc.ctex"]
+dest_files=["res://.godot/imported/Flower_tulip_violet.png-57d51eaa47010b84da510fd82c66aa54.s3tc.ctex", "res://.godot/imported/Flower_tulip_violet.png-57d51eaa47010b84da510fd82c66aa54.etc2.ctex"]
 
 [params]
 
