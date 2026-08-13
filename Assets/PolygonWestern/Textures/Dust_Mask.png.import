@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cv47bgkucnlnv"
 path.s3tc="res://.godot/imported/Dust_Mask.png-ac199e0e562f4b70de5f6b3aa48269f0.s3tc.ctex"
+path.etc2="res://.godot/imported/Dust_Mask.png-ac199e0e562f4b70de5f6b3aa48269f0.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/PolygonWestern/Textures/Dust_Mask.png"
-dest_files=["res://.godot/imported/Dust_Mask.png-ac199e0e562f4b70de5f6b3aa48269f0.s3tc.ctex"]
+dest_files=["res://.godot/imported/Dust_Mask.png-ac199e0e562f4b70de5f6b3aa48269f0.s3tc.ctex", "res://.godot/imported/Dust_Mask.png-ac199e0e562f4b70de5f6b3aa48269f0.etc2.ctex"]
 
 [params]
 

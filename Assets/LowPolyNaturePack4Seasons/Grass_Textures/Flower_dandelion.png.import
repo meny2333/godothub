@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://7fhcjml8kw2b"
 path.s3tc="res://.godot/imported/Flower_dandelion.png-08445c2dfefded40f82889d5a59f7713.s3tc.ctex"
+path.etc2="res://.godot/imported/Flower_dandelion.png-08445c2dfefded40f82889d5a59f7713.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/LowPolyNaturePack4Seasons/Grass_Textures/Flower_dandelion.png"
-dest_files=["res://.godot/imported/Flower_dandelion.png-08445c2dfefded40f82889d5a59f7713.s3tc.ctex"]
+dest_files=["res://.godot/imported/Flower_dandelion.png-08445c2dfefded40f82889d5a59f7713.s3tc.ctex", "res://.godot/imported/Flower_dandelion.png-08445c2dfefded40f82889d5a59f7713.etc2.ctex"]
 
 [params]
 

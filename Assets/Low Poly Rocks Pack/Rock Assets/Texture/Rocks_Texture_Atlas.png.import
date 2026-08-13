@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bp6gu4l2wvn0e"
 path.s3tc="res://.godot/imported/Rocks_Texture_Atlas.png-f26a58991b36e90d91590904fff39e98.s3tc.ctex"
+path.etc2="res://.godot/imported/Rocks_Texture_Atlas.png-f26a58991b36e90d91590904fff39e98.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/Low Poly Rocks Pack/Rock Assets/Texture/Rocks_Texture_Atlas.png"
-dest_files=["res://.godot/imported/Rocks_Texture_Atlas.png-f26a58991b36e90d91590904fff39e98.s3tc.ctex"]
+dest_files=["res://.godot/imported/Rocks_Texture_Atlas.png-f26a58991b36e90d91590904fff39e98.s3tc.ctex", "res://.godot/imported/Rocks_Texture_Atlas.png-f26a58991b36e90d91590904fff39e98.etc2.ctex"]
 
 [params]
 
