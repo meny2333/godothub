@@ -30,6 +30,16 @@ signal on_animation_end
 		play_sequence()
 
 func _grab_waypoint() -> void:
+	if not Engine.is_editor_hint():
+		return
+	var editor_interface: Object = Engine.get_singleton("EditorInterface")
+	if editor_interface == null:
+		push_error("[MovingPosMax] 无法访问编辑器接口")
+		return
+	var undo_redo: Object = editor_interface.call("get_editor_undo_redo")
+	if undo_redo == null:
+		push_error("[MovingPosMax] 无法访问编辑器撤销管理器")
+		return
 	var target: Node3D = animated_object if animated_object else self
 	var new_pos: Vector3 = target.global_position
 	var old_positions: Array[Vector3] = target_positions.duplicate()
@@ -43,15 +53,14 @@ func _grab_waypoint() -> void:
 	new_durations.append(duration)
 	new_waits.append(0.0)
 
-	var undo_redo: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
-	undo_redo.create_action("抓取路径点")
-	undo_redo.add_do_property(self, "target_positions", new_positions)
-	undo_redo.add_do_property(self, "move_durations", new_durations)
-	undo_redo.add_do_property(self, "wait_times", new_waits)
-	undo_redo.add_undo_property(self, "target_positions", old_positions)
-	undo_redo.add_undo_property(self, "move_durations", old_durations)
-	undo_redo.add_undo_property(self, "wait_times", old_waits)
-	undo_redo.commit_action()
+	undo_redo.call("create_action", "抓取路径点")
+	undo_redo.call("add_do_property", self, "target_positions", new_positions)
+	undo_redo.call("add_do_property", self, "move_durations", new_durations)
+	undo_redo.call("add_do_property", self, "wait_times", new_waits)
+	undo_redo.call("add_undo_property", self, "target_positions", old_positions)
+	undo_redo.call("add_undo_property", self, "move_durations", old_durations)
+	undo_redo.call("add_undo_property", self, "wait_times", old_waits)
+	undo_redo.call("commit_action")
 
 	print("目标位置: ", new_pos)
 	print("当前路径点数组: ", target_positions)

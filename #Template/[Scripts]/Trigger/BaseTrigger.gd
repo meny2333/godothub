@@ -28,6 +28,10 @@ var _behaviors: Array[Node] = []
 func _add_component() -> void:
 	if not Engine.is_editor_hint():
 		return
+	var editor_interface: Object = Engine.get_singleton("EditorInterface")
+	if editor_interface == null:
+		push_error("[BaseTrigger] 无法访问编辑器接口")
+		return
 	if component_script == null or not component_script.can_instantiate():
 		push_error("[BaseTrigger] 请先选择一个可实例化的组件脚本")
 		return
@@ -42,24 +46,31 @@ func _add_component() -> void:
 		script_name = component_script.resource_name
 	component.name = script_name if not script_name.is_empty() else "TriggerComponent"
 	var scene_owner: Node = owner
-	var undo_redo: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
-	undo_redo.create_action("添加触发器组件")
-	undo_redo.add_do_method(self, "add_child", component, true)
+	var undo_redo: Object = editor_interface.call("get_editor_undo_redo")
+	if undo_redo == null:
+		component.free()
+		push_error("[BaseTrigger] 无法访问编辑器撤销管理器")
+		return
+	undo_redo.call("create_action", "添加触发器组件")
+	undo_redo.call("add_do_method", self, "add_child", component, true)
 	if scene_owner:
-		undo_redo.add_do_method(component, "set_owner", scene_owner)
-	undo_redo.add_do_method(self, "refresh_behaviors")
-	undo_redo.add_undo_method(self, "remove_child", component)
-	undo_redo.add_undo_method(self, "refresh_behaviors")
-	undo_redo.add_do_reference(component)
-	undo_redo.commit_action()
+		undo_redo.call("add_do_method", component, "set_owner", scene_owner)
+	undo_redo.call("add_do_method", self, "refresh_behaviors")
+	undo_redo.call("add_undo_method", self, "remove_child", component)
+	undo_redo.call("add_undo_method", self, "refresh_behaviors")
+	undo_redo.call("add_do_reference", component)
+	undo_redo.call("commit_action")
 
-	EditorInterface.mark_scene_as_unsaved()
+	editor_interface.call("mark_scene_as_unsaved")
 	notify_property_list_changed()
 	call_deferred("_edit_component", component)
 
 func _edit_component(component: Node) -> void:
-	if is_instance_valid(component):
-		EditorInterface.edit_node(component)
+	if not Engine.is_editor_hint() or not is_instance_valid(component):
+		return
+	var editor_interface: Object = Engine.get_singleton("EditorInterface")
+	if editor_interface:
+		editor_interface.call("edit_node", component)
 
 func _ready() -> void:
 	if not body_entered.is_connected(_on_body_entered):
