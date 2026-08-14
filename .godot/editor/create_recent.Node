@@ -1,7 +1,7 @@
-LowPolyTerrainManager
 Node3D
-AnimationPlayer
 MeshInstance3D
+LowPolyTerrainManager
+AnimationPlayer
 StaticBody3D
 CollisionShape3D
 Camera3D
