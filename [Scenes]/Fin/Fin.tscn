@@ -3309,7 +3309,7 @@ transform = Transform3D(2.5, 0, 0, 0, 12.136228, 0, 0, 0, 2.5, 498.7517, 4.11687
 
 [node name="cam" type="Node3D" parent="Scene_Group/part3/Trigger8" unique_id=1641806420]
 script = ExtResource("16_0ru4s")
-offset = Vector3(15, 3, 15)
+offset = Vector3(18, -1, 17)
 camera_rotation = Vector3(10, 45, 0)
 duration = 5.0
 
@@ -5202,7 +5202,7 @@ targetPlayer = NodePath("../../../../BasicOBJ_Group/GodotFakePlayer/GodotFakePla
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262.94263, 0, 377.3116)
 
 [node name="CrownCheckpoint" parent="collection/Crown/Area3D" index="3"]
-GameTime = 53.266575
+GameTime = 53.322
 direction = 1
 camera_new = SubResource("Resource_q2oci")
 camera_old = SubResource("Resource_ykiuf")
