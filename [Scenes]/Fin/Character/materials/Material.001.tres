@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://b4tobucw5hf8j"]
+
+[ext_resource type="Texture2D" uid="uid://c3sjsb3vs36fe" path="res://[Scenes]/Fin/Character/godot_0.png" id="1_g153r"]
+[ext_resource type="Texture2D" uid="uid://bo6173ygl64ri" path="res://[Scenes]/Fin/Character/godot_1.png" id="2_r2rtp"]
+
+[resource]
+resource_name = "Material.001"
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_g153r")
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.0
+normal_scale = 0.0
+normal_texture = ExtResource("2_r2rtp")
+distance_fade_mode = 2
+distance_fade_min_distance = 1.0
+distance_fade_max_distance = 5.0
