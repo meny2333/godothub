@@ -63,13 +63,19 @@ func _ensureOverlay() -> void:
 
 func _getActiveCamera() -> Camera3D:
 	if Engine.is_editor_hint():
-		var editorViewport: SubViewport = EditorInterface.get_editor_viewport_3d()
+		var editorInterface: Object = Engine.get_singleton("EditorInterface")
+		if editorInterface == null:
+			return null
+		var editorViewport: SubViewport = editorInterface.call("get_editor_viewport_3d") as SubViewport
 		return editorViewport.get_camera_3d() if editorViewport != null else null
 	return get_viewport().get_camera_3d()
 
 func _getViewportSize() -> Vector2:
 	if Engine.is_editor_hint():
-		var editorViewport: SubViewport = EditorInterface.get_editor_viewport_3d()
+		var editorInterface: Object = Engine.get_singleton("EditorInterface")
+		if editorInterface == null:
+			return Vector2.ZERO
+		var editorViewport: SubViewport = editorInterface.call("get_editor_viewport_3d") as SubViewport
 		return editorViewport.get_visible_rect().size if editorViewport != null else Vector2.ZERO
 	return get_viewport().get_visible_rect().size
 

@@ -30,42 +30,51 @@ signal on_animation_end
 # 工具按钮操作的是自身（子节点）
 @export_tool_button("Get Original Value")
 var get_start_action: Callable = func() -> void:
+	var undo_redo: Object = _get_editor_undo_redo()
+	if undo_redo == null:
+		return
 	var old_value: Vector3 = start_value
 	start_value = _get_value(self)
-	var undo_redo: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
-	undo_redo.create_action("Get Original Value")
-	undo_redo.add_do_property(self, "start_value", start_value)
-	undo_redo.add_undo_property(self, "start_value", old_value)
-	undo_redo.commit_action(false)
+	undo_redo.call("create_action", "Get Original Value")
+	undo_redo.call("add_do_property", self, "start_value", start_value)
+	undo_redo.call("add_undo_property", self, "start_value", old_value)
+	undo_redo.call("commit_action", false)
 	notify_property_list_changed()
 
 @export_tool_button("Set Original Value")
 var set_start_action: Callable = func() -> void:
+	var undo_redo: Object = _get_editor_undo_redo()
+	if undo_redo == null:
+		return
 	var old_value: Vector3 = _get_value(self)
-	var undo_redo: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
-	undo_redo.create_action("Set Original Value")
-	undo_redo.add_do_method(self, "_set_value", self, start_value)
-	undo_redo.add_undo_method(self, "_set_value", self, old_value)
-	undo_redo.commit_action(false)
+	undo_redo.call("create_action", "Set Original Value")
+	undo_redo.call("add_do_method", self, "_set_value", self, start_value)
+	undo_redo.call("add_undo_method", self, "_set_value", self, old_value)
+	undo_redo.call("commit_action", false)
 	notify_property_list_changed()
 
 @export_tool_button("Get New Value")
 var get_end_action: Callable = func() -> void:
+	var undo_redo: Object = _get_editor_undo_redo()
+	if undo_redo == null:
+		return
 	var old_value: Vector3 = end_offset
 	match transform_type:
 		TransformType.New:
 			end_offset = _get_value(self)
 		TransformType.Add:
 			end_offset = _get_value(self) - start_value
-	var undo_redo: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
-	undo_redo.create_action("Get New Value")
-	undo_redo.add_do_property(self, "end_offset", end_offset)
-	undo_redo.add_undo_property(self, "end_offset", old_value)
-	undo_redo.commit_action(false)
+	undo_redo.call("create_action", "Get New Value")
+	undo_redo.call("add_do_property", self, "end_offset", end_offset)
+	undo_redo.call("add_undo_property", self, "end_offset", old_value)
+	undo_redo.call("commit_action", false)
 	notify_property_list_changed()
 
 @export_tool_button("Set New Value")
 var set_end_action: Callable = func() -> void:
+	var undo_redo: Object = _get_editor_undo_redo()
+	if undo_redo == null:
+		return
 	var old_value: Vector3 = _get_value(self)
 	var target_value: Vector3
 	match transform_type:
@@ -75,15 +84,22 @@ var set_end_action: Callable = func() -> void:
 		TransformType.Add:
 			target_value = start_value + end_offset
 			_set_value(self, start_value + end_offset)
-	var undo_redo: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
-	undo_redo.create_action("Set New Value")
-	undo_redo.add_do_method(self, "_set_value", self, target_value)
-	undo_redo.add_undo_method(self, "_set_value", self, old_value)
-	undo_redo.commit_action(false)
+	undo_redo.call("create_action", "Set New Value")
+	undo_redo.call("add_do_method", self, "_set_value", self, target_value)
+	undo_redo.call("add_undo_method", self, "_set_value", self, old_value)
+	undo_redo.call("commit_action", false)
 	notify_property_list_changed()
 
 @export_tool_button("Play")
 var play_action: Callable = func() -> void: Trigger()
+
+func _get_editor_undo_redo() -> Object:
+	if not Engine.is_editor_hint():
+		return null
+	var editor_interface: Object = Engine.get_singleton("EditorInterface")
+	if editor_interface == null:
+		return null
+	return editor_interface.call("get_editor_undo_redo") as Object
 
 func _init() -> void:
 	if Engine.is_editor_hint():
