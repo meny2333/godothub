@@ -223,7 +223,7 @@ text = "皮肤"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
 theme_override_font_sizes/font_size = 11
-text = "游戏开始前"
+text = "启程之前"
 
 [node name="CloseButton" type="Button" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Header"]
 custom_minimum_size = Vector2(64, 34)
@@ -254,7 +254,7 @@ theme_override_constants/separation = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
 theme_override_font_sizes/font_size = 11
-text = "当前使用"
+text = "此刻同行"
 
 [node name="CurrentName" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/CurrentRow/CurrentInfo"]
 layout_mode = 2
@@ -276,7 +276,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.91, 0.71, 0.36, 1)
 theme_override_font_sizes/font_size = 13
-text = "选择角色外观"
+text = "选择谁与你同行"
 
 [node name="Cards" type="HBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents"]
 layout_mode = 2
@@ -406,7 +406,7 @@ tooltip_text = "预览滑铲动画"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.47, 0.5, 0.53, 1)
 theme_override_font_sizes/font_size = 10
-text = "点击面板外区域关闭"
+text = "轻触外面，回到世界"
 horizontal_alignment = 2
 
 [node name="SettingsPanelHolder" type="Control" parent="."]
@@ -468,7 +468,7 @@ text = "关闭"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
 theme_override_font_sizes/font_size = 12
-text = "调整音画同步。改动会立即保存。"
+text = "让声音与画面，与你的节奏同行。改动即刻生效。"
 autowrap_mode = 2
 
 [node name="Divider" type="ColorRect" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]

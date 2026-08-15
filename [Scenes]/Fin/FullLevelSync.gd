@@ -19,6 +19,7 @@ const SPAWN_GODOT_SCRIPT_PATH: String = "res://[Scenes]/Fin/[Scripts]/Trigger/Sp
 var sync_value: float = 0.0
 var _active: bool = false
 var _depleted: bool = false
+var _frozen: bool = false
 var _tracked_crystals: Array[Node] = []
 var _tracked_crowns: Array[CrownCheckpoint] = []
 var _tracked_states: Dictionary = {}
@@ -34,7 +35,7 @@ func _exit_tree() -> void:
 		_restore_normal_speed()
 
 func _process(delta: float) -> void:
-	if not _active or _depleted:
+	if not _active or _depleted or _frozen:
 		return
 	_track_collections()
 	if LevelManager.GameState != LevelManager.GameStatus.Playing:
@@ -55,8 +56,24 @@ func restore_sync(amount: float) -> void:
 
 func set_sync_value(value: float) -> void:
 	sync_value = clampf(value, 0.0, 100.0)
-	_apply_speed()
+	# 完全暂停（残影玩法教学）期间冻结速度控制，恢复后由 _process 重新接管。
+	if not _frozen:
+		_apply_speed()
 	_update_hud()
+
+
+## 冻结 / 解冻同步速度控制。冻结期间不衰减、不改写 Engine.time_scale，
+## 由 SpawnGodotCharacter 的残影玩法全暂停接管时间与音乐。
+func set_frozen(frozen: bool) -> void:
+	_frozen = frozen
+
+
+## 同步率系统当前应生效的 time_scale（与 _apply_speed 计算结果一致）。
+## 供外部在恢复暂停时 tween 到该值，避免解冻后与 _apply_speed 产生跳变。
+func get_current_time_scale() -> float:
+	if not _active:
+		return 1.0
+	return lerpf(minimum_time_scale, maximum_time_scale, sync_value / 100.0)
 
 func _initialize() -> void:
 	# LevelHolder applies the menu entry in its deferred _ready callback.

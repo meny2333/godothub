@@ -20,6 +20,7 @@ const FIRST_STALL_TEXT: StringName = &"first_stall"
 const ADAPT_TEXT: StringName = &"adapt"
 const COMPLETE_TEXT: StringName = &"complete"
 const SUMMON_PROMPT_TEXT: StringName = &"summon_prompt"
+const AFTERIMAGE_PROMPT_TEXT: StringName = &"afterimage_prompt"
 signal opening_intertitle_continue_requested
 const NARRATIVE_TEXTS: Dictionary = {
 	INTRO_TEXT: {CHINESE_LANGUAGE: "世界开始变慢，你还没意识到。", ENGLISH_LANGUAGE: "The world begins to slow before you notice."},
@@ -29,6 +30,7 @@ const NARRATIVE_TEXTS: Dictionary = {
 	ADAPT_TEXT: {CHINESE_LANGUAGE: "你开始习惯它的节奏——滞后，但可预测。", ENGLISH_LANGUAGE: "You are learning its rhythm: delayed, yet predictable."},
 	COMPLETE_TEXT: {CHINESE_LANGUAGE: "前方的路，似乎有另一个你在等待。", ENGLISH_LANGUAGE: "Ahead, it seems another you is waiting."},
 	SUMMON_PROMPT_TEXT: {CHINESE_LANGUAGE: "点击呼唤回声", ENGLISH_LANGUAGE: "Click to summon the echo."},
+	AFTERIMAGE_PROMPT_TEXT: {CHINESE_LANGUAGE: "这是你的残影——它慢三秒，重复着你的每一步。\n点击它，与它同步，继续前行。", ENGLISH_LANGUAGE: "This is your afterimage - repeating your every step, three seconds behind.\nClick it to sync and move on."},
 	CLICK_INDICATOR_TEXT: {CHINESE_LANGUAGE: "点击", ENGLISH_LANGUAGE: "CLICK"},
 }
 
@@ -71,6 +73,7 @@ var guidance_nodes: Array[Node3D] = []
 var click_indicator: Panel
 var click_indicator_label: Label
 var click_indicator_tween: Tween
+var _narrative_tween: Tween
 var click_indicator_world_position: Vector3 = Vector3.ZERO
 var click_indicator_has_world_position: bool = false
 var _language: String = CHINESE_LANGUAGE
@@ -235,9 +238,9 @@ func _set_stage(next_stage: TutorialStage, text_key: StringName) -> void:
 	_show_narrative(_get_text(text_key))
 
 
-func show_narrative(text: String) -> void:
+func show_narrative(text: String, hold_override: float = -1.0) -> void:
 	_refresh_language()
-	_show_narrative(_translate_external_narrative(text))
+	_show_narrative(_translate_external_narrative(text), hold_override)
 
 
 func set_tutorial_slow_motion(slow: bool) -> void:
@@ -318,7 +321,7 @@ func show_opening_intertitle(title: String, body: String) -> void:
 	get_tree().paused = was_tree_paused
 
 ## 非全屏玩法介绍：屏幕下方居中的卡片浮层，不暂停游戏、不遮挡全屏，
-## 点击任意处关闭（由透明拦截层处理，不会触发转向）。
+## 点击任意处继续（由透明拦截层处理，不会触发转向）。
 func show_guide_panel(title: String, body: String) -> void:
 	_refresh_language()
 	var layer: CanvasLayer = CanvasLayer.new()
@@ -370,7 +373,7 @@ func show_guide_panel(title: String, body: String) -> void:
 	body_label.add_theme_color_override("font_color", Color(0.72, 0.78, 0.82, 1.0))
 	copy.add_child(body_label)
 	var hint_label: Label = Label.new()
-	hint_label.text = "点击任意处关闭" if _language == CHINESE_LANGUAGE else "CLICK ANYWHERE TO CLOSE"
+	hint_label.text = "点击任意处，继续你的路" if _language == CHINESE_LANGUAGE else "CLICK ANYWHERE TO CONTINUE"
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_label.add_theme_font_size_override("font_size", 11)
 	hint_label.add_theme_color_override("font_color", Color(0.47, 0.52, 0.56, 1.0))
@@ -522,19 +525,28 @@ func _position_click_indicator() -> void:
 	click_indicator.position = screen_position - click_indicator.size * 0.5
 
 
-func _show_narrative(text: String) -> void:
+func _show_narrative(text: String, hold_override: float = -1.0) -> void:
 	if not narrative_label:
 		return
-	var tween := create_tween()
-	tween.set_ignore_time_scale(true)
-	tween.kill()
+	if _narrative_tween and _narrative_tween.is_valid():
+		_narrative_tween.kill()
 	narrative_label.text = text
 	narrative_label.modulate.a = 0.0
-	tween = create_tween()
-	tween.set_ignore_time_scale(true)
-	tween.tween_property(narrative_label, "modulate:a", 1.0, 0.35)
-	tween.tween_interval(narrative_hold)
-	tween.tween_property(narrative_label, "modulate:a", 0.0, 0.65)
+	_narrative_tween = create_tween()
+	_narrative_tween.set_ignore_time_scale(true)
+	_narrative_tween.tween_property(narrative_label, "modulate:a", 1.0, 0.35)
+	_narrative_tween.tween_interval(narrative_hold if hold_override < 0.0 else hold_override)
+	_narrative_tween.tween_property(narrative_label, "modulate:a", 0.0, 0.65)
+
+
+## 立即清除当前叙事文案（用于完全暂停结束时隐藏残影玩法说明）。
+func clear_narrative() -> void:
+	if _narrative_tween and _narrative_tween.is_valid():
+		_narrative_tween.kill()
+		_narrative_tween = null
+	if narrative_label:
+		narrative_label.text = ""
+		narrative_label.modulate.a = 0.0
 
 
 func _refresh_language() -> void:

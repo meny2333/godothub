@@ -206,14 +206,14 @@ func _apply_language() -> void:
 	settings_button.text = "设置" if _is_chinese else "SETTINGS"
 	$SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent/Kicker.text = "一段关于时间、记忆与错过的旅程" if _is_chinese else "A JOURNEY THROUGH TIME, MEMORY, AND WHAT WE MISS"
 	$SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent/Title.text = "追上那个\n迟到的自己" if _is_chinese else "CATCH UP WITH\nTHE SELF BEHIND YOU"
-	explore_button.text = "选择章节" if _is_chinese else "SELECT CHAPTER"
+	explore_button.text = "踏入回声" if _is_chinese else "ENTER THE ECHO"
 	quick_start_button.text = "继续你的回响" if _is_chinese else "CONTINUE YOUR ECHO"
 	back_button.text = "返回" if _is_chinese else "BACK"
 	$SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow/HeadingCopy/ChapterKicker.text = "四段尚未抵达的路" if _is_chinese else "FOUR ROADS NOT YET ARRIVED"
 	$SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow/HeadingCopy/ChapterTitle.text = "选择你要进入的回声" if _is_chinese else "CHOOSE THE ECHO TO ENTER"
 	settings_title.text = "设置" if _is_chinese else "SETTINGS"
 	settings_close_button.text = "关闭" if _is_chinese else "CLOSE"
-	settings_intro.text = "调整音画同步。改动会立即保存。" if _is_chinese else "TUNE AUDIO SYNC. CHANGES SAVE IMMEDIATELY."
+	settings_intro.text = "让声音与画面，与你的节奏同行。改动即刻生效。" if _is_chinese else "SOUND AND VISION, IN STEP WITH YOUR BEAT. CHANGES TAKE EFFECT AT ONCE."
 	$SettingsPanel/PanelMargin/SettingsContent/LanguageRow/LanguageLabel.text = "语言" if _is_chinese else "LANGUAGE"
 	language_value_button.text = "中文" if _is_chinese else "ENGLISH"
 	antialiasing_label.text = "抗锯齿" if _is_chinese else "ANTI-ALIASING"
@@ -305,14 +305,14 @@ func _update_carousel_copy() -> void:
 	var subtitles: Array[String] = STAGE_SUBTITLES_ZH if _is_chinese else STAGE_SUBTITLES_EN
 	var statuses: Array[String] = []
 	for index: int in range(STAGE_COUNT):
-		var status: String = "可进入" if _is_chinese else "PLAYABLE"
+		var status: String = "回声在等你" if _is_chinese else "AN ECHO WAITS"
 		if not _is_stage_unlocked(index):
-			status = "通过上一段解锁" if _is_chinese else "COMPLETE THE PREVIOUS PART"
+			status = "先走过前面的路" if _is_chinese else "FINISH THE ROAD BEFORE"
 		elif index == STAGE_COUNT - 1:
 			if _full_mode_unlocked:
-				status = "完整内容已解锁" if _is_chinese else "FULL EXPERIENCE UNLOCKED"
+				status = "完整回声之境已敞开" if _is_chinese else "THE FULL ECHO REALM IS OPEN"
 			else:
-				status = "回声之境已解锁" if _is_chinese else "ECHO REALM UNLOCKED"
+				status = "回声之境已敞开" if _is_chinese else "THE ECHO REALM IS OPEN"
 		statuses.append(status)
 	carousel.call("configure_copy", titles, subtitles, statuses)
 
@@ -327,9 +327,9 @@ func _update_selected_stage_copy() -> void:
 	var stage_unlocked: bool = _is_stage_unlocked(_selected_stage)
 	launch_button.disabled = not scene_available or not stage_unlocked
 	if scene_available and stage_unlocked:
-		launch_button.text = "进入场景" if _is_chinese else "ENTER SCENE"
+		launch_button.text = "走向这段路" if _is_chinese else "WALK THIS ROAD"
 	elif not stage_unlocked:
-		launch_button.text = "尚未解锁" if _is_chinese else "LOCKED"
+		launch_button.text = "先走过前面的路" if _is_chinese else "FINISH THE ROAD BEFORE"
 	else:
 		launch_button.text = "制作中" if _is_chinese else "COMING SOON"
 
@@ -555,6 +555,9 @@ func _launch_stage(index: int) -> void:
 	await tween.finished
 	get_tree().root.set_meta("menu_launch_pending", true)
 	get_tree().root.set_meta(FIN_STAGE_ENTRY_META, index)
+	if index == STAGE_COUNT - 1:
+		# 完整关卡：本次"完整关卡之旅"重新计数死亡（坏结局触发与结局降档的依据）。
+		LevelManager.full_level_death_count = 0
 	var error: Error = get_tree().change_scene_to_file(scene_path)
 	if error != OK:
 		get_tree().root.remove_meta("menu_launch_pending")

@@ -687,6 +687,8 @@ environment = SubResource("Environment_ys6ci")
 
 [node name="GodotFakePlayer" parent="BasicOBJ_Group" unique_id=1000564597 instance=ExtResource("23_paapq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 529.4991, 14.053633, 585.0591)
+
+[node name="GodotFakePlayerComponent" parent="BasicOBJ_Group/GodotFakePlayer" index="0" unique_id=1954371817]
 click_sync_bonus = true
 
 [node name="GodotCharacter" parent="BasicOBJ_Group/GodotFakePlayer" index="1" unique_id=1377887965]
@@ -2781,6 +2783,7 @@ direction = Vector3(1, 0, 0)
 speed = 12.0
 alphaCurve = SubResource("Curve_l0yca")
 prompt_delay = 0.8
+full_pause_prompt = true
 
 [node name="Trigger3" parent="Scene_Group/part2/Scene_001" unique_id=720881174 instance=ExtResource("7_vxmub")]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 247.28969, -3.8146973e-06, 367.29684)
@@ -5209,8 +5212,11 @@ fog = SubResource("Resource_lsatc")
 light = SubResource("Resource_n1mob")
 ambient = SubResource("Resource_6cqu1")
 
+[node name="Crown" parent="collection/Crown" index="1" unique_id=1455513811]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3303528, 0, 0)
+
 [node name="RevivePosition" parent="collection/Crown" index="2" unique_id=1500499588]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.80648804, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3303528, 0, 0)
 
 [node name="CrownSprite" parent="collection/Crown" index="3" unique_id=1095474833]
 transform = Transform3D(-0.70710665, 2.9802322e-08, -0.70710677, 0, 0.9999999, 0, 0.70710665, 2.9802322e-08, -0.70710677, 2.1325233, 7.0800824, 4.4284515)
@@ -5225,6 +5231,12 @@ camera_old = SubResource("Resource_dtlcg")
 fog = SubResource("Resource_f1kye")
 light = SubResource("Resource_5q2c6")
 ambient = SubResource("Resource_vrii6")
+
+[node name="Crown" parent="collection/Crown2" index="1" unique_id=1455513811]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.584137)
+
+[node name="RevivePosition" parent="collection/Crown2" index="2" unique_id=1500499588]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.584137)
 
 [node name="CrownSprite" parent="collection/Crown2" index="3" unique_id=1095474833]
 transform = Transform3D(-0.38176775, 0.18301275, -0.9059578, -0.101721175, 0.96592563, 0.2379919, 0.9186435, 0.18301275, -0.35014307, 10.135147, 2.9180164, 12.7578125)

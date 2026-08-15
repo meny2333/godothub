@@ -69,7 +69,7 @@ func configure_copy(titles: Array[String], subtitles: Array[String], statuses: A
 
 ## 根据状态文字判断卡片是否可进入。
 func _is_playable(status: String) -> bool:
-	return status == "可进入" or status == "PLAYABLE"
+	return status == "回声在等你" or status == "AN ECHO WAITS"
 
 func set_selected(index: int, animate: bool = true) -> void:
 	var clamped_index: int = clampi(index, 0, cards.size() - 1)
