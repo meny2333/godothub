@@ -555,6 +555,9 @@ func _launch_stage(index: int) -> void:
 	await tween.finished
 	get_tree().root.set_meta("menu_launch_pending", true)
 	get_tree().root.set_meta(FIN_STAGE_ENTRY_META, index)
+	if index == STAGE_COUNT - 1:
+		# 完整关卡：本次"完整关卡之旅"重新计数死亡（坏结局触发与结局降档的依据）。
+		LevelManager.full_level_death_count = 0
 	var error: Error = get_tree().change_scene_to_file(scene_path)
 	if error != OK:
 		get_tree().root.remove_meta("menu_launch_pending")

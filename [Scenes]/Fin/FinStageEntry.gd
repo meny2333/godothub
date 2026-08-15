@@ -12,6 +12,7 @@ const PART3_MIRROR_FIN_PATH: NodePath = NodePath("Scene_Group/part3/p2mirrorl/fi
 const PART3_FINACTIVE_PATH: NodePath = NodePath("Scene_Group/part3/finactive")
 const PART2_CHECKPOINT_PATH: NodePath = NodePath("collection/Crown2/Area3D/CrownCheckpoint")
 const PART3_CHECKPOINT_PATH: NodePath = NodePath("collection/Crown/Area3D/CrownCheckpoint")
+const PART2_FIRST_ECHO_TRIGGER_PATH: NodePath = NodePath("Scene_Group/part2/Scene_001/Trigger/godot")
 const ECHO_REALM_SCENE_PATH: String = "res://[Scenes]/EchoRealm/EchoRealm.tscn"
 const ECHO_REALM_STAGE_INDEX: int = 3
 const MAIN_MENU_SCENE_PATH: String = "res://[Scenes]/MainMenu/MainMenu.tscn"
@@ -39,10 +40,10 @@ const PERFECT_ENDING_BODY_ZH: String = "同步率百分百。残影不再滞后�
 const PERFECT_ENDING_BODY_EN: String = "ONE HUNDRED PERCENT SYNC. THE ECHO NO LONGER LAGS - IT WALKS BESIDE YOU TOWARD THE SAME LIGHT."
 # 多结局：完整关卡按最终同步率分层（part3 100% 解锁最高档）
 const ENDING_LAYERS_ZH: Array[String] = [
-	"完美同步", "心意相通", "渐入佳境", "迟来的抵达", "残存的微光",
+	"完美同步 ✨", "心意相通 💞", "渐入佳境 🌄", "迟来的抵达 🌆", "残存的微光 🕯️",
 ]
 const ENDING_LAYERS_EN: Array[String] = [
-	"PERFECT SYNC", "HEARTS CONNECTED", "GROWING RHYTHM", "A LATE ARRIVAL", "A FADING LIGHT",
+	"PERFECT SYNC ✨", "HEARTS CONNECTED 💞", "GROWING RHYTHM 🌄", "A LATE ARRIVAL 🌆", "A FADING LIGHT 🕯️",
 ]
 const ENDING_BODIES_ZH: Array[String] = [
 	"part2 与 part3 同步率均达标。所有回声汇聚成一道光——你们终于完整。",
@@ -58,13 +59,33 @@ const ENDING_BODIES_EN: Array[String] = [
 	"SYNC NEARLY DEPLETED, YET YOU ARRIVED. THE ECHO GAZES AT YOU, LIKE A SELF WHO CAME LATE.",
 	"BARELY ANY SYNC REMAINS, AND THE LIGHT FADES BEHIND YOU. BUT THE ROAD IS DONE.",
 ]
-const PERFECT_SYNC_THRESHOLD: float = 90.0
-const GOOD_SYNC_THRESHOLD: float = 60.0
-const NORMAL_SYNC_THRESHOLD: float = 30.0
+# part3（终章stage 2）同步率实际可达上限约 70%（PART3_PERFECT_THRESHOLD 即完美线），
+# 原始 90/60/30 分层会把高档全部置于不可达区间，故映射到 60/45/30。
+const HIGH_SYNC_THRESHOLD: float = 60.0
+const MID_SYNC_THRESHOLD: float = 45.0
+const LOW_SYNC_THRESHOLD: float = 30.0
 const PART2_PERFECT_THRESHOLD: float = 98.0
 const PART3_PERFECT_THRESHOLD: float = 70.0
 const ENDINGS_SECTION: String = "endings"
 const PART3_PERFECT_KEY: String = "part3_perfect_sync"
+# 结局序数标签：好结局 1-5 档 + 坏结局
+const ENDING_ORDINALS_ZH: Array[String] = ["好结局一", "好结局二", "好结局三", "好结局四", "好结局五"]
+const ENDING_ORDINALS_EN: Array[String] = ["GOOD ENDING 1", "GOOD ENDING 2", "GOOD ENDING 3", "GOOD ENDING 4", "GOOD ENDING 5"]
+const BAD_ENDING_ORDINAL_ZH: String = "坏结局"
+const BAD_ENDING_ORDINAL_EN: String = "BAD ENDING"
+# 坏结局：完整关卡累计死亡达 8 次触发；每满 2 次死亡在通关结局中降 1 档
+const BAD_ENDING_DEATH_THRESHOLD: int = 8
+const DEATH_PENALTY_DIVISOR: int = 2
+const BAD_ENDING_TITLE_ZH: String = "微光熄灭 😭"
+const BAD_ENDING_TITLE_EN: String = "THE LIGHT GOES OUT 😭"
+const BAD_ENDING_BODY_ZH: String = "八次跌倒之后，残影终于不再追赶，只是站在原地，目送你远去。回声之境的门缓缓合拢——门没有上锁，想回来时，它依然为你敞开。🌫️"
+const BAD_ENDING_BODY_EN: String = "AFTER EIGHT FALLS, THE ECHO STOPS CHASING. IT STANDS STILL, WATCHING YOU GO. THE GATES OF THE ECHO REALM CLOSE SLOWLY — BUT THEY ARE NEVER LOCKED. THEY WILL OPEN FOR YOU AGAIN, ANYTIME. 🌫️"
+const BAD_ENDING_POEM_ZH: String = "无可奈何花落去，似曾相识燕归来。"
+const BAD_ENDING_POEM_EN: String = "FLOWERS FALL, HELPLESSLY GONE; THE SWALLOWS RETURN, FAMILIAR AS EVER."
+const BAD_ENDING_POEM_SOURCE_ZH: String = "—— 晏殊《浣溪沙》"
+const BAD_ENDING_POEM_SOURCE_EN: String = "— YAN SHU, \"YARN AT THE BROOK\""
+const BAD_ENDING_REPLAY_ZH: String = "重新开始"
+const BAD_ENDING_REPLAY_EN: String = "REPLAY"
 # part2/part3 同步率达标时的特殊结尾文案
 const PERFECT_PART2_TITLE_ZH: String = "完美回声"
 const PERFECT_PART2_TITLE_EN: String = "PERFECT ECHO"
@@ -139,6 +160,8 @@ const CREDITS_RETURN_EN: String = "RETURN TO MAIN MENU"
 var _stage_index: int = 0
 var _completion_processed: bool = false
 var _returning_to_menu: bool = false
+## 完整关卡死亡达阈值后置位：下一次 on_game_end 播放坏结局，取代普通结算页。
+var _bad_ending_pending: bool = false
 
 func _ready() -> void:
 	call_deferred("_apply_menu_stage_entry")
@@ -172,6 +195,7 @@ func _apply_menu_stage_entry() -> void:
 		3:
 			_remove_part(PART1_PYRAMID_PATH)
 			_remove_part(PART2_PYRAMID_PATH)
+			_disable_part2_full_pause_echo()
 	if _stage_index > 0 and _stage_index < STAGE_COUNT - 1:
 		_add_part_sync()
 	_configure_tutorial()
@@ -209,9 +233,38 @@ func _connect_completion_listener() -> void:
 		return
 	if not player.on_game_end.is_connected(_on_player_game_end):
 		player.on_game_end.connect(_on_player_game_end)
+	if not player.on_game_over.is_connected(_on_player_game_over):
+		player.on_game_over.connect(_on_player_game_over)
+
+## 完整关卡死亡计数：累计达阈值则下次结算进入坏结局。通关不经过 die()，不会误计。
+func _on_player_game_over() -> void:
+	if _stage_index != STAGE_COUNT - 1:
+		return
+	LevelManager.full_level_death_count += 1
+	_update_death_hint()
+	if LevelManager.full_level_death_count >= BAD_ENDING_DEATH_THRESHOLD:
+		_bad_ending_pending = true
+
+## 在死亡/复活结算页上显示"已跌倒 N/8"（on_game_over 先于结算页显示，文本先写好）。
+func _update_death_hint() -> void:
+	var level_ui: Control = get_node_or_null("BasicOBJ_Group/gameui") as Control
+	if not level_ui or not level_ui.has_method("set_death_hint"):
+		return
+	var config: ConfigFile = ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	var is_chinese: bool = str(config.get_value(UI_SECTION, LANGUAGE_KEY, "zh")) != "en"
+	var hint: String = ("已跌倒 %d/8，残影依然在等你 🌫️" if is_chinese else "FALLEN %d/8 · THE ECHO IS STILL WAITING 🌫️") \
+		% LevelManager.full_level_death_count
+	level_ui.call("set_death_hint", hint)
 
 func _on_player_game_end() -> void:
-	if _completion_processed or LevelManager.GameState != LevelManager.GameStatus.Completed:
+	if _completion_processed:
+		return
+	if _bad_ending_pending:
+		_bad_ending_pending = false
+		_handle_bad_ending()
+		return
+	if LevelManager.GameState != LevelManager.GameStatus.Completed:
 		return
 	_completion_processed = true
 	var full_level_just_unlocked: bool = _save_completion_progress()
@@ -271,12 +324,143 @@ func _store_sync_for_next_part() -> void:
 	if error != OK:
 		push_error("EchoRealmStageEntry: failed to save inherited sync (%s)" % error_string(error))
 
+## 坏结局接管：隐藏已弹出的死亡结算页，播放独立坏结局画面。不写任何进度。
+func _handle_bad_ending() -> void:
+	var level_ui: Control = get_node_or_null("BasicOBJ_Group/gameui") as Control
+	if level_ui:
+		level_ui.visible = false
+	_show_bad_ending()
+
+## 坏结局画面：黑幕淡入 + 结局名/正文/结局诗 + 「重新开始 / 返回主菜单」按钮，
+## 风格与完整关卡通关报幕的定格段一致（CanvasLayer 128，纯代码构建）。
+func _show_bad_ending() -> void:
+	AudioManager.stop()
+	get_tree().paused = false
+	var config: ConfigFile = ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	var is_chinese: bool = str(config.get_value(UI_SECTION, LANGUAGE_KEY, "zh")) != "en"
+	var title: String = BAD_ENDING_TITLE_ZH if is_chinese else BAD_ENDING_TITLE_EN
+	var body: String = BAD_ENDING_BODY_ZH if is_chinese else BAD_ENDING_BODY_EN
+	var poem: String = BAD_ENDING_POEM_ZH if is_chinese else BAD_ENDING_POEM_EN
+	var poem_source: String = BAD_ENDING_POEM_SOURCE_ZH if is_chinese else BAD_ENDING_POEM_SOURCE_EN
+	var replay_text: String = BAD_ENDING_REPLAY_ZH if is_chinese else BAD_ENDING_REPLAY_EN
+	var return_text: String = CREDITS_RETURN_ZH if is_chinese else CREDITS_RETURN_EN
+
+	var layer: CanvasLayer = CanvasLayer.new()
+	layer.layer = 128
+	add_child(layer)
+	var blackout: ColorRect = ColorRect.new()
+	blackout.color = Color.BLACK
+	blackout.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	blackout.mouse_filter = Control.MOUSE_FILTER_STOP
+	blackout.modulate.a = 0.0
+	layer.add_child(blackout)
+	var center: CenterContainer = CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(center)
+	var box: VBoxContainer = VBoxContainer.new()
+	box.add_theme_constant_override("separation", 26)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.modulate.a = 0.0
+	center.add_child(box)
+	var bad_ordinal: String = BAD_ENDING_ORDINAL_ZH if is_chinese else BAD_ENDING_ORDINAL_EN
+	var ordinal_label: Label = Label.new()
+	ordinal_label.text = bad_ordinal
+	ordinal_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ordinal_label.add_theme_font_size_override("font_size", 15)
+	ordinal_label.add_theme_color_override("font_color", Color(0.85, 0.45, 0.42, 1.0))
+	box.add_child(ordinal_label)
+	var title_label: Label = Label.new()
+	title_label.text = title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 34)
+	title_label.add_theme_color_override("font_color", Color(0.82, 0.4, 0.36, 1.0))
+	box.add_child(title_label)
+	var body_label: Label = Label.new()
+	body_label.text = body
+	body_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body_label.add_theme_font_size_override("font_size", 17)
+	body_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.8, 1.0))
+	box.add_child(body_label)
+	var poem_label: Label = Label.new()
+	poem_label.text = poem
+	poem_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	poem_label.add_theme_font_size_override("font_size", 20)
+	poem_label.add_theme_color_override("font_color", Color(0.88, 0.9, 0.93, 1.0))
+	box.add_child(poem_label)
+	var poem_source_label: Label = Label.new()
+	poem_source_label.text = poem_source
+	poem_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	poem_source_label.add_theme_font_size_override("font_size", 13)
+	poem_source_label.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66, 1.0))
+	box.add_child(poem_source_label)
+	var button_row: HBoxContainer = HBoxContainer.new()
+	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	button_row.add_theme_constant_override("separation", 24)
+	button_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(button_row)
+	var replay_button: Button = Button.new()
+	replay_button.text = replay_text
+	replay_button.custom_minimum_size = Vector2(180.0, 46.0)
+	replay_button.add_theme_font_size_override("font_size", 17)
+	replay_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	replay_button.focus_mode = Control.FOCUS_NONE
+	replay_button.disabled = true
+	replay_button.pressed.connect(_bad_ending_replay_pressed)
+	button_row.add_child(replay_button)
+	var return_button: Button = Button.new()
+	return_button.text = return_text
+	return_button.custom_minimum_size = Vector2(180.0, 46.0)
+	return_button.add_theme_font_size_override("font_size", 17)
+	return_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	return_button.focus_mode = Control.FOCUS_NONE
+	return_button.disabled = true
+	return_button.pressed.connect(_return_to_main_menu_pressed)
+	button_row.add_child(return_button)
+
+	var tween: Tween = create_tween()
+	tween.set_ignore_time_scale(true)
+	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tween.tween_property(blackout, "modulate:a", 1.0, 0.6)
+	tween.tween_property(box, "modulate:a", 1.0, 0.4).set_delay(0.2)
+	tween.tween_interval(0.8)
+	tween.tween_callback(func() -> void:
+		replay_button.disabled = false
+		return_button.disabled = false
+	)
+	await tween.finished
+
+## 坏结局「重新开始」：保留 fin_stage_entry meta 后重载当前关卡（完整关卡），死亡计数不清零。
+func _bad_ending_replay_pressed() -> void:
+	if _returning_to_menu:
+		return
+	_returning_to_menu = true
+	var current_scene: Node = get_tree().current_scene
+	if current_scene and current_scene.has_meta(FIN_STAGE_ENTRY_META):
+		get_tree().root.set_meta(FIN_STAGE_ENTRY_META, int(current_scene.get_meta(FIN_STAGE_ENTRY_META)))
+	LevelManager.reset_to_defaults()
+	var player: Player = Player.instance
+	if is_instance_valid(player):
+		player.reload()
+	else:
+		_returning_to_menu = false
+		push_error("EchoRealmStageEntry: Player.instance 为空，无法重新开始")
+
 func _show_completion_caption() -> void:
 	var config: ConfigFile = ConfigFile.new()
 	config.load(SETTINGS_PATH)
 	var is_chinese: bool = str(config.get_value(UI_SECTION, LANGUAGE_KEY, "zh")) != "en"
 	var titles: Array[String] = COMPLETION_TITLES_ZH if is_chinese else COMPLETION_TITLES_EN
 	var bodies: Array[String] = COMPLETION_BODIES_ZH if is_chinese else COMPLETION_BODIES_EN
+	# 完整关卡分层结局才带序数（「好结局一」…）；Part 1-3 段落通关不带。
+	var ending_ordinal: String = ""
+	if _stage_index == STAGE_COUNT - 1:
+		var ending_ordinals: Array[String] = ENDING_ORDINALS_ZH if is_chinese else ENDING_ORDINALS_EN
+		var ordinal_index: int = _resolve_ending_layer_index()
+		if ordinal_index >= 0:
+			ending_ordinal = ending_ordinals[ordinal_index]
 	var ending: Dictionary = _resolve_ending(is_chinese)
 	var ending_title: String = str(ending.get("title", ""))
 	var ending_body: String = str(ending.get("body", ""))
@@ -313,6 +497,13 @@ func _show_completion_caption() -> void:
 	copy.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	copy.modulate.a = 0.0
 	center.add_child(copy)
+	if not ending_ordinal.is_empty():
+		var ordinal_label: Label = Label.new()
+		ordinal_label.text = ending_ordinal
+		ordinal_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		ordinal_label.add_theme_font_size_override("font_size", 15)
+		ordinal_label.add_theme_color_override("font_color", Color(0.91, 0.71, 0.36, 1.0))
+		copy.add_child(ordinal_label)
 	var title_label: Label = Label.new()
 	title_label.text = ending_title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -335,8 +526,9 @@ func _show_completion_caption() -> void:
 	await tween.finished
 
 ## 根据最终同步率解析多结局。结局只在完整关卡（stage 3）显示。
-## part3 结尾同步率 100% 是最高档"完美同步"的前置条件（记录在 settings.cfg）；
-## 完整关卡按最终同步率分层：≥90% 完美、≥60% 心意、≥30% 渐入、<30% 迟到。
+## part2/part3 双达标（≥98%/≥70%，70 即 part3 完美线）是最高档"完美同步"的前置条件（记录在 settings.cfg [endings]）；
+## 其余按 part3 结束同步率分层：≥60% 心意、≥45% 渐入、≥30% 迟到、<30% 残存（part3 可达上限约 70%）；
+## 完整关卡死亡每满 2 次再降 1 档（见 _resolve_ending_layer_index）。
 ## 返回 { "title": String, "body": String }，无结局覆盖时 title 为空。
 func _resolve_ending(is_chinese: bool) -> Dictionary:
 	var layer_index: int = _resolve_ending_layer_index()
@@ -351,7 +543,9 @@ func _resolve_ending(is_chinese: bool) -> Dictionary:
 
 ## 返回当前结局档位索引（0-4）。非完整关卡返回 -1。
 ## 判定条件：part2 同步率 ≥98% 且 part3 同步率 ≥70% → 第一结局（完美同步）；
-## 否则按完整关卡最终同步率分层。
+## 否则按 part3（终章）结束同步率分层——完整关卡无同步率系统，以终章结束值作为最终同步率，
+## part3 可达上限约 70%，故阈值映射为 ≥60 心意、≥45 渐入、≥30 迟到、<30 残存。
+## 死亡降档：完整关卡每满 2 次死亡降 1 档，最低到"残存的微光"（档 4）；累计 8 次已走坏结局，不进此处。
 func _resolve_ending_layer_index() -> int:
 	if _stage_index != STAGE_COUNT - 1:
 		return -1
@@ -359,20 +553,19 @@ func _resolve_ending_layer_index() -> int:
 	config.load(SETTINGS_PATH)
 	var part2_sync: float = float(config.get_value(ENDINGS_SECTION, "part2_sync", 0.0))
 	var part3_sync: float = float(config.get_value(ENDINGS_SECTION, "part3_sync", 0.0))
+	var base_index: int
 	if part2_sync >= PART2_PERFECT_THRESHOLD and part3_sync >= PART3_PERFECT_THRESHOLD:
-		return 0
-	# 回退：按完整关卡最终同步率分层
-	var sync_controller: Node = get_node_or_null("FullLevelSync")
-	if sync_controller == null or not sync_controller.has_method("get_inherited_sync"):
-		return -1
-	var final_sync: float = float(sync_controller.call("get_inherited_sync"))
-	if final_sync >= PERFECT_SYNC_THRESHOLD:
-		return 1
-	if final_sync >= GOOD_SYNC_THRESHOLD:
-		return 2
-	if final_sync >= NORMAL_SYNC_THRESHOLD:
-		return 3
-	return 4
+		base_index = 0
+	elif part3_sync >= HIGH_SYNC_THRESHOLD:
+		base_index = 1
+	elif part3_sync >= MID_SYNC_THRESHOLD:
+		base_index = 2
+	elif part3_sync >= LOW_SYNC_THRESHOLD:
+		base_index = 3
+	else:
+		base_index = 4
+	var penalty: int = int(floor(float(LevelManager.full_level_death_count) / float(DEATH_PENALTY_DIVISOR)))
+	return clampi(base_index + penalty, 0, ENDING_LAYERS_ZH.size() - 1)
 
 ## part3 结束时若同步率 ≥100%（99.5% 容差），记录完美标记，供完整关卡结局判定。
 func _save_part3_perfect_sync() -> void:
@@ -404,8 +597,6 @@ func _show_credits_roll() -> void:
 	var poem_source: String = CREDITS_POEM_SOURCE_ZH if is_chinese else CREDITS_POEM_SOURCE_EN
 	var shu: String = CREDITS_SHU_ZH if is_chinese else CREDITS_SHU_EN
 	var shu_source: String = CREDITS_SHU_SOURCE_ZH if is_chinese else CREDITS_SHU_SOURCE_EN
-	var libai: String = CREDITS_LIBAI_ZH if is_chinese else CREDITS_LIBAI_EN
-	var libai_source: String = CREDITS_LIBAI_SOURCE_ZH if is_chinese else CREDITS_LIBAI_SOURCE_EN
 	var ending_label: String = CREDITS_ENDING_TITLE_ZH if is_chinese else CREDITS_ENDING_TITLE_EN
 	var title_name: String = CREDITS_TITLE_ZH if is_chinese else CREDITS_TITLE_EN
 	var thanks: String = CREDITS_THANKS_ZH if is_chinese else CREDITS_THANKS_EN
@@ -493,40 +684,6 @@ func _show_credits_roll() -> void:
 	sources_label.add_theme_constant_override("line_spacing", 8)
 	sources_label.add_theme_color_override("font_color", Color(0.88, 0.9, 0.93, 1.0))
 	roll.add_child(sources_label)
-	# 苏轼《水调歌头》——标题「弄影」的出处，意象闭环。
-	# 结局诗 fallback 也是此句（ending_layer_index < 0 时）；与定格重复时跳过。
-	if ending_poem != shu:
-		var shu_label: Label = Label.new()
-		shu_label.text = shu
-		shu_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		shu_label.add_theme_font_size_override("font_size", 22)
-		shu_label.add_theme_constant_override("line_spacing", 8)
-		shu_label.add_theme_color_override("font_color", Color(0.97, 0.95, 0.86, 1.0))
-		roll.add_child(shu_label)
-		var shu_source_label: Label = Label.new()
-		shu_source_label.text = shu_source
-		shu_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		shu_source_label.add_theme_font_size_override("font_size", 14)
-		shu_source_label.add_theme_constant_override("line_spacing", 8)
-		shu_source_label.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66, 1.0))
-		roll.add_child(shu_source_label)
-	# 李白《月下独酌》——与影结约、期许重逢，呼应残影与玩家的和解。
-	# 此句与结局诗[1]「心意相通」相同；该结局下跳过，避免报幕同句出现两次。
-	if ending_poem != libai:
-		var libai_label: Label = Label.new()
-		libai_label.text = libai
-		libai_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		libai_label.add_theme_font_size_override("font_size", 22)
-		libai_label.add_theme_constant_override("line_spacing", 8)
-		libai_label.add_theme_color_override("font_color", Color(0.97, 0.95, 0.86, 1.0))
-		roll.add_child(libai_label)
-		var libai_source_label: Label = Label.new()
-		libai_source_label.text = libai_source
-		libai_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		libai_source_label.add_theme_font_size_override("font_size", 14)
-		libai_source_label.add_theme_constant_override("line_spacing", 8)
-		libai_source_label.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66, 1.0))
-		roll.add_child(libai_source_label)
 
 	var roll_speed: float = 60.0
 	var end_reveal: Control = Control.new()
@@ -548,6 +705,14 @@ func _show_credits_roll() -> void:
 	ending_label_label.add_theme_font_size_override("font_size", 14)
 	ending_label_label.add_theme_color_override("font_color", Color(0.61, 0.65, 0.68, 1.0))
 	end_box.add_child(ending_label_label)
+	if ending_layer_index >= 0:
+		var ending_ordinals: Array[String] = ENDING_ORDINALS_ZH if is_chinese else ENDING_ORDINALS_EN
+		var ordinal_label: Label = Label.new()
+		ordinal_label.text = ending_ordinals[ending_layer_index]
+		ordinal_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		ordinal_label.add_theme_font_size_override("font_size", 15)
+		ordinal_label.add_theme_color_override("font_color", Color(0.91, 0.71, 0.36, 1.0))
+		end_box.add_child(ordinal_label)
 	var ending_name_label: Label = Label.new()
 	ending_name_label.text = ending_name
 	ending_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -672,6 +837,13 @@ func _remove_part(part_path: NodePath) -> void:
 	if parent:
 		parent.remove_child(part)
 	part.queue_free()
+
+## 完整关卡中 part2 的首个残影触发器（full_pause_prompt）改用普通点击玩法：
+## 残影照常生成、可点击呼唤，但不进入全暂停（time_scale 冻结 + 音乐暂停），避免打断完整流程。
+func _disable_part2_full_pause_echo() -> void:
+	var echo_trigger: Node3D = get_node_or_null(PART2_FIRST_ECHO_TRIGGER_PATH) as Node3D
+	if echo_trigger:
+		echo_trigger.set("full_pause_prompt", false)
 
 func _restore_checkpoint(checkpoint_path: NodePath) -> void:
 	var checkpoint: Checkpoint = get_node_or_null(checkpoint_path) as Checkpoint

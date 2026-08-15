@@ -73,23 +73,26 @@
 ## 多结局（FinStageEntry._resolve_ending）
 
 - **结局只在完整关卡（stage 3）显示**；Part 1–3 通关显示各自段落文案。
-- 完整关卡按最终同步率分层：
+- 完整关卡**无同步率系统**（旧版文档声称有，实际代码 stage 3 不挂 FullLevelSync），结局基础档位按 **part3（终章）结束同步率** 分层（记录于 `user://settings.cfg [endings] part3_sync`）。part3 同步率实际可达上限约 70%（`PART3_PERFECT_THRESHOLD` 即完美线），阈值映射如下：
 
 | 条件 | 结局 |
 |---|---|
-| 最终同步率 ≥90% 且 part3 曾 100% | 完美同步 / PERFECT SYNC |
-| ≥90% | 心意相通 / HEARTS CONNECTED |
-| ≥60% | 渐入佳境 / GROWING RHYTHM |
-| ≥30% | 迟来的抵达 / A LATE ARRIVAL |
-| <30% | 残存的微光 / A FADING LIGHT |
+| part2 ≥98% 且 part3 ≥70% | 完美同步 ✨ / PERFECT SYNC |
+| part3 ≥60% | 心意相通 💞 / HEARTS CONNECTED |
+| part3 ≥45% | 渐入佳境 🌄 / GROWING RHYTHM |
+| part3 ≥30% | 迟来的抵达 🌆 / A LATE ARRIVAL |
+| part3 <30% | 残存的微光 🕯️ / A FADING LIGHT |
 
-- part3（stage 2）通关时同步率 ≥99.5%（`PART3_PERFECT_THRESHOLD`）写入 `user://settings.cfg` 的 `[endings] part3_perfect_sync = true`，作为完整关卡最高档结局的前置条件。
-- 结局读取时机：玩家到达终点 `GameState == Completed` 后同步率冻结（FullLevelSync 只在 Playing 时衰减），`get_inherited_sync()` 返回最终值。
+- **死亡降档**：完整关卡内累计死亡每满 2 次，结局降 1 档（最低到「残存的微光」）。死亡计数 `LevelManager.full_level_death_count` 跨重开/复活保留，从主菜单再次进入完整关卡时（`MainMenu._launch_stage`）清零。
+- **坏结局**：完整关卡累计死亡达 8 次（`BAD_ENDING_DEATH_THRESHOLD`）后，下一次死亡不再弹复活/重开结算页（隐藏 LevelUI），播放独立坏结局画面（黑幕淡入 + 「坏结局」序数标签 + 标题「微光熄灭 😭」+ 正文 + 晏殊《浣溪沙》诗句 + 重新开始/返回主菜单按钮，`_show_bad_ending`）。坏结局**不写入任何进度**（不解锁、不继承同步率）。
+- 结局序数：通关 caption 与报幕定格段在结局名上方显示「好结局一 ~ 好结局五」（`ENDING_ORDINALS_*`）；坏结局画面显示「坏结局」（`BAD_ENDING_ORDINAL_*`）。
+- 死亡/复活结算页共用一条「已跌倒 N/8，残影依然在等你 🌫️」提示：`LevelUI.set_death_hint` 的 Label 挂在 LevelUI 根节点（两个结算页都可见），由 `FinStageEntry._update_death_hint` 在 `on_game_over` 时写入。
+- part2/part3 结束同步率由 `_store_sync_for_next_part` 写入 `settings.cfg [endings]`；结局读取时机为玩家到达终点 `GameState == Completed` 后。
 
 ## 结算报幕（FinStageEntry._show_credits_roll）
 
 - 仅在完整关卡（stage 3）通关后播放：`AudioManager.stop()` 切到解锁曲，滚轴自底部以 60px/s 匀速上升（`roll_speed`，Tween 线性缓动，`ignore_time_scale`）。
-- 滚动段内容（自下而上）：主题句 →（李商隐《锦瑟》）→ 致谢 → 灵感来源 →（苏轼《水调歌头》）→（李白《月下独酌》）。
+- 滚动段内容（自下而上）：主题句 →（李商隐《锦瑟》）→ 致谢 → 灵感来源。
 - 滚动结束定格（`_reveal_credits_end`）：「属于你的回声」+ 结局名 + **结局诗**（五档对应，`ENDING_POEMS`）+ 出处 + 标题「弄影」+「终」+「返回主菜单」。
-- **结局诗去重**：滚动段诗句与定格结局诗同属一个素材池（结局诗[0]=苏轼句、[1]=李白句、[3]=锦瑟句，与 `CREDITS_SHU/LIBAI/POEM` 相同）。滚动段以 `ending_poem != poem/shu/libai` 字符串比对逐句跳过重复项，保证每句诗在整段报幕中只出现一次；该比对同样覆盖定格诗 fallback 为苏轼句（`ending_layer_index < 0`）的边界情况，且天然适配中英文各比各的文本。
+- **结局诗去重**：滚动段锦瑟句与定格结局诗相同（结局诗[3]）时跳过，保证每句诗在整段报幕中只出现一次；苏轼《水调歌头》与李白《月下独酌》句已从滚动段移除，仅在对应结局（完美同步/心意相通）的定格段作为结局诗出现。
 - 调试钩子：命令行参数 `--test-credits` 跳过游戏流程直接播放完整结算报幕（`_debug_play_credits`）。

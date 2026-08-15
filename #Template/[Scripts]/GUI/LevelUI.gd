@@ -17,6 +17,7 @@ var _replay_requested: bool = false
 @onready var normal_percentage: Label = $NormalPage/percentage
 @onready var normal_fill: TextureRect = $NormalPage/ProgressFrame/Fill
 @onready var collectible_label: Label = $NormalPage/Collectible/diamond
+@onready var death_hint: Label = $death_hint
 @onready var revive_percentage: Label = $RevivePage/percentage
 @onready var revive_fill: TextureRect = $RevivePage/ProgressFrame/Fill
 @onready var revive_prompt: Label = $RevivePage/AskingText
@@ -65,6 +66,11 @@ func set_level_name(value: String) -> void:
 		return
 	levelname = value
 	title_label.text = levelname
+
+## 完整关卡死亡/复活结算页显示"已跌倒 N/8"（由 FinStageEntry 在死亡时写入，两个结算页共用）。空文本隐藏。
+func set_death_hint(value: String) -> void:
+	death_hint.visible = not value.is_empty()
+	death_hint.text = value
 
 func _set_progress(fill: TextureRect, progress: float) -> void:
 	fill.anchor_right = progress

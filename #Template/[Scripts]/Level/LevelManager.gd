@@ -103,6 +103,9 @@ static var gem: int = 0
 static var crown: int = 0
 static var current_checkpoint: Node = null
 static var checkpoint_count: int = 0
+## 完整关卡（stage 3）内累计死亡次数：跨重开/复活保留，返回主菜单再进关卡时清零。
+## 死亡达 8 次触发坏结局；通关时按每 2 次降 1 档参与结局判定。reset_to_defaults 不清。
+static var full_level_death_count: int = 0
 static var player_speed: float = 12.0
 static var gravity: Vector3 = Vector3(0, -9.8, 0)
 static var player_first_direction: Vector3 = Vector3.ZERO
