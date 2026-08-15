@@ -686,10 +686,11 @@ transform = Transform3D(-0.9999999, 0, -1.509958e-07, 0, 0.99999994, 0, 1.509957
 environment = SubResource("Environment_ys6ci")
 
 [node name="GodotFakePlayer" parent="BasicOBJ_Group" unique_id=1000564597 instance=ExtResource("23_paapq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 529.4991, 14.053633, 585.98016)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 529.4991, 14.053633, 585.0591)
+click_sync_bonus = true
 
 [node name="GodotCharacter" parent="BasicOBJ_Group/GodotFakePlayer" index="1" unique_id=1377887965]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 529.4991, 14.053633, 585.98016)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 529.4991, 14.053633, 585.0591)
 top_level = true
 
 [node name="Player" parent="BasicOBJ_Group" unique_id=1905697100 instance=ExtResource("1_a0tgy")]
@@ -1139,28 +1140,28 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 146.71895, 9.507805, 267.2802
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 146.71895, 9.507805, 272.28967)
 
 [node name="GuidanceBox 33" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1054080534 instance=ExtResource("10_asbnh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 174.04195, 5.281308, 272.28967)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 174.92604, 5.372106, 272.28967)
 
 [node name="GuidanceBox 34" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=79471826 instance=ExtResource("10_asbnh")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 174.04195, 4.877619, 276.48993)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 174.92604, 5.0022564, 276.48993)
 
 [node name="GuidanceBox 35" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=462218130 instance=ExtResource("10_asbnh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 179.64229, 4.168418, 276.48993)
 
 [node name="GuidanceBox 36" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1238115806 instance=ExtResource("10_asbnh")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 179.64229, 3.8057878, 281.19022)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 179.64229, 3.9582293, 281.19022)
 
 [node name="GuidanceBox 37" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1162645458 instance=ExtResource("10_asbnh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 184.6426, 3.6405537, 281.19022)
 
 [node name="GuidanceBox 38" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1045433047 instance=ExtResource("10_asbnh")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 184.6426, 2.995198, 286.69055)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 184.6426, 3.130346, 286.69055)
 
 [node name="GuidanceBox 39" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1566781956 instance=ExtResource("10_asbnh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190.15244, 2.335476, 286.69055)
 
 [node name="GuidanceBox 40" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1347321490 instance=ExtResource("10_asbnh")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 190.15244, 1.417594, 291.88962)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 190.15244, 1.5376041, 291.88962)
 
 [node name="GuidanceBox 41" parent="BasicOBJ_Group/GuidanceBoxHolder" unique_id=1174700568 instance=ExtResource("10_asbnh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 195.65277, 0.76494616, 291.88962)
@@ -1821,8 +1822,6 @@ rayStrength = 0.22
 flareStrength = 1.48
 
 [node name="SkinSelector" parent="." unique_id=319829313 instance=ExtResource("14_skin_selector")]
-offset = Vector2(0, -100)
-transform = Transform2D(1, 0, 0, 1, 0, -100)
 
 [node name="Scene_Group" type="Node3D" parent="." unique_id=1042175662]
 
@@ -2946,7 +2945,7 @@ script = ExtResource("32_pyhya")
 gravity = Vector3(0, -100, 0)
 
 [node name="Trigger4" parent="Scene_Group/part2/Scene_001/rockroad" unique_id=1566144362 instance=ExtResource("7_vxmub")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 200.35051, -10.207355, 299.67084)
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 197.5685, -10.207355, 296.84662)
 
 [node name="gravity" type="Node3D" parent="Scene_Group/part2/Scene_001/rockroad/Trigger4" unique_id=803824995]
 script = ExtResource("32_pyhya")
@@ -5209,6 +5208,9 @@ camera_old = SubResource("Resource_ykiuf")
 fog = SubResource("Resource_lsatc")
 light = SubResource("Resource_n1mob")
 ambient = SubResource("Resource_6cqu1")
+
+[node name="RevivePosition" parent="collection/Crown" index="2" unique_id=1500499588]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.80648804, 0, 0)
 
 [node name="CrownSprite" parent="collection/Crown" index="3" unique_id=1095474833]
 transform = Transform3D(-0.70710665, 2.9802322e-08, -0.70710677, 0, 0.9999999, 0, 0.70710665, 2.9802322e-08, -0.70710677, 2.1325233, 7.0800824, 4.4284515)

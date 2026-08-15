@@ -22,11 +22,13 @@ const STAGE_COLORS: Array[Color] = [
 @onready var mirror_overlay: Control = $MirrorOverlay
 @onready var lock_shade: ColorRect = $Card04/LockShade
 @onready var lock_glyph: Control = $Card04/LockGlyph
+@onready var card_shades: Array[ColorRect] = []
 
 var selected_index: int = 0
 var _layout_tween: Tween
 var _unlocking: bool = false
 var _full_mode_unlocked: bool = false
+var _focus_mode: bool = false
 
 func _ready() -> void:
 	clip_contents = true
@@ -35,6 +37,15 @@ func _ready() -> void:
 	previous_button.pressed.connect(_select_relative.bind(-1))
 	next_button.pressed.connect(_select_relative.bind(1))
 	resized.connect(_on_resized)
+	# 为 Card01-Card03 创建黑色遮罩（未解锁时显示，无锁图标）
+	for index: int in range(cards.size() - 1):
+		var shade: ColorRect = ColorRect.new()
+		shade.color = Color(0.005, 0.012, 0.016, 0.68)
+		shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		shade.visible = false
+		cards[index].add_child(shade)
+		card_shades.append(shade)
 	await get_tree().process_frame
 	_apply_layout(false)
 
@@ -52,6 +63,13 @@ func configure_copy(titles: Array[String], subtitles: Array[String], statuses: A
 		card_titles[index].text = titles[index]
 		card_subtitles[index].text = subtitles[index]
 		card_statuses[index].text = statuses[index]
+		# 未解锁的 part 卡片显示黑色遮罩（Card04 有自己的 LockShade）
+		if index < card_shades.size():
+			card_shades[index].visible = not _is_playable(statuses[index])
+
+## 根据状态文字判断卡片是否可进入。
+func _is_playable(status: String) -> bool:
+	return status == "可进入" or status == "PLAYABLE"
 
 func set_selected(index: int, animate: bool = true) -> void:
 	var clamped_index: int = clampi(index, 0, cards.size() - 1)
@@ -60,12 +78,11 @@ func set_selected(index: int, animate: bool = true) -> void:
 	selected_index = clamped_index
 	_apply_layout(animate)
 
-func set_full_mode_unlocked(is_unlocked: bool) -> void:
-	_full_mode_unlocked = is_unlocked
-	lock_shade.visible = not is_unlocked
-	lock_glyph.visible = not is_unlocked
-	if is_unlocked:
-		lock_glyph.set("unlock_progress", 1.0)
+func set_focus(focused: bool) -> void:
+	if _focus_mode == focused:
+		return
+	_focus_mode = focused
+	_apply_layout(true)
 
 func play_unlock() -> void:
 	if _unlocking or _full_mode_unlocked:
@@ -101,13 +118,21 @@ func play_unlock() -> void:
 	lock_glyph.modulate.a = 1.0
 	_unlocking = false
 
+func set_full_mode_unlocked(is_unlocked: bool) -> void:
+	_full_mode_unlocked = is_unlocked
+	lock_shade.visible = not is_unlocked
+	lock_glyph.visible = not is_unlocked
+	if is_unlocked:
+		lock_glyph.set("unlock_progress", 1.0)
+
 func _on_card_pressed(index: int) -> void:
 	if _unlocking:
 		return
 	if index == selected_index:
-		stage_selected.emit(index)
-		return
-	selected_index = index
+		_focus_mode = true
+	else:
+		_focus_mode = false
+		selected_index = index
 	_apply_layout(true)
 	stage_selected.emit(index)
 
@@ -115,6 +140,7 @@ func _select_relative(direction: int) -> void:
 	if _unlocking:
 		return
 	selected_index = wrapi(selected_index + direction, 0, cards.size())
+	_focus_mode = false
 	_apply_layout(true)
 	stage_selected.emit(selected_index)
 
@@ -130,7 +156,11 @@ func _apply_layout(animate: bool) -> void:
 		var target_position: Vector2 = _position_for_delta(delta, center_x)
 		var target_scale: Vector2 = _scale_for_delta(delta)
 		var target_rotation: float = float(delta) * 0.035 if absi(delta) == 1 else 0.0
-		var target_alpha: float = 1.0 if delta == 0 else (0.56 if absi(delta) == 1 else 0.18)
+		var target_alpha: float
+		if _focus_mode:
+			target_alpha = 1.0 if delta == 0 else 0.0
+		else:
+			target_alpha = 1.0 if delta == 0 else (0.56 if absi(delta) == 1 else 0.18)
 		cards[index].z_index = 10 if delta == 0 else (6 if absi(delta) == 1 else 2)
 		cards[index].pivot_offset = CARD_SIZE * 0.5
 		if animate:

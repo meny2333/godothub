@@ -14,7 +14,7 @@ warnings/check_invalid_track_paths=false
 
 [application]
 
-config/name="Godothub"
+config/name="弄影 Afterimage"
 run/main_scene="res://[Scenes]/MainMenu/MainMenu.tscn"
 config/features=PackedStringArray("4.7")
 run/delta_smoothing=false

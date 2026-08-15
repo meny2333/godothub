@@ -1,120 +1,106 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://[Scenes]/Fin/Character/SkinSelector.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://[Scenes]/Fin/classical-transparent.png" id="2_classic"]
 [ext_resource type="Texture2D" path="res://[Scenes]/Fin/godot-transparent.png" id="3_godot"]
 [ext_resource type="FontFile" path="res://#Template/[Resources]/GUI/MiSans-Normal.ttf" id="4_font"]
+[ext_resource type="Texture2D" path="res://#Template/[Resources]/GUI/gear.png" id="5_gear"]
+[ext_resource type="Texture2D" path="res://#Template/[Resources]/GUI/arrow_left.png" id="6_arrow_left"]
+[ext_resource type="Texture2D" path="res://#Template/[Resources]/GUI/arrow_right.png" id="7_arrow_right"]
 
-[sub_resource type="StyleBoxFlat" id="Style_panel"]
-bg_color = Color(0.035, 0.055, 0.07, 0.97)
+[sub_resource type="StyleBoxFlat" id="StylePanel"]
+bg_color = Color(0.035, 0.047, 0.059, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.35, 0.82, 0.84, 0.72)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-shadow_color = Color(0, 0, 0, 0.38)
-shadow_size = 18
-shadow_offset = Vector2(0, 6)
-content_margin_left = 16.0
-content_margin_top = 14.0
-content_margin_right = 16.0
-content_margin_bottom = 14.0
+border_color = Color(0.77, 0.83, 0.87, 0.2)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="Style_action_normal"]
-bg_color = Color(0.09, 0.14, 0.16, 0.94)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.3, 0.62, 0.65, 0.55)
-corner_radius_top_left = 9
-corner_radius_top_right = 9
-corner_radius_bottom_right = 9
-corner_radius_bottom_left = 9
-content_margin_left = 12.0
+[sub_resource type="StyleBoxFlat" id="StyleNav"]
+content_margin_left = 14.0
 content_margin_top = 8.0
-content_margin_right = 12.0
+content_margin_right = 14.0
 content_margin_bottom = 8.0
-
-[sub_resource type="StyleBoxFlat" id="Style_action_hover"]
-bg_color = Color(0.12, 0.25, 0.27, 0.98)
+bg_color = Color(0.06, 0.075, 0.09, 0.72)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.35, 0.92, 0.9, 0.95)
-corner_radius_top_left = 9
-corner_radius_top_right = 9
-corner_radius_bottom_right = 9
-corner_radius_bottom_left = 9
+border_color = Color(0.8, 0.84, 0.86, 0.18)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="Style_card_normal"]
-bg_color = Color(0.07, 0.095, 0.115, 0.98)
+[sub_resource type="StyleBoxFlat" id="StyleNavHover"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.12, 0.14, 0.16, 0.92)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.32, 0.42, 0.45, 0.7)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-content_margin_left = 9.0
-content_margin_top = 9.0
-content_margin_right = 9.0
-content_margin_bottom = 9.0
+border_color = Color(0.93, 0.74, 0.36, 0.65)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="Style_card_hover"]
-bg_color = Color(0.105, 0.19, 0.21, 0.99)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.35, 0.88, 0.88, 0.95)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxFlat" id="StyleSelection"]
+bg_color = Color(0.04, 0.055, 0.068, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.89, 0.68, 0.31, 0.28)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="Style_card_pressed"]
-bg_color = Color(0.14, 0.28, 0.29, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.55, 0.96, 0.93, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="Style_focus"]
+[sub_resource type="StyleBoxFlat" id="StyleClear"]
 bg_color = Color(0, 0, 0, 0)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.55, 0.96, 0.93, 0.75)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
 
-[sub_resource type="Theme" id="Theme_selector"]
+[sub_resource type="StyleBoxFlat" id="StyleGrabber"]
+bg_color = Color(0.91, 0.73, 0.39, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleSlider"]
+bg_color = Color(0.22, 0.25, 0.28, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="Theme" id="Theme_menu"]
 default_font = ExtResource("4_font")
 default_font_size = 16
-Button/colors/font_color = Color(0.9, 0.96, 0.96, 1)
+Button/colors/font_color = Color(0.92, 0.93, 0.93, 1)
+Button/colors/font_disabled_color = Color(0.58, 0.61, 0.64, 0.72)
 Button/colors/font_hover_color = Color(1, 1, 1, 1)
-Button/colors/font_pressed_color = Color(1, 1, 1, 1)
-Button/colors/font_focus_color = Color(1, 1, 1, 1)
-Button/styles/normal = SubResource("Style_action_normal")
-Button/styles/hover = SubResource("Style_action_hover")
-Button/styles/pressed = SubResource("Style_action_hover")
-Button/styles/focus = SubResource("Style_focus")
+Button/styles/disabled = SubResource("StyleNav")
+Button/styles/focus = SubResource("StyleClear")
+Button/styles/hover = SubResource("StyleNavHover")
+Button/styles/normal = SubResource("StyleNav")
+Button/styles/pressed = SubResource("StyleNavHover")
+HSlider/styles/grabber = SubResource("StyleGrabber")
+HSlider/styles/grabber_area = SubResource("StyleSlider")
+HSlider/styles/grabber_area_highlight = SubResource("StyleSlider")
+HSlider/styles/grabber_highlight = SubResource("StyleGrabber")
+HSlider/styles/slider = SubResource("StyleSlider")
+OptionButton/styles/focus = SubResource("StyleClear")
+OptionButton/styles/hover = SubResource("StyleNavHover")
+OptionButton/styles/normal = SubResource("StyleNav")
+OptionButton/styles/pressed = SubResource("StyleNavHover")
 
 [sub_resource type="Shader" id="Shader_godot_preview_offset"]
 code = "shader_type canvas_item;\n\nvoid fragment() {\n\tvec2 shifted_uv = UV - vec2(0.0, 0.12);\n\tif (shifted_uv.y < 0.0) {\n\t\tCOLOR = vec4(0.0);\n\t} else {\n\t\tCOLOR = texture(TEXTURE, shifted_uv);\n\t}\n}\n"
@@ -123,10 +109,38 @@ code = "shader_type canvas_item;\n\nvoid fragment() {\n\tvec2 shifted_uv = UV - 
 shader = SubResource("Shader_godot_preview_offset")
 
 [node name="SkinSelector" type="CanvasLayer"]
-layer = 4
+layer = 41
 script = ExtResource("1_script")
 
-[node name="ModalDimmer" type="ColorRect" parent="."]
+[node name="TopRightButtons" type="HBoxContainer" parent="."]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -176.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 62.0
+grow_horizontal = 0
+theme = SubResource("Theme_menu")
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="SkinEntryButton" type="Button" parent="TopRightButtons"]
+custom_minimum_size = Vector2(104, 46)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "皮肤"
+
+[node name="GearButton" type="Button" parent="TopRightButtons"]
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+icon = ExtResource("5_gear")
+expand_icon = true
+
+[node name="Shade" type="ColorRect" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -134,9 +148,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.015, 0.025, 0.035, 0.42)
+color = Color(0.005, 0.008, 0.012, 0.68)
 
 [node name="InputBlocker" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -145,124 +160,141 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 
-[node name="Panel" type="PanelContainer" parent="."]
-layout_mode = 0
-anchor_top = 1.0
-anchor_right = 0.0
-anchor_bottom = 1.0
+[node name="SkinPanelHolder" type="Control" parent="."]
+visible = false
+clip_contents = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
 offset_left = 24.0
-offset_top = -180.0
-offset_right = 452.0
-offset_bottom = -24.0
-grow_vertical = 0
-theme = SubResource("Theme_selector")
-theme_override_styles/panel = SubResource("Style_panel")
-mouse_filter = 2
+offset_top = -215.0
+offset_right = 404.0
+offset_bottom = 215.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 0
 
-[node name="Contents" type="VBoxContainer" parent="Panel"]
+[node name="SkinPanel" type="PanelContainer" parent="SkinPanelHolder"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+theme_override_styles/panel = SubResource("StylePanel")
+mouse_filter = 0
+
+[node name="PanelMargin" type="MarginContainer" parent="SkinPanelHolder/SkinPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 18
+
+[node name="Contents" type="VBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Header" type="HBoxContainer" parent="Panel/Contents"]
-custom_minimum_size = Vector2(0, 32)
+[node name="Header" type="HBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents"]
 layout_mode = 2
-theme_override_constants/separation = 9
+theme_override_constants/separation = 10
 
-[node name="Accent" type="ColorRect" parent="Panel/Contents/Header"]
-custom_minimum_size = Vector2(4, 0)
+[node name="Accent" type="ColorRect" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Header"]
+custom_minimum_size = Vector2(3, 0)
 layout_mode = 2
-color = Color(0.3, 0.88, 0.88, 1)
+color = Color(0.91, 0.71, 0.36, 1)
 
-[node name="TitleStack" type="VBoxContainer" parent="Panel/Contents/Header"]
+[node name="TitleStack" type="VBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="Title" type="Label" parent="Panel/Contents/Header/TitleStack"]
+[node name="Title" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Header/TitleStack"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.98, 0.97, 1)
-theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.96, 0.96, 0.94, 1)
+theme_override_font_sizes/font_size = 20
 text = "皮肤"
 
-[node name="CurrentRow" type="HBoxContainer" parent="Panel/Contents"]
-custom_minimum_size = Vector2(0, 72)
+[node name="Subtitle" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Header/TitleStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
+theme_override_font_sizes/font_size = 11
+text = "游戏开始前"
+
+[node name="CloseButton" type="Button" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Header"]
+custom_minimum_size = Vector2(64, 34)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "关闭"
+
+[node name="CurrentRow" type="HBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents"]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 theme_override_constants/separation = 11
 
-[node name="CurrentPreview" type="TextureRect" parent="Panel/Contents/CurrentRow"]
-custom_minimum_size = Vector2(58, 72)
+[node name="CurrentPreview" type="TextureRect" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/CurrentRow"]
+custom_minimum_size = Vector2(44, 56)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 texture = ExtResource("3_godot")
 
-[node name="CurrentInfo" type="VBoxContainer" parent="Panel/Contents/CurrentRow"]
+[node name="CurrentInfo" type="VBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/CurrentRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_constants/separation = 2
 
-[node name="CurrentCaption" type="Label" parent="Panel/Contents/CurrentRow/CurrentInfo"]
+[node name="CurrentCaption" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/CurrentRow/CurrentInfo"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.69, 0.7, 1)
-theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
+theme_override_font_sizes/font_size = 11
 text = "当前使用"
 
-[node name="CurrentName" type="Label" parent="Panel/Contents/CurrentRow/CurrentInfo"]
+[node name="CurrentName" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/CurrentRow/CurrentInfo"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.98, 0.97, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.96, 0.96, 0.94, 1)
+theme_override_font_sizes/font_size = 18
 text = "Godot"
 
-[node name="SkinButton" type="Button" parent="Panel/Contents/CurrentRow"]
-custom_minimum_size = Vector2(92, 46)
+[node name="Divider" type="ColorRect" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents"]
+custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
-size_flags_vertical = 4
-text = "更换"
-tooltip_text = "打开皮肤选择"
+mouse_filter = 2
+color = Color(0.72, 0.76, 0.78, 0.16)
 
-[node name="Options" type="VBoxContainer" parent="Panel/Contents"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="OptionsHeader" type="HBoxContainer" parent="Panel/Contents/Options"]
+[node name="OptionsHeader" type="HBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="Panel/Contents/Options/OptionsHeader"]
+[node name="Title" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/OptionsHeader"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.82, 0.9, 0.9, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.91, 0.71, 0.36, 1)
+theme_override_font_sizes/font_size = 13
 text = "选择角色外观"
 
-[node name="Hint" type="Label" parent="Panel/Contents/Options/OptionsHeader"]
+[node name="Cards" type="HBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.43, 0.63, 0.65, 1)
-theme_override_font_sizes/font_size = 11
-text = "游戏开始前"
-vertical_alignment = 1
+theme_override_constants/separation = 10
 
-[node name="Cards" type="HBoxContainer" parent="Panel/Contents/Options"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="ClassicButton" type="Button" parent="Panel/Contents/Options/Cards"]
-custom_minimum_size = Vector2(190, 218)
+[node name="ClassicButton" type="Button" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards"]
+custom_minimum_size = Vector2(150, 168)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_default_cursor_shape = 2
-text = ""
-theme_override_colors/font_color = Color(0.96, 0.98, 0.97, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("Style_card_normal")
-theme_override_styles/hover = SubResource("Style_card_hover")
-theme_override_styles/pressed = SubResource("Style_card_pressed")
-theme_override_styles/focus = SubResource("Style_focus")
+theme_override_styles/normal = SubResource("StyleSelection")
+theme_override_styles/hover = SubResource("StyleNavHover")
+theme_override_styles/pressed = SubResource("StyleNavHover")
+theme_override_styles/focus = SubResource("StyleClear")
 tooltip_text = "选择经典皮肤"
 
-[node name="CardContent" type="VBoxContainer" parent="Panel/Contents/Options/Cards/ClassicButton"]
+[node name="CardContent" type="VBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/ClassicButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -270,50 +302,47 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 4
 
-[node name="Image" type="TextureRect" parent="Panel/Contents/Options/Cards/ClassicButton/CardContent"]
-custom_minimum_size = Vector2(0, 132)
+[node name="Image" type="TextureRect" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/ClassicButton/CardContent"]
+custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 texture = ExtResource("2_classic")
 
-[node name="Name" type="Label" parent="Panel/Contents/Options/Cards/ClassicButton/CardContent"]
+[node name="Name" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/ClassicButton/CardContent"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.84, 0.52, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.91, 0.71, 0.36, 1)
+theme_override_font_sizes/font_size = 15
 text = "经典"
 
-[node name="Detail" type="Label" parent="Panel/Contents/Options/Cards/ClassicButton/CardContent"]
+[node name="Detail" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/ClassicButton/CardContent"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.69, 0.69, 1)
+theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
 theme_override_font_sizes/font_size = 10
 text = "原始角色"
 
-[node name="ClassicSelectedBar" type="ColorRect" parent="Panel/Contents/Options/Cards/ClassicButton/CardContent"]
+[node name="ClassicSelectedBar" type="ColorRect" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/ClassicButton/CardContent"]
 custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
 mouse_filter = 2
-color = Color(0.98, 0.74, 0.36, 1)
+color = Color(0.91, 0.71, 0.36, 1)
 
-[node name="GodotButton" type="Button" parent="Panel/Contents/Options/Cards"]
-custom_minimum_size = Vector2(190, 218)
+[node name="GodotButton" type="Button" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards"]
+custom_minimum_size = Vector2(150, 168)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_default_cursor_shape = 2
-text = ""
-theme_override_colors/font_color = Color(0.96, 0.98, 0.97, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("Style_card_normal")
-theme_override_styles/hover = SubResource("Style_card_hover")
-theme_override_styles/pressed = SubResource("Style_card_pressed")
-theme_override_styles/focus = SubResource("Style_focus")
+theme_override_styles/normal = SubResource("StyleSelection")
+theme_override_styles/hover = SubResource("StyleNavHover")
+theme_override_styles/pressed = SubResource("StyleNavHover")
+theme_override_styles/focus = SubResource("StyleClear")
 tooltip_text = "选择 Godot 皮肤"
 
-[node name="CardContent" type="VBoxContainer" parent="Panel/Contents/Options/Cards/GodotButton"]
+[node name="CardContent" type="VBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/GodotButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -321,10 +350,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 4
 
-[node name="Image" type="TextureRect" parent="Panel/Contents/Options/Cards/GodotButton/CardContent"]
-custom_minimum_size = Vector2(0, 132)
+[node name="Image" type="TextureRect" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/GodotButton/CardContent"]
+custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
 material = SubResource("ShaderMaterial_godot_preview_offset")
 mouse_filter = 2
@@ -332,29 +361,255 @@ expand_mode = 1
 stretch_mode = 6
 texture = ExtResource("3_godot")
 
-[node name="Name" type="Label" parent="Panel/Contents/Options/Cards/GodotButton/CardContent"]
+[node name="Name" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/GodotButton/CardContent"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.9, 0.94, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.91, 0.71, 0.36, 1)
+theme_override_font_sizes/font_size = 15
 text = "Godot"
 
-[node name="Detail" type="Label" parent="Panel/Contents/Options/Cards/GodotButton/CardContent"]
+[node name="Detail" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/GodotButton/CardContent"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.69, 0.69, 1)
+theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
 theme_override_font_sizes/font_size = 10
 text = "低多边形角色"
 
-[node name="GodotSelectedBar" type="ColorRect" parent="Panel/Contents/Options/Cards/GodotButton/CardContent"]
+[node name="GodotSelectedBar" type="ColorRect" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/GodotButton/CardContent"]
 custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
 mouse_filter = 2
-color = Color(0.3, 0.88, 0.92, 1)
+color = Color(0.91, 0.71, 0.36, 1)
 
-[node name="BottomHint" type="Label" parent="Panel/Contents/Options"]
+[node name="ActionRow" type="HBoxContainer" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents"]
+visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.42, 0.57, 0.59, 1)
-theme_override_font_sizes/font_size = 11
+theme_override_constants/separation = 10
+
+[node name="TurnPreviewCheckBox" type="CheckBox" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/ActionRow"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+button_pressed = true
+text = "转弯动画"
+tooltip_text = "预览转弯动画"
+
+[node name="SlidePreviewCheckBox" type="CheckBox" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents/ActionRow"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+button_pressed = true
+text = "滑铲动画"
+tooltip_text = "预览滑铲动画"
+
+[node name="BottomHint" type="Label" parent="SkinPanelHolder/SkinPanel/PanelMargin/Contents"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.5, 0.53, 1)
+theme_override_font_sizes/font_size = 10
 text = "点击面板外区域关闭"
 horizontal_alignment = 2
 
-[connection signal="pressed" from="Panel/Contents/CurrentRow/SkinButton" to="." method="_toggle_options"]
+[node name="SettingsPanelHolder" type="Control" parent="."]
+visible = false
+clip_contents = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = -230.0
+offset_right = 364.0
+offset_bottom = 230.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="SettingsPanel" type="PanelContainer" parent="SettingsPanelHolder"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+theme_override_styles/panel = SubResource("StylePanel")
+mouse_filter = 0
+
+[node name="PanelMargin" type="MarginContainer" parent="SettingsPanelHolder/SettingsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="SettingsContent" type="VBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin"]
+layout_mode = 2
+theme_override_constants/separation = 13
+
+[node name="Header" type="HBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]
+layout_mode = 2
+
+[node name="SettingsTitle" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.96, 0.94, 1)
+theme_override_font_sizes/font_size = 26
+text = "设置"
+
+[node name="CloseButton" type="Button" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/Header"]
+custom_minimum_size = Vector2(76, 40)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "关闭"
+
+[node name="SettingsIntro" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
+theme_override_font_sizes/font_size = 12
+text = "调整音画同步。改动会立即保存。"
+autowrap_mode = 2
+
+[node name="Divider" type="ColorRect" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.72, 0.76, 0.78, 0.16)
+
+[node name="LanguageRow" type="HBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LanguageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "语言"
+vertical_alignment = 1
+
+[node name="LanguageValue" type="Button" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LanguageRow"]
+custom_minimum_size = Vector2(132, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "中文"
+
+[node name="AntiAliasingRow" type="HBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]
+layout_mode = 2
+
+[node name="AntiAliasingLabel" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/AntiAliasingRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "抗锯齿"
+vertical_alignment = 1
+
+[node name="AntiAliasingOption" type="OptionButton" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/AntiAliasingRow"]
+custom_minimum_size = Vector2(132, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
+[node name="VolumeBlock" type="VBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]
+layout_mode = 2
+
+[node name="VolumeHeader" type="HBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/VolumeBlock"]
+layout_mode = 2
+
+[node name="VolumeTitle" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/VolumeBlock/VolumeHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "音量"
+
+[node name="VolumeValue" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/VolumeBlock/VolumeHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.71, 0.36, 1)
+text = "100%"
+
+[node name="VolumeSlider" type="HSlider" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/VolumeBlock"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="LatencyBlock" type="VBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]
+layout_mode = 2
+
+[node name="LatencyHeader" type="HBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LatencyBlock"]
+layout_mode = 2
+
+[node name="LatencyTitle" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "音画延迟"
+
+[node name="LatencyValue" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.71, 0.36, 1)
+text = "+0 ms"
+
+[node name="LatencyControls" type="HBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LatencyBlock"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="LatencyArrowLeft" type="Button" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyControls"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+icon = ExtResource("6_arrow_left")
+expand_icon = true
+tooltip_text = "-10ms"
+
+[node name="LatencyArrowRight" type="Button" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyControls"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+icon = ExtResource("7_arrow_right")
+expand_icon = true
+tooltip_text = "+10ms"
+
+[node name="TurnKeyRow" type="HBoxContainer" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]
+layout_mode = 2
+
+[node name="TurnKeyLabel" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "转向键"
+vertical_alignment = 1
+
+[node name="TurnKeyValue" type="Button" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow"]
+custom_minimum_size = Vector2(132, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+text = "Space"
+
+[node name="TurnKeyRemove" type="Button" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow"]
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "−"
+tooltip_text = "删除最后一个键位"
+
+[node name="SettingsNote" type="Label" parent="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.5, 0.53, 1)
+theme_override_font_sizes/font_size = 10
+text = "ESC 可关闭面板"
+horizontal_alignment = 2
+
+[connection signal="pressed" from="TopRightButtons/SkinEntryButton" to="." method="_open_skin_panel"]
+[connection signal="pressed" from="TopRightButtons/GearButton" to="." method="_open_settings"]
+[connection signal="gui_input" from="InputBlocker" to="." method="_on_background_input"]
+[connection signal="pressed" from="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Header/CloseButton" to="." method="_close_skin_panel"]
+[connection signal="pressed" from="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/ClassicButton" to="." method="_select_classic"]
+[connection signal="pressed" from="SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/GodotButton" to="." method="_select_godot"]
+[connection signal="toggled" from="SkinPanelHolder/SkinPanel/PanelMargin/Contents/ActionRow/TurnPreviewCheckBox" to="." method="_on_turn_preview_toggled"]
+[connection signal="toggled" from="SkinPanelHolder/SkinPanel/PanelMargin/Contents/ActionRow/SlidePreviewCheckBox" to="." method="_on_slide_preview_toggled"]
+[connection signal="pressed" from="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/Header/CloseButton" to="." method="_close_settings"]
+[connection signal="pressed" from="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LanguageRow/LanguageValue" to="." method="_toggle_language"]
+[connection signal="item_selected" from="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/AntiAliasingRow/AntiAliasingOption" to="." method="_on_antialiasing_selected"]
+[connection signal="value_changed" from="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/VolumeBlock/VolumeSlider" to="." method="_on_volume_changed"]
+[connection signal="pressed" from="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyControls/LatencyArrowLeft" to="." method="_on_latency_decrease"]
+[connection signal="pressed" from="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyControls/LatencyArrowRight" to="." method="_on_latency_increase"]
+[connection signal="pressed" from="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow/TurnKeyValue" to="." method="_on_turn_key_button_pressed"]
+[connection signal="pressed" from="SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow/TurnKeyRemove" to="." method="_on_turn_key_remove_pressed"]

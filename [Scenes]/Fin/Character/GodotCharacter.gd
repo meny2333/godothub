@@ -5,9 +5,11 @@ class_name GodotCharacter
 const IDLE_ANIMATION := "idle"
 const RUN_ANIMATION := "run"
 const TURN_ANIMATION := "turn"
+const SLIDE_ANIMATION := "slide"
 const DIE_ANIMATION := "die"
 const RUN_SPEED := 2.0
 const TURN_SPEED := 1.8
+const SLIDE_SPEED := 2.6
 const SMOOTH_TURN_SPEED := 10.0
 const GLITCH_HEIGHT_OFFSET: float = 1.0
 
@@ -16,6 +18,8 @@ const GLITCH_HEIGHT_OFFSET: float = 1.0
 @onready var glitch_delay_timer: Timer = $GlitchDelayTimer
 @onready var glitch_hide_timer: Timer = $GlitchHideTimer
 var is_dead := false
+var enable_turn_anim: bool = true
+var enable_slide_anim: bool = true
 var _follow_player := false
 var _target_yaw := 0.0
 var _glitch_death_position: Vector3 = Vector3.ZERO
@@ -64,6 +68,7 @@ func _setup_animation_library() -> void:
 	_add_animation(library, IDLE_ANIMATION, "res://[Scenes]/Fin/Character/anim/idle.anim")
 	_add_animation(library, RUN_ANIMATION, "res://[Scenes]/Fin/Character/anim/run.anim")
 	_add_animation(library, TURN_ANIMATION, "res://[Scenes]/Fin/Character/anim/huachan.anim")
+	_add_animation(library, SLIDE_ANIMATION, "res://[Scenes]/Fin/Character/anim/huachan.anim")
 	_add_animation(library, DIE_ANIMATION, "res://[Scenes]/Fin/Character/anim/hit.anim")
 	if animation_player.has_animation_library(""):
 		animation_player.remove_animation_library("")
@@ -97,6 +102,10 @@ func _setup_blend_times() -> void:
 	animation_player.set_blend_time(RUN_ANIMATION, IDLE_ANIMATION, 0.16)
 	animation_player.set_blend_time(RUN_ANIMATION, TURN_ANIMATION, 0.16)
 	animation_player.set_blend_time(TURN_ANIMATION, RUN_ANIMATION, 0.16)
+	animation_player.set_blend_time(RUN_ANIMATION, SLIDE_ANIMATION, 0.16)
+	animation_player.set_blend_time(SLIDE_ANIMATION, RUN_ANIMATION, 0.16)
+	animation_player.set_blend_time(TURN_ANIMATION, SLIDE_ANIMATION, 0.12)
+	animation_player.set_blend_time(SLIDE_ANIMATION, TURN_ANIMATION, 0.12)
 	animation_player.set_blend_time(RUN_ANIMATION, DIE_ANIMATION, 0.12)
 	animation_player.set_blend_time(TURN_ANIMATION, DIE_ANIMATION, 0.12)
 	animation_player.set_blend_time(DIE_ANIMATION, RUN_ANIMATION, 0.2)
@@ -112,8 +121,13 @@ func play_run() -> void:
 		animation_player.play(RUN_ANIMATION, -1.0, RUN_SPEED)
 
 func play_turn() -> void:
-	if not is_dead and animation_player.has_animation(TURN_ANIMATION):
+	if not is_dead and enable_turn_anim and animation_player.has_animation(TURN_ANIMATION):
 		animation_player.play(TURN_ANIMATION, -1.0, TURN_SPEED)
+
+## 滑铲动画预览：复用 huachan 动作，但以更快速度播放体现滑铲节奏。
+func play_slide() -> void:
+	if not is_dead and enable_slide_anim and animation_player.has_animation(SLIDE_ANIMATION):
+		animation_player.play(SLIDE_ANIMATION, -1.0, SLIDE_SPEED)
 
 func play_die() -> void:
 	is_dead = true
@@ -150,7 +164,7 @@ func _set_character_visible(value: bool) -> void:
 		character_node.visible = value
 
 func _on_animation_finished(animation_name: StringName) -> void:
-	if animation_name == TURN_ANIMATION and not is_dead:
+	if (animation_name == TURN_ANIMATION or animation_name == SLIDE_ANIMATION) and not is_dead:
 		play_run()
 
 func set_moving(moving: bool) -> void:

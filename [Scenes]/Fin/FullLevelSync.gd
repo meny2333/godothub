@@ -1,8 +1,6 @@
 extends Node
 
 const FIN_STAGE_ENTRY_META: StringName = &"fin_stage_entry"
-const INHERITED_SYNC_META: StringName = &"fin_inherited_sync"
-const INHERITED_SYNC_SOURCE_META: StringName = &"fin_inherited_sync_source"
 const SETTINGS_PATH: String = "user://settings.cfg"
 const UI_SECTION: String = "ui"
 const LANGUAGE_KEY: String = "language"
@@ -129,9 +127,11 @@ func get_inherited_sync() -> float:
 	return sync_value
 
 func _get_inherited_sync(scene_root: Node, stage_index: int) -> float:
-	var source_stage: int = int(scene_root.get_meta(INHERITED_SYNC_SOURCE_META, -1))
+	var config: ConfigFile = ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	var source_stage: int = int(config.get_value("progress", "inherited_sync_source", -1))
 	if stage_index > 0 and source_stage == stage_index - 1:
-		return clampf(float(scene_root.get_meta(INHERITED_SYNC_META, initial_sync)), 0.0, 100.0)
+		return clampf(float(config.get_value("progress", "inherited_sync", initial_sync)), 0.0, 100.0)
 	return initial_sync
 
 func _apply_speed() -> void:
@@ -151,8 +151,8 @@ func _create_hud() -> void:
 	layer.layer = 40
 	add_child(layer)
 	var holder: Control = Control.new()
-	holder.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
-	holder.position = Vector2(-82.0, 0.0)
+	holder.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	holder.position = Vector2(-52.0, 90.0)
 	holder.size = Vector2(54.0, 260.0)
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(holder)

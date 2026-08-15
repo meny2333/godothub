@@ -239,7 +239,7 @@ text = "灰蓝山谷"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
 theme_override_font_sizes/font_size = 10
-text = "场景待补"
+text = "通过上一段解锁"
 
 [node name="Frame" type="Panel" parent="Card02"]
 layout_mode = 1
@@ -342,7 +342,7 @@ text = "破晓拱门"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
 theme_override_font_sizes/font_size = 10
-text = "场景待补"
+text = "通过上一段解锁"
 
 [node name="Frame" type="Panel" parent="Card03"]
 layout_mode = 1
@@ -445,7 +445,7 @@ text = "镜面回廊"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
 theme_override_font_sizes/font_size = 10
-text = "完整模式锁定"
+text = "通过上一段解锁"
 
 [node name="LockShade" type="ColorRect" parent="Card04"]
 layout_mode = 1
@@ -458,6 +458,7 @@ mouse_filter = 2
 color = Color(0.005, 0.012, 0.016, 0.68)
 
 [node name="LockGlyph" type="Control" parent="Card04"]
+visible = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

@@ -36,7 +36,7 @@ func _apply_language() -> void:
 	var config: ConfigFile = ConfigFile.new()
 	config.load(SETTINGS_PATH)
 	var is_chinese: bool = str(config.get_value(UI_SECTION, LANGUAGE_KEY, "zh")) != "en"
-	revive_prompt.text = "是否从上一个检查点复活？\n您将会失去所有已获得的收集物" if is_chinese else "REVIVE FROM THE LAST CHECKPOINT?\nALL COLLECTIBLES GAINED SINCE THEN WILL BE LOST."
+	revive_prompt.text = "要回到那个错误发生之前吗？\n你会失去这段路上拾起的一切" if is_chinese else "RETURN TO BEFORE THE MISTAKE?\nEVERYTHING GATHERED ON THIS PATH WILL BE LOST."
 	back_button.tooltip_text = "返回主菜单" if is_chinese else "RETURN TO MAIN MENU"
 
 func _show_ui() -> void:

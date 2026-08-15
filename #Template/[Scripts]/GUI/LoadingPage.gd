@@ -19,7 +19,7 @@ func _apply_language() -> void:
 	var config: ConfigFile = ConfigFile.new()
 	config.load(SETTINGS_PATH)
 	var is_chinese: bool = str(config.get_value(UI_SECTION, LANGUAGE_KEY, "zh")) != "en"
-	loading_text.text = "加载中" if is_chinese else "LOADING..."
+	loading_text.text = "正在回到过去…" if is_chinese else "RETURNING TO THE PAST..."
 
 func reveal(background_color: Color) -> Tween:
 	background.color = background_color

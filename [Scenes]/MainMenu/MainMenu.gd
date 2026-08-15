@@ -18,8 +18,8 @@ const STAGE_SCENE_PATHS: Array[String] = [
 
 const STAGE_TITLES_ZH: Array[String] = ["初滞", "回声", "终章", "回声之境"]
 const STAGE_TITLES_EN: Array[String] = ["FIRST DELAY", "THE ECHO", "GENTLE ARRIVAL", "ECHO REALM"]
-const STAGE_SUBTITLES_ZH: Array[String] = ["暖黄峡谷", "灰蓝山谷", "破晓拱门", "镜面回廊"]
-const STAGE_SUBTITLES_EN: Array[String] = ["AMBER CANYON", "BLUE VALLEY", "DAWN ARCH", "MIRROR CORRIDOR"]
+const STAGE_SUBTITLES_ZH: Array[String] = ["暖黄峡谷", "灰蓝山谷", "镜面回廊", "完整关卡"]
+const STAGE_SUBTITLES_EN: Array[String] = ["AMBER CANYON", "BLUE VALLEY", "MIRROR CORRIDOR", "FULL EXPERIENCE"]
 const STAGE_DESCRIPTIONS_ZH: Array[String] = [
 	"世界开始变慢，你还没意识到。",
 	"那些你以为已经过去的，正在追上你。",
@@ -32,7 +32,13 @@ const STAGE_DESCRIPTIONS_EN: Array[String] = [
 	"You thought you had arrived, but the answer waits farther on.",
 	"The tenderness that arrived late is finally here.",
 ]
+const LATENCY_MIN: float = -5.0
+const LATENCY_MAX: float = 5.0
+const LATENCY_STEP: float = 0.01
 const MENU_MUSIC_FADE_DURATION: float = 0.45
+const INPUT_SECTION: String = "input"
+const TURN_ACTION: StringName = &"turn"
+const DEFAULT_TURN_KEY: Key = KEY_SPACE
 
 @onready var backdrop: Control = $Backdrop
 @onready var home_screen: Control = $SafeMargin/Layout/ScreenArea/HomeScreen
@@ -63,8 +69,11 @@ const MENU_MUSIC_FADE_DURATION: float = 0.45
 @onready var volume_slider: HSlider = $SettingsPanel/PanelMargin/SettingsContent/VolumeBlock/VolumeSlider
 @onready var latency_title: Label = $SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyHeader/LatencyTitle
 @onready var latency_value: Label = $SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyHeader/LatencyValue
-@onready var latency_slider: HSlider = $SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencySlider
-@onready var shadow_checkbox: CheckButton = $SettingsPanel/PanelMargin/SettingsContent/ShadowToggle
+@onready var latency_arrow_left: Button = $SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyControls/LatencyArrowLeft
+@onready var latency_arrow_right: Button = $SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyControls/LatencyArrowRight
+@onready var turn_key_label: Label = $SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow/TurnKeyLabel
+@onready var turn_key_value_button: Button = $SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow/TurnKeyValue
+@onready var turn_key_remove_button: Button = $SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow/TurnKeyRemove
 @onready var settings_note: Label = $SettingsPanel/PanelMargin/SettingsContent/SettingsNote
 @onready var transition_layer: ColorRect = $TransitionLayer
 @onready var status_label: Label = $StatusLabel
@@ -80,6 +89,9 @@ var _unlocked_stage_count: int = 1
 var _full_mode_unlocked: bool = false
 var _music_tween: Tween
 var _music_request: int = 0
+var _recording_turn_key: bool = false
+var _turn_keys: Array[int] = [DEFAULT_TURN_KEY]
+var _turn_buttons: Array[int] = [MOUSE_BUTTON_LEFT]
 
 func _ready() -> void:
 	_load_preferences()
@@ -116,10 +128,21 @@ func _play_full_level_unlock() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+		if _recording_turn_key:
+			_recording_turn_key = false
+			_update_turn_key_button()
+			_release_settings_focus()
+			return
 		if _settings_open:
 			_close_settings()
 		elif chapter_screen.visible:
 			_show_home()
+		return
+	if _recording_turn_key:
+		if event is InputEventKey and event.pressed and not event.echo:
+			_apply_turn_key(event.physical_keycode if event.physical_keycode != 0 else event.keycode)
+		elif event is InputEventMouseButton and event.pressed:
+			_apply_turn_key_mouse(event.button_index)
 
 func _connect_controls() -> void:
 	chapters_button.pressed.connect(_show_chapters)
@@ -134,9 +157,13 @@ func _connect_controls() -> void:
 	language_value_button.pressed.connect(_toggle_language)
 	antialiasing_option.item_selected.connect(_on_antialiasing_selected)
 	volume_slider.value_changed.connect(_on_volume_changed)
-	latency_slider.value_changed.connect(_on_latency_changed)
-	shadow_checkbox.toggled.connect(_on_shadow_toggled)
+	latency_arrow_left.pressed.connect(_on_latency_decrease)
+	latency_arrow_right.pressed.connect(_on_latency_increase)
+	turn_key_value_button.pressed.connect(_on_turn_key_button_pressed)
+	turn_key_remove_button.pressed.connect(_on_turn_key_remove_pressed)
 	carousel.connect("stage_selected", _select_stage)
+	_apply_turn_key_binding()
+	_set_settings_buttons_focus_none()
 
 func _load_preferences() -> void:
 	var config: ConfigFile = ConfigFile.new()
@@ -152,8 +179,6 @@ func _load_preferences() -> void:
 	_music_delay = float(audio_settings.get("delay", 0.0))
 	_music_volume = float(audio_settings.get("volume", 1.0))
 	volume_slider.set_value_no_signal(_music_volume)
-	latency_slider.set_value_no_signal(_music_delay)
-	shadow_checkbox.set_pressed_no_signal(GraphicsQuality.shadows_enabled)
 
 func _save_language() -> void:
 	var config: ConfigFile = ConfigFile.new()
@@ -175,19 +200,16 @@ func _toggle_language() -> void:
 	_apply_language()
 
 func _apply_language() -> void:
-	$SafeMargin/Layout/TopBar/Brand/BrandTitle.text = "滞后" if _is_chinese else "STAGNATION"
-	$SafeMargin/Layout/TopBar/Brand/BrandSubtitle.text = "DELAY / 回声比此刻慢一拍" if _is_chinese else "DELAY / THE ECHO ARRIVES A BEAT LATE"
+	$SafeMargin/Layout/TopBar/Brand/BrandTitle.text = "弄影" if _is_chinese else "AFTERIMAGE"
 	chapters_button.text = "章节" if _is_chinese else "CHAPTERS"
 	language_button.text = "EN" if _is_chinese else "中文"
 	settings_button.text = "设置" if _is_chinese else "SETTINGS"
 	$SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent/Kicker.text = "一段关于时间、记忆与错过的旅程" if _is_chinese else "A JOURNEY THROUGH TIME, MEMORY, AND WHAT WE MISS"
 	$SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent/Title.text = "追上那个\n迟到的自己" if _is_chinese else "CATCH UP WITH\nTHE SELF BEHIND YOU"
-	$SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent/Body.text = "行动滞后于意志，记忆滞后于时光。\n跟紧那个迟到的回声，它知道真正的路。" if _is_chinese else "ACTION LAGS BEHIND INTENT. MEMORY LAGS BEHIND TIME.\nFOLLOW THE LATE ECHO. IT KNOWS THE TRUE PATH."
 	explore_button.text = "选择章节" if _is_chinese else "SELECT CHAPTER"
-	quick_start_button.text = "继续当前流程" if _is_chinese else "PLAY CURRENT BUILD"
-	$SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent/Footnote.text = "点击转向 · 在节拍抵达之前作出选择" if _is_chinese else "CLICK TO TURN / CHOOSE BEFORE THE BEAT ARRIVES"
+	quick_start_button.text = "继续你的回响" if _is_chinese else "CONTINUE YOUR ECHO"
 	back_button.text = "返回" if _is_chinese else "BACK"
-	$SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow/HeadingCopy/ChapterKicker.text = "四个场景槽位" if _is_chinese else "FOUR SCENE SLOTS"
+	$SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow/HeadingCopy/ChapterKicker.text = "四段尚未抵达的路" if _is_chinese else "FOUR ROADS NOT YET ARRIVED"
 	$SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow/HeadingCopy/ChapterTitle.text = "选择你要进入的回声" if _is_chinese else "CHOOSE THE ECHO TO ENTER"
 	settings_title.text = "设置" if _is_chinese else "SETTINGS"
 	settings_close_button.text = "关闭" if _is_chinese else "CLOSE"
@@ -197,11 +219,13 @@ func _apply_language() -> void:
 	antialiasing_label.text = "抗锯齿" if _is_chinese else "ANTI-ALIASING"
 	volume_title.text = "音量" if _is_chinese else "VOLUME"
 	latency_title.text = "音画延迟" if _is_chinese else "AUDIO DELAY"
-	shadow_checkbox.text = "阴影" if _is_chinese else "SHADOWS"
+	turn_key_label.text = "转向键" if _is_chinese else "TURN KEY"
+	turn_key_value_button.tooltip_text = "点击后按新键绑定" if _is_chinese else "CLICK THEN PRESS A KEY TO REBIND"
 	settings_note.text = "ESC 可关闭面板" if _is_chinese else "PRESS ESC TO CLOSE"
 	_update_carousel_copy()
 	_update_selected_stage_copy()
 	_update_setting_values()
+	_update_turn_key_button()
 
 func _animate_intro() -> void:
 	home_content.modulate.a = 0.0
@@ -295,7 +319,7 @@ func _update_carousel_copy() -> void:
 func _update_selected_stage_copy() -> void:
 	var titles: Array[String] = STAGE_TITLES_ZH if _is_chinese else STAGE_TITLES_EN
 	var descriptions: Array[String] = STAGE_DESCRIPTIONS_ZH if _is_chinese else STAGE_DESCRIPTIONS_EN
-	selected_index_label.text = "CHAPTER %02d" % (_selected_stage + 1)
+	selected_index_label.text = ("回响 %02d" if _is_chinese else "ECHO %02d") % (_selected_stage + 1)
 	selected_title_label.text = titles[_selected_stage]
 	selected_description_label.text = descriptions[_selected_stage]
 	var scene_path: String = _get_stage_scene_path(_selected_stage)
@@ -317,6 +341,7 @@ func _open_settings() -> void:
 	settings_panel.visible = true
 	settings_shade.modulate.a = 0.0
 	settings_panel.modulate.a = 0.0
+	_release_settings_focus()
 	var tween: Tween = create_tween().set_parallel()
 	tween.tween_property(settings_shade, "modulate:a", 1.0, 0.22)
 	tween.tween_property(settings_panel, "modulate:a", 1.0, 0.28)
@@ -325,6 +350,7 @@ func _close_settings() -> void:
 	if not _settings_open:
 		return
 	_settings_open = false
+	_release_settings_focus()
 	var tween: Tween = create_tween().set_parallel()
 	tween.tween_property(settings_shade, "modulate:a", 0.0, 0.2)
 	tween.tween_property(settings_panel, "modulate:a", 0.0, 0.2)
@@ -348,18 +374,152 @@ func _on_volume_changed(value: float) -> void:
 		menu_music.volume_db = linear_to_db(max(_music_volume, 0.001))
 	_update_setting_values()
 
-func _on_latency_changed(value: float) -> void:
-	_music_delay = value
+func _on_latency_decrease() -> void:
+	_set_music_delay(_music_delay - LATENCY_STEP)
+
+func _on_latency_increase() -> void:
+	_set_music_delay(_music_delay + LATENCY_STEP)
+
+func _set_music_delay(value: float) -> void:
+	_music_delay = clampf(value, LATENCY_MIN, LATENCY_MAX)
 	SetLatency.save_settings(_music_delay, _music_volume)
 	_update_setting_values()
-
-func _on_shadow_toggled(is_on: bool) -> void:
-	GraphicsQuality.shadows_enabled = is_on
-	GraphicsQuality.save_settings()
 
 func _update_setting_values() -> void:
 	volume_value.text = "%d%%" % roundi(_music_volume * 100.0)
 	latency_value.text = "%+d ms" % roundi(_music_delay * 1000.0)
+
+# === turn 键位 ===
+
+func _on_turn_key_button_pressed() -> void:
+	if _recording_turn_key:
+		return
+	_recording_turn_key = true
+	turn_key_value_button.text = _get_recording_hint()
+
+func _on_turn_key_remove_pressed() -> void:
+	if _recording_turn_key:
+		_recording_turn_key = false
+		_update_turn_key_button()
+		return
+	if not _turn_keys.is_empty():
+		_turn_keys.pop_back()
+	elif not _turn_buttons.is_empty():
+		_turn_buttons.pop_back()
+	else:
+		return
+	_write_turn_key_to_input_map()
+	_save_turn_key()
+	_update_turn_key_button()
+	_release_settings_focus()
+
+func _apply_turn_key(key: int) -> void:
+	_recording_turn_key = false
+	if not _turn_keys.has(key):
+		_turn_keys.append(key)
+		_write_turn_key_to_input_map()
+		_save_turn_key()
+	_update_turn_key_button()
+	_release_settings_focus()
+
+func _apply_turn_key_mouse(button: int) -> void:
+	if button == MOUSE_BUTTON_NONE:
+		return
+	_recording_turn_key = false
+	if not _turn_buttons.has(button):
+		_turn_buttons.append(button)
+		_write_turn_key_to_input_map()
+		_save_turn_key()
+	_update_turn_key_button()
+	_release_settings_focus()
+
+func _set_settings_buttons_focus_none() -> void:
+	for child: Node in settings_panel.find_children("*", "Button", true, false):
+		var button: Button = child as Button
+		if button:
+			button.focus_mode = Control.FOCUS_NONE
+
+func _release_settings_focus() -> void:
+	if settings_panel.has_focus():
+		settings_panel.release_focus()
+	get_viewport().gui_release_focus()
+
+func _write_turn_key_to_input_map() -> void:
+	if not InputMap.has_action(TURN_ACTION):
+		InputMap.add_action(TURN_ACTION)
+	for existing: InputEvent in InputMap.action_get_events(TURN_ACTION):
+		InputMap.action_erase_event(TURN_ACTION, existing)
+	for keycode: int in _turn_keys:
+		if keycode > 0:
+			var key_event: InputEventKey = InputEventKey.new()
+			key_event.physical_keycode = keycode
+			InputMap.action_add_event(TURN_ACTION, key_event)
+	for button_index: int in _turn_buttons:
+		if button_index > 0:
+			var mouse_event: InputEventMouseButton = InputEventMouseButton.new()
+			mouse_event.button_index = button_index
+			InputMap.action_add_event(TURN_ACTION, mouse_event)
+
+func _apply_turn_key_binding() -> void:
+	var config: ConfigFile = ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	_turn_keys.clear()
+	_turn_buttons.clear()
+	var keys_str: String = str(config.get_value(INPUT_SECTION, "turn_keys", ""))
+	if not keys_str.is_empty():
+		for part: String in keys_str.split(",", false):
+			var code: int = int(part)
+			if code > 0 and not _turn_keys.has(code):
+				_turn_keys.append(code)
+	var mouse_str: String = str(config.get_value(INPUT_SECTION, "turn_mouse", ""))
+	if not mouse_str.is_empty():
+		for part: String in mouse_str.split(",", false):
+			var idx: int = int(part)
+			if idx > 0 and not _turn_buttons.has(idx):
+				_turn_buttons.append(idx)
+	if _turn_keys.is_empty() and _turn_buttons.is_empty():
+		_turn_keys.append(DEFAULT_TURN_KEY)
+		_turn_buttons.append(MOUSE_BUTTON_LEFT)
+	_write_turn_key_to_input_map()
+	_update_turn_key_button()
+
+func _save_turn_key() -> void:
+	var config: ConfigFile = ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	config.set_value(INPUT_SECTION, "turn_keys", ",".join(_turn_keys.map(func(v): return str(v))))
+	config.set_value(INPUT_SECTION, "turn_mouse", ",".join(_turn_buttons.map(func(v): return str(v))))
+	var error: Error = config.save(SETTINGS_PATH)
+	if error != OK:
+		push_error("MainMenu.gd: failed to save turn key (%s)" % error_string(error))
+
+func _update_turn_key_button() -> void:
+	if _recording_turn_key:
+		turn_key_value_button.text = _get_recording_hint()
+		return
+	turn_key_value_button.text = _get_turn_key_display_name()
+
+func _get_recording_hint() -> String:
+	return "按任意键…" if _is_chinese else "PRESS ANY KEY…"
+
+func _get_turn_key_display_name() -> String:
+	var names: PackedStringArray = []
+	for keycode: int in _turn_keys:
+		var name: String = OS.get_keycode_string(keycode)
+		if not name.is_empty():
+			names.append(name)
+	for button_index: int in _turn_buttons:
+		match button_index:
+			MOUSE_BUTTON_LEFT:
+				names.append("鼠标左键" if _is_chinese else "LMB")
+			MOUSE_BUTTON_RIGHT:
+				names.append("鼠标右键" if _is_chinese else "RMB")
+			MOUSE_BUTTON_MIDDLE:
+				names.append("鼠标中键" if _is_chinese else "MMB")
+			_:
+				names.append("M%d" % button_index)
+	if names.is_empty():
+		return "未绑定" if _is_chinese else "UNBOUND"
+	return " / ".join(names)
 
 func _launch_selected_stage() -> void:
 	_launch_stage(_selected_stage)
@@ -382,6 +542,7 @@ func _launch_stage(index: int) -> void:
 	if scene_path.is_empty():
 		return
 	_launching = true
+	carousel.call("set_focus", true)
 	_fade_out_menu_music()
 	status_label.text = "正在进入回声…" if _is_chinese else "ENTERING THE ECHO..."
 	status_label.visible = true

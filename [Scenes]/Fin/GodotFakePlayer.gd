@@ -6,6 +6,8 @@ extends FakePlayer
 
 @export var godotCharacter: GodotCharacter
 @export_range(0.0, 1.0, 0.01) var characterOpacity: float = 0.5
+@export var click_sync_bonus: bool = false
+@export var click_sync_amount: float = 1.0
 
 var _last_visual_state: FakePlayer.State = FakePlayer.State.Stopped
 var _was_dead: bool = false
@@ -51,6 +53,35 @@ func _ready() -> void:
 		return
 	_make_character_transparent_unshaded(godotCharacter)
 	call_deferred("_sync_animation_state", true)
+	_setup_click_area()
+
+
+## 调试用：点击残影热区给同步率 +1%（默认关闭，仅在手动测最高同步率时开启）。
+func _setup_click_area() -> void:
+	if not click_sync_bonus:
+		return
+	var area: Area3D = _body.get_node_or_null("ClickArea") as Area3D
+	if not area:
+		push_error("GodotFakePlayer: ClickArea not found under body")
+		return
+	area.input_event.connect(_on_click_area_input_event)
+	area.monitoring = false
+	area.monitorable = false
+
+
+func _on_click_area_input_event(_camera: Node, event: InputEvent, _event_position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
+	if not click_sync_bonus:
+		return
+	var is_click: bool = false
+	if event is InputEventMouseButton:
+		is_click = event.pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT
+	elif event is InputEventScreenTouch:
+		is_click = event.pressed
+	if not is_click:
+		return
+	var sync_node: Node = get_tree().current_scene.get_node_or_null("FullLevelSync")
+	if sync_node and sync_node.has_method("restore_sync"):
+		sync_node.call("restore_sync", click_sync_amount)
 
 
 func _process(delta: float) -> void:

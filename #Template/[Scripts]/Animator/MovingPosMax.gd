@@ -116,6 +116,7 @@ func play_sequence() -> void:
 		on_animation_end.emit()
 	)
 	print("动画开始播放,路径点数: ", target_positions.size())
+	print("动画开始播放,路径点数: ", target_positions.size())
 
 func play_() -> void:
 	play_sequence()

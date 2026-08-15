@@ -1,10 +1,12 @@
-[gd_scene format=3 uid="uid://c3fosloqsr26b"]
+[gd_scene load_steps=8 format=3 uid="uid://c3fosloqsr26b"]
 
 [ext_resource type="Script" uid="uid://i0an8f1engmx" path="res://[Scenes]/MainMenu/MainMenu.gd" id="1_menu"]
 [ext_resource type="Script" uid="uid://cvr3fdljdn8qq" path="res://[Scenes]/MainMenu/EchoBackdrop.gd" id="2_backdrop"]
 [ext_resource type="FontFile" uid="uid://cofd0gpguc54l" path="res://#Template/[Resources]/GUI/MiSans-Normal.ttf" id="3_font"]
 [ext_resource type="FontFile" uid="uid://cfyw78f6iowmi" path="res://#Template/[Resources]/GUI/CaviarDreams.TTF" id="4_display"]
 [ext_resource type="PackedScene" path="res://[Scenes]/MainMenu/MirrorCarousel.tscn" id="5_carousel"]
+[ext_resource type="Texture2D" uid="uid://crqiqa5ytpy7u" path="res://#Template/[Resources]/GUI/arrow_left.png" id="6_arrow_left"]
+[ext_resource type="Texture2D" uid="uid://ca8sn1wc12uyy" path="res://#Template/[Resources]/GUI/arrow_right.png" id="7_arrow_right"]
 
 [sub_resource type="StyleBoxFlat" id="StyleNav"]
 content_margin_left = 16.0
@@ -185,14 +187,8 @@ theme_override_constants/separation = 0
 layout_mode = 2
 theme_override_colors/font_color = Color(0.96, 0.82, 0.54, 1)
 theme_override_fonts/font = ExtResource("4_display")
-theme_override_font_sizes/font_size = 24
-text = "滞后"
-
-[node name="BrandSubtitle" type="Label" parent="SafeMargin/Layout/TopBar/Brand" unique_id=1171394103]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.72, 0.75, 0.77, 1)
-theme_override_font_sizes/font_size = 11
-text = "DELAY / 回声比此刻慢一拍"
+theme_override_font_sizes/font_size = 20
+text = "弄影"
 
 [node name="ChaptersButton" type="Button" parent="SafeMargin/Layout/TopBar" unique_id=302114021]
 custom_minimum_size = Vector2(92, 42)
@@ -257,14 +253,6 @@ size_flags_horizontal = 0
 mouse_filter = 2
 color = Color(0.91, 0.69, 0.32, 0.9)
 
-[node name="Body" type="Label" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent" unique_id=547179918]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.79, 0.81, 0.82, 1)
-theme_override_font_sizes/font_size = 17
-text = "行动滞后于意志，记忆滞后于时光。
-跟紧那个迟到的回声，它知道真正的路。"
-autowrap_mode = 2
-
 [node name="Actions" type="HBoxContainer" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent" unique_id=1670336105]
 layout_mode = 2
 theme_override_constants/separation = 12
@@ -285,13 +273,7 @@ text = "选择章节"
 custom_minimum_size = Vector2(190, 52)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "继续当前流程"
-
-[node name="Footnote" type="Label" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent" unique_id=1999986967]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.58, 0.61, 1)
-theme_override_font_sizes/font_size = 11
-text = "点击转向 · 在节拍抵达之前作出选择"
+text = "继续你的回响"
 
 [node name="ChapterScreen" type="Control" parent="SafeMargin/Layout/ScreenArea" unique_id=837353448]
 visible = false
@@ -333,7 +315,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.7, 0.35, 1)
 theme_override_font_sizes/font_size = 11
-text = "四个场景槽位"
+text = "四段尚未抵达的路"
 
 [node name="ChapterTitle" type="Label" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/HeadingRow/HeadingCopy" unique_id=1076688465]
 layout_mode = 2
@@ -369,7 +351,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_colors/font_color = Color(0.91, 0.7, 0.34, 1)
 theme_override_font_sizes/font_size = 10
-text = "CHAPTER 01"
+text = "回响 01"
 
 [node name="SelectedTitle" type="Label" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel/SelectionMargin/SelectionRow/Copy" unique_id=710038608]
 layout_mode = 2
@@ -382,7 +364,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.69, 0.72, 0.75, 1)
 theme_override_font_sizes/font_size = 13
-text = "世界开始变慢，你还没意识到。当前版本从这里开始。"
+text = "世界开始变慢，你还没意识到。"
 autowrap_mode = 2
 
 [node name="LaunchButton" type="Button" parent="SafeMargin/Layout/ScreenArea/ChapterScreen/ChapterContent/SelectionPanel/SelectionMargin/SelectionRow" unique_id=123674461]
@@ -530,18 +512,50 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.91, 0.71, 0.36, 1)
 text = "+0 ms"
 
-[node name="LatencySlider" type="HSlider" parent="SettingsPanel/PanelMargin/SettingsContent/LatencyBlock" unique_id=1962745304]
-custom_minimum_size = Vector2(0, 28)
+[node name="LatencyControls" type="HBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent/LatencyBlock" unique_id=1962745304]
+custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
-mouse_default_cursor_shape = 2
-min_value = -5.0
-max_value = 5.0
-step = 0.001
+theme_override_constants/separation = 10
+alignment = 2
 
-[node name="ShadowToggle" type="CheckButton" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=416688738]
+[node name="LatencyArrowLeft" type="Button" parent="SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyControls"]
+custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "阴影"
+icon = ExtResource("6_arrow_left")
+expand_icon = true
+tooltip_text = "-10ms"
+
+[node name="LatencyArrowRight" type="Button" parent="SettingsPanel/PanelMargin/SettingsContent/LatencyBlock/LatencyControls"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+icon = ExtResource("7_arrow_right")
+expand_icon = true
+tooltip_text = "+10ms"
+
+[node name="TurnKeyRow" type="HBoxContainer" parent="SettingsPanel/PanelMargin/SettingsContent"]
+layout_mode = 2
+
+[node name="TurnKeyLabel" type="Label" parent="SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "转向键"
+vertical_alignment = 1
+
+[node name="TurnKeyValue" type="Button" parent="SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow"]
+custom_minimum_size = Vector2(132, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+text = "Space"
+
+[node name="TurnKeyRemove" type="Button" parent="SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow"]
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "−"
+tooltip_text = "删除最后一个键位"
 
 [node name="SettingsSpacer" type="Control" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=905432749]
 layout_mode = 2

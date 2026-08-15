@@ -286,7 +286,11 @@ func show_opening_intertitle(title: String, body: String) -> void:
 	body_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.8, 1.0))
 	copy.add_child(body_label)
 	var continue_label: Label = Label.new()
-	continue_label.text = "点击或按任意键继续" if _language == CHINESE_LANGUAGE else "CLICK OR PRESS ANY KEY TO CONTINUE"
+	if _tutorial_enabled:
+		# Part 1 开场即提示玩家核心操作：空格或点击。
+		continue_label.text = "按 空格 或 点击 开始" if _language == CHINESE_LANGUAGE else "PRESS SPACE OR CLICK TO START"
+	else:
+		continue_label.text = "点击或按任意键继续" if _language == CHINESE_LANGUAGE else "CLICK OR PRESS ANY KEY TO CONTINUE"
 	continue_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	continue_label.add_theme_font_size_override("font_size", 13)
 	continue_label.add_theme_color_override("font_color", Color(0.58, 0.65, 0.69, 1.0))
@@ -313,7 +317,100 @@ func show_opening_intertitle(title: String, body: String) -> void:
 	layer.queue_free()
 	get_tree().paused = was_tree_paused
 
+## 非全屏玩法介绍：屏幕下方居中的卡片浮层，不暂停游戏、不遮挡全屏，
+## 点击任意处关闭（由透明拦截层处理，不会触发转向）。
+func show_guide_panel(title: String, body: String) -> void:
+	_refresh_language()
+	var layer: CanvasLayer = CanvasLayer.new()
+	layer.name = "GuideLayer"
+	layer.layer = 90
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(layer)
+	# 全屏透明拦截层：点击关闭面板，同时吞掉事件避免触发转向。
+	var blocker: Control = Control.new()
+	blocker.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	blocker.mouse_filter = Control.MOUSE_FILTER_STOP
+	blocker.gui_input.connect(_on_guide_blocker_input)
+	layer.add_child(blocker)
+	var container: CenterContainer = CenterContainer.new()
+	container.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
+	container.offset_left = -380.0
+	container.offset_right = -40.0
+	container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(container)
+	var panel: PanelContainer = PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color = Color(0.035, 0.047, 0.059, 0.96)
+	style.border_width_left = 1
+	style.border_width_top = 1
+	style.border_width_right = 1
+	style.border_width_bottom = 1
+	style.border_color = Color(0.89, 0.68, 0.31, 0.45)
+	style.set_corner_radius_all(12)
+	style.set_content_margin_all(18.0)
+	panel.add_theme_stylebox_override("panel", style)
+	container.add_child(panel)
+	var copy: VBoxContainer = VBoxContainer.new()
+	copy.add_theme_constant_override("separation", 8)
+	copy.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	copy.custom_minimum_size = Vector2(340.0, 0.0)
+	panel.add_child(copy)
+	var title_label: Label = Label.new()
+	title_label.text = title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 22)
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.82, 0.54, 1.0))
+	copy.add_child(title_label)
+	var body_label: Label = Label.new()
+	body_label.text = body
+	body_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body_label.add_theme_font_size_override("font_size", 14)
+	body_label.add_theme_color_override("font_color", Color(0.72, 0.78, 0.82, 1.0))
+	copy.add_child(body_label)
+	var hint_label: Label = Label.new()
+	hint_label.text = "点击任意处关闭" if _language == CHINESE_LANGUAGE else "CLICK ANYWHERE TO CLOSE"
+	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_label.add_theme_font_size_override("font_size", 11)
+	hint_label.add_theme_color_override("font_color", Color(0.47, 0.52, 0.56, 1.0))
+	copy.add_child(hint_label)
+	panel.modulate.a = 0.0
+	var fade_in: Tween = create_tween()
+	fade_in.set_ignore_time_scale(true)
+	fade_in.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	fade_in.tween_property(panel, "modulate:a", 1.0, 0.3)
+	_guide_active = true
+	# 等待关闭（点击拦截层或按键）；不暂停游戏。
+	while _guide_active:
+		await get_tree().process_frame
+	var fade_out: Tween = create_tween().set_parallel()
+	fade_out.set_ignore_time_scale(true)
+	fade_out.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	fade_out.tween_property(panel, "modulate:a", 0.0, 0.22)
+	await fade_out.finished
+	layer.queue_free()
+
+var _guide_active: bool = false
+
+func _on_guide_blocker_input(event: InputEvent) -> void:
+	if not _guide_active:
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_guide_active = false
+		get_viewport().set_input_as_handled()
+	elif event is InputEventScreenTouch and event.pressed:
+		_guide_active = false
+		get_viewport().set_input_as_handled()
+
 func _input(event: InputEvent) -> void:
+	if _guide_active:
+		# 引导面板显示期间：按键立即关闭，鼠标由拦截层处理。
+		if event is InputEventKey and event.pressed and not event.echo:
+			_guide_active = false
+			get_viewport().set_input_as_handled()
+			return
+		return
 	if not _waiting_for_opening_intertitle:
 		return
 	var should_continue: bool = false

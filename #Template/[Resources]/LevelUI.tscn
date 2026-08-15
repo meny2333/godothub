@@ -251,7 +251,7 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 24
-text = "是否从上一个检查点复活？\n您将会失去所有已获得的收集物"
+text = "要回到那个错误发生之前吗？\n你会失去这段路上拾起的一切"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -366,7 +366,7 @@ offset_left = 22.0
 offset_top = 20.0
 offset_right = 74.0
 offset_bottom = 82.0
-tooltip_text = "退出"
+tooltip_text = "返回主菜单"
 
 [node name="Icon" type="TextureRect" parent="back"]
 layout_mode = 1
