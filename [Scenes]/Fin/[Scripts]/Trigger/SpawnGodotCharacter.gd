@@ -7,7 +7,10 @@ const GODOT_CHARACTER_SCENE: PackedScene = preload("res://[Scenes]/Fin/Character
 const CLICK_SUCCESS_EFFECT_SCENE: PackedScene = preload("res://[Scenes]/Fin/GodotCharacterClickEffect.tscn")
 const RUN_ANIMATION: StringName = &"run"
 const SUMMON_PROMPT: String = "点击呼唤回声"
+const AFTERIMAGE_PROMPT: String = "这是你的残影——它慢三秒，重复着你的每一步。\n点击它，与它同步，继续前行。"
 const PROMPT_GROUP: StringName = &"spawn_godot_character_prompt"
+## 完全暂停时音乐淡到无声的音量（线性分贝）。
+const FULL_PAUSE_SILENT_DB: float = -80.0
 
 signal click_succeeded
 
@@ -30,6 +33,16 @@ signal click_succeeded
 ## 场景没有 TutorialManager 时使用的备用慢速倍率。
 @export_range(0.05, 1.0, 0.05) var fallback_time_scale: float = 0.3
 
+@export_group("残影玩法全暂停")
+## 启用后：点击按钮出现时不立即进入慢速，而是等待 full_pause_delay 后完全暂停
+## （time_scale 与音乐经 full_pause_tween_time 过渡到暂停），提示玩家残影玩法，
+## 点击后再经同样时长 tween 恢复。
+@export var full_pause_prompt: bool = false
+## 点击按钮出现到开始暂停之间的等待时长（秒）。
+@export_range(0.0, 10.0, 0.1, "or_greater") var full_pause_delay: float = 0.3
+## time_scale 与音乐音量过渡到暂停/恢复正常所用的时长（秒）。
+@export_range(0.0, 2.0, 0.05, "or_greater") var full_pause_tween_time: float = 0.1
+
 var _interaction_running: bool = false
 var _waiting_for_click: bool = false
 var _interaction_token: int = 0
@@ -37,6 +50,10 @@ var _active_player: Player
 var _tutorial_manager: Node
 var _slow_motion_active: bool = false
 var _fallback_restore_time_scale: float = 1.0
+var _full_pause_active: bool = false
+var _full_pause_restore_time_scale: float = 1.0
+var _full_pause_music_volume_db: float = 0.0
+var _full_pause_tween: Tween
 var _spawned_character: Node3D
 var _spawned_characters: Array[Node3D] = []
 
@@ -119,7 +136,21 @@ func _run_interaction(token: int, player: Player) -> void:
 		return
 
 	_begin_click_prompt(player)
-	_wait_for_click_timeout(token, player)
+	if full_pause_prompt:
+		_run_full_pause_prompt(token, player)
+	else:
+		_wait_for_click_timeout(token, player)
+
+
+## 残影玩法全暂停流程：点击按钮出现后等待 full_pause_delay，再完全暂停
+## （时间冻结 + 音乐暂停）并展示残影玩法说明；由点击继续并恢复。
+func _run_full_pause_prompt(token: int, player: Player) -> void:
+	await _wait_real_seconds(full_pause_delay)
+	if not _is_active_interaction(token, player):
+		return
+
+	_set_full_pause(true)
+	_show_afterimage_prompt()
 
 
 func _wait_for_click_timeout(token: int, player: Player) -> void:
@@ -151,14 +182,151 @@ func _is_active_interaction(token: int, player: Player) -> bool:
 
 func _begin_click_prompt(_player: Player) -> void:
 	_tutorial_manager = _find_tutorial_manager()
-	_set_slow_motion(true)
-	_show_prompt()
+	if not full_pause_prompt:
+		_set_slow_motion(true)
+		_show_prompt()
 	var target_position: Vector3 = global_position
 	if is_instance_valid(_spawned_character):
 		target_position = _spawned_character.global_position
 	_show_click_indicator(target_position)
 	_waiting_for_click = true
 	add_to_group(PROMPT_GROUP)
+
+
+## 完全暂停：time_scale 与音乐音量在 full_pause_tween_time 内过渡到暂停态。
+## 暂停期间 FullLevelSync 冻结（不衰减、不改写 time_scale/音高）；
+## 点击恢复时 tween 到同步率系统的当前 time_scale 值，完成后才解冻归还，
+## 使 tween 终点与同步率系统下一帧将写入的值一致，避免竞态与跳变。
+func _set_full_pause(paused: bool) -> void:
+	if paused:
+		_begin_full_pause()
+		return
+	_end_full_pause()
+
+
+func _begin_full_pause() -> void:
+	if _full_pause_active or Engine.is_editor_hint():
+		return
+	_kill_full_pause_tween()
+	_full_pause_active = true
+	# 先冻结同步率系统，保证 tween 期间没有其他代码改写 time_scale。
+	_set_sync_frozen(true)
+	_full_pause_restore_time_scale = Engine.time_scale
+	var music_player: AudioStreamPlayer = _get_music_player()
+	if music_player:
+		_full_pause_music_volume_db = music_player.volume_db
+
+	var tween: Tween = create_tween()
+	tween.set_ignore_time_scale(true)
+	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tween.set_trans(Tween.TRANS_LINEAR)
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.set_parallel(true)
+	tween.tween_property(Engine, "time_scale", 0.0, full_pause_tween_time)
+	if music_player:
+		tween.tween_property(music_player, "volume_db", FULL_PAUSE_SILENT_DB, full_pause_tween_time)
+	tween.chain().tween_callback(_on_full_pause_engaged)
+	_full_pause_tween = tween
+
+
+func _on_full_pause_engaged() -> void:
+	_full_pause_tween = null
+	var music_player: AudioStreamPlayer = _get_music_player()
+	if music_player:
+		music_player.stream_paused = true
+
+
+func _end_full_pause() -> void:
+	if not _full_pause_active:
+		return
+	# 覆盖“暂停 tween 尚未结束就点击”的边界：杀掉进行中的暂停 tween，
+	# 直接进入恢复 tween（tween 从当前值插值，不会跳变）。
+	_kill_full_pause_tween()
+	var music_player: AudioStreamPlayer = _get_music_player()
+	if music_player:
+		music_player.stream_paused = false
+
+	var restore_time_scale: float = _get_pause_restore_time_scale()
+	var tween: Tween = create_tween()
+	tween.set_ignore_time_scale(true)
+	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tween.set_trans(Tween.TRANS_LINEAR)
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.set_parallel(true)
+	tween.tween_property(Engine, "time_scale", restore_time_scale, full_pause_tween_time)
+	if music_player:
+		tween.tween_property(music_player, "volume_db", _full_pause_music_volume_db, full_pause_tween_time)
+	tween.chain().tween_callback(_on_full_pause_resumed)
+	_full_pause_tween = tween
+
+
+func _on_full_pause_resumed() -> void:
+	_full_pause_tween = null
+	_full_pause_active = false
+	# 恢复 tween 结束后才解冻，此时同步率系统写入的值与 tween 终点一致，无跳变。
+	_set_sync_frozen(false)
+
+
+## 恢复 tween 的目标 time_scale：优先取同步率系统当前值（点击已结算同步增益），
+## 没有同步率系统时回退到暂停前捕获的值。
+func _get_pause_restore_time_scale() -> float:
+	var scene_root: Node = get_tree().current_scene
+	if scene_root == null:
+		return _full_pause_restore_time_scale
+	var sync: Node = scene_root.get_node_or_null("FullLevelSync")
+	if sync and sync.has_method("get_current_time_scale"):
+		return clampf(float(sync.call("get_current_time_scale")), 0.05, 2.0)
+	return _full_pause_restore_time_scale
+
+
+## 中断交互（死亡/复活/退出）时立即恢复，不等恢复 tween 完成。
+func _force_full_pause_restore() -> void:
+	_kill_full_pause_tween()
+	if not _full_pause_active:
+		return
+	_full_pause_active = false
+	_set_sync_frozen(false)
+	Engine.time_scale = _get_pause_restore_time_scale()
+	var music_player: AudioStreamPlayer = _get_music_player()
+	if music_player:
+		music_player.stream_paused = false
+		music_player.volume_db = _full_pause_music_volume_db
+
+
+func _kill_full_pause_tween() -> void:
+	if _full_pause_tween and _full_pause_tween.is_valid():
+		_full_pause_tween.kill()
+	_full_pause_tween = null
+
+
+func _set_sync_frozen(frozen: bool) -> void:
+	var scene_root: Node = get_tree().current_scene
+	if scene_root == null:
+		return
+	var sync: Node = scene_root.get_node_or_null("FullLevelSync")
+	if sync and sync.has_method("set_frozen"):
+		sync.call("set_frozen", frozen)
+
+
+func _get_music_player() -> AudioStreamPlayer:
+	var player: Player = _active_player if is_instance_valid(_active_player) else Player.instance
+	if player == null:
+		return null
+	return player.get_node_or_null("MusicPlayer") as AudioStreamPlayer
+
+
+func _show_afterimage_prompt() -> void:
+	if not is_instance_valid(_tutorial_manager):
+		_tutorial_manager = _find_tutorial_manager()
+	if _tutorial_manager and _tutorial_manager.has_method("show_narrative"):
+		# 完全暂停期间文案保持显示（长驻留），点击恢复时再清除。
+		_tutorial_manager.call("show_narrative", AFTERIMAGE_PROMPT, 3600.0)
+
+
+func _hide_afterimage_prompt() -> void:
+	if _tutorial_manager and is_instance_valid(_tutorial_manager) \
+			and _tutorial_manager.has_method("clear_narrative"):
+		_tutorial_manager.call("clear_narrative")
 
 
 func _accept_target_click() -> void:
@@ -168,6 +336,8 @@ func _accept_target_click() -> void:
 	_spawn_click_success_effect(effect_position)
 	click_succeeded.emit()
 	_hide_click_indicator()
+	_set_full_pause(false)
+	_hide_afterimage_prompt()
 	_set_slow_motion(false)
 	_finish_interaction()
 
@@ -210,6 +380,8 @@ func _finish_interaction() -> void:
 
 func _cancel_interaction() -> void:
 	_hide_click_indicator()
+	_hide_afterimage_prompt()
+	_force_full_pause_restore()
 	_set_slow_motion(false)
 	_finish_interaction()
 	for character: Node3D in _spawned_characters:

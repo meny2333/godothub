@@ -136,7 +136,7 @@ text = "暖黄峡谷"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
 theme_override_font_sizes/font_size = 10
-text = "可进入"
+text = "回声在等你"
 
 [node name="Frame" type="Panel" parent="Card01"]
 layout_mode = 1
@@ -239,7 +239,7 @@ text = "灰蓝山谷"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
 theme_override_font_sizes/font_size = 10
-text = "通过上一段解锁"
+text = "先走过前面的路"
 
 [node name="Frame" type="Panel" parent="Card02"]
 layout_mode = 1
@@ -342,7 +342,7 @@ text = "破晓拱门"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
 theme_override_font_sizes/font_size = 10
-text = "通过上一段解锁"
+text = "先走过前面的路"
 
 [node name="Frame" type="Panel" parent="Card03"]
 layout_mode = 1
@@ -445,7 +445,7 @@ text = "镜面回廊"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.56, 0.66, 0.69, 1)
 theme_override_font_sizes/font_size = 10
-text = "通过上一段解锁"
+text = "先走过前面的路"
 
 [node name="LockShade" type="ColorRect" parent="Card04"]
 layout_mode = 1

@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" format=3]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ck4hy8tl1a0oo"]
 
 [resource]
 resource_name = "BonusBoxIn"

@@ -92,8 +92,8 @@ const CREDITS_LIBAI_ZH: String = "永结无情游，相期邈云汉。"
 const CREDITS_LIBAI_EN: String = "BOUND FOREVER IN A PASSIONLESS TRIP, WE PLEDGE TO MEET AGAIN IN THE FAR SKIES."
 const CREDITS_LIBAI_SOURCE_ZH: String = "—— 李白《月下独酌》"
 const CREDITS_LIBAI_SOURCE_EN: String = "— LI BAI, \"DRINKING ALONE UNDER THE MOON\""
-const CREDITS_ENDING_TITLE_ZH: String = "你的结局"
-const CREDITS_ENDING_TITLE_EN: String = "YOUR ENDING"
+const CREDITS_ENDING_TITLE_ZH: String = "属于你的回声"
+const CREDITS_ENDING_TITLE_EN: String = "YOUR ECHO"
 # 五档结局各自对应的诗句（收尾 reveal 随结局切换）
 const ENDING_POEMS_ZH: Array[String] = [
 	"起舞弄清影，何似在人间。",                        # 完美同步：与影合一，标题出处
@@ -402,8 +402,6 @@ func _show_credits_roll() -> void:
 	var theme: String = CREDITS_THEME_ZH if is_chinese else CREDITS_THEME_EN
 	var poem: String = CREDITS_POEM_ZH if is_chinese else CREDITS_POEM_EN
 	var poem_source: String = CREDITS_POEM_SOURCE_ZH if is_chinese else CREDITS_POEM_SOURCE_EN
-	var meaning_title: String = CREDITS_MEANING_TITLE_ZH if is_chinese else CREDITS_MEANING_TITLE_EN
-	var meaning: String = CREDITS_MEANING_ZH if is_chinese else CREDITS_MEANING_EN
 	var shu: String = CREDITS_SHU_ZH if is_chinese else CREDITS_SHU_EN
 	var shu_source: String = CREDITS_SHU_SOURCE_ZH if is_chinese else CREDITS_SHU_SOURCE_EN
 	var libai: String = CREDITS_LIBAI_ZH if is_chinese else CREDITS_LIBAI_EN
@@ -456,36 +454,23 @@ func _show_credits_roll() -> void:
 	theme_label.add_theme_constant_override("line_spacing", 8)
 	theme_label.add_theme_color_override("font_color", Color(0.97, 0.95, 0.86, 1.0))
 	roll.add_child(theme_label)
-	var poem_label: Label = Label.new()
-	poem_label.text = poem
-	poem_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	poem_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	poem_label.add_theme_font_size_override("font_size", 20)
-	poem_label.add_theme_constant_override("line_spacing", 8)
-	poem_label.add_theme_color_override("font_color", Color(0.88, 0.9, 0.93, 1.0))
-	roll.add_child(poem_label)
-	var poem_source_label: Label = Label.new()
-	poem_source_label.text = poem_source
-	poem_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	poem_source_label.add_theme_font_size_override("font_size", 14)
-	poem_source_label.add_theme_constant_override("line_spacing", 8)
-	poem_source_label.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66, 1.0))
-	roll.add_child(poem_source_label)
-	var meaning_title_label: Label = Label.new()
-	meaning_title_label.text = meaning_title
-	meaning_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	meaning_title_label.add_theme_font_size_override("font_size", 15)
-	meaning_title_label.add_theme_constant_override("line_spacing", 8)
-	meaning_title_label.add_theme_color_override("font_color", Color(0.91, 0.71, 0.36, 1.0))
-	roll.add_child(meaning_title_label)
-	var meaning_label: Label = Label.new()
-	meaning_label.text = meaning
-	meaning_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	meaning_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	meaning_label.add_theme_font_size_override("font_size", 18)
-	meaning_label.add_theme_constant_override("line_spacing", 8)
-	meaning_label.add_theme_color_override("font_color", Color(0.88, 0.9, 0.93, 1.0))
-	roll.add_child(meaning_label)
+	# 下列诗句若与定格结局诗相同，滚动段跳过，避免报幕同句出现两次。
+	if ending_poem != poem:
+		var poem_label: Label = Label.new()
+		poem_label.text = poem
+		poem_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		poem_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		poem_label.add_theme_font_size_override("font_size", 20)
+		poem_label.add_theme_constant_override("line_spacing", 8)
+		poem_label.add_theme_color_override("font_color", Color(0.88, 0.9, 0.93, 1.0))
+		roll.add_child(poem_label)
+		var poem_source_label: Label = Label.new()
+		poem_source_label.text = poem_source
+		poem_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		poem_source_label.add_theme_font_size_override("font_size", 14)
+		poem_source_label.add_theme_constant_override("line_spacing", 8)
+		poem_source_label.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66, 1.0))
+		roll.add_child(poem_source_label)
 	var thanks_label: Label = Label.new()
 	thanks_label.text = thanks
 	thanks_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -509,35 +494,39 @@ func _show_credits_roll() -> void:
 	sources_label.add_theme_color_override("font_color", Color(0.88, 0.9, 0.93, 1.0))
 	roll.add_child(sources_label)
 	# 苏轼《水调歌头》——标题「弄影」的出处，意象闭环。
-	var shu_label: Label = Label.new()
-	shu_label.text = shu
-	shu_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	shu_label.add_theme_font_size_override("font_size", 22)
-	shu_label.add_theme_constant_override("line_spacing", 8)
-	shu_label.add_theme_color_override("font_color", Color(0.97, 0.95, 0.86, 1.0))
-	roll.add_child(shu_label)
-	var shu_source_label: Label = Label.new()
-	shu_source_label.text = shu_source
-	shu_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	shu_source_label.add_theme_font_size_override("font_size", 14)
-	shu_source_label.add_theme_constant_override("line_spacing", 8)
-	shu_source_label.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66, 1.0))
-	roll.add_child(shu_source_label)
+	# 结局诗 fallback 也是此句（ending_layer_index < 0 时）；与定格重复时跳过。
+	if ending_poem != shu:
+		var shu_label: Label = Label.new()
+		shu_label.text = shu
+		shu_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		shu_label.add_theme_font_size_override("font_size", 22)
+		shu_label.add_theme_constant_override("line_spacing", 8)
+		shu_label.add_theme_color_override("font_color", Color(0.97, 0.95, 0.86, 1.0))
+		roll.add_child(shu_label)
+		var shu_source_label: Label = Label.new()
+		shu_source_label.text = shu_source
+		shu_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		shu_source_label.add_theme_font_size_override("font_size", 14)
+		shu_source_label.add_theme_constant_override("line_spacing", 8)
+		shu_source_label.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66, 1.0))
+		roll.add_child(shu_source_label)
 	# 李白《月下独酌》——与影结约、期许重逢，呼应残影与玩家的和解。
-	var libai_label: Label = Label.new()
-	libai_label.text = libai
-	libai_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	libai_label.add_theme_font_size_override("font_size", 22)
-	libai_label.add_theme_constant_override("line_spacing", 8)
-	libai_label.add_theme_color_override("font_color", Color(0.97, 0.95, 0.86, 1.0))
-	roll.add_child(libai_label)
-	var libai_source_label: Label = Label.new()
-	libai_source_label.text = libai_source
-	libai_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	libai_source_label.add_theme_font_size_override("font_size", 14)
-	libai_source_label.add_theme_constant_override("line_spacing", 8)
-	libai_source_label.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66, 1.0))
-	roll.add_child(libai_source_label)
+	# 此句与结局诗[1]「心意相通」相同；该结局下跳过，避免报幕同句出现两次。
+	if ending_poem != libai:
+		var libai_label: Label = Label.new()
+		libai_label.text = libai
+		libai_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		libai_label.add_theme_font_size_override("font_size", 22)
+		libai_label.add_theme_constant_override("line_spacing", 8)
+		libai_label.add_theme_color_override("font_color", Color(0.97, 0.95, 0.86, 1.0))
+		roll.add_child(libai_label)
+		var libai_source_label: Label = Label.new()
+		libai_source_label.text = libai_source
+		libai_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		libai_source_label.add_theme_font_size_override("font_size", 14)
+		libai_source_label.add_theme_constant_override("line_spacing", 8)
+		libai_source_label.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66, 1.0))
+		roll.add_child(libai_source_label)
 
 	var roll_speed: float = 60.0
 	var end_reveal: Control = Control.new()
@@ -659,7 +648,7 @@ func _show_part_intro(stage_index: int) -> void:
 	# Part 1 开始时提示默认键位
 	if stage_index == 0:
 		tutorial_manager.show_guide_panel(
-			("操作" if is_chinese else "CONTROLS"),
+			("如何起舞" if is_chinese else "HOW TO DANCE"),
 			("空格 / 鼠标左键：转向\nESC：打开设置\nR：重试")
 			if is_chinese else
 			("SPACE / LMB：TURN\nESC：SETTINGS\nR：RESTART"))

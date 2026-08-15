@@ -29,7 +29,7 @@
 
 ### 皮肤面板（SkinPanel）
 
-- 标题「皮肤 / SKINS」+「游戏开始前」副标题。
+- 标题「皮肤 / SKINS」+「启程之前」副标题。
 - 当前皮肤预览 + 名称。
 - 两张选择卡片：
   - **经典 / CLASSIC**（原始角色）— 显示原始线条/Player 本体。
@@ -68,7 +68,7 @@
 - Part 2 / Part 3 开始前，叙事片头（`show_opening_intertitle`，全屏黑幕）之后显示**非全屏玩法介绍卡片**。
 - 卡片定位：屏幕**右侧居中**（`PRESET_CENTER_RIGHT`，距右缘 40px）。
 - 不暂停游戏、不遮挡全屏；全屏透明拦截层接收点击/按键关闭并吞掉事件（不触发转向）。
-- 内容：「同步率 / SYNC RATE」标题 + 玩法说明（点击转向保持同步率、收集恢复、耗尽失败）+「点击任意处关闭」。
+- 内容：「同步率 / SYNC RATE」标题 + 玩法说明（点击转向保持同步率、收集恢复、耗尽失败）+「点击任意处，继续你的路」。
 
 ## 多结局（FinStageEntry._resolve_ending）
 
@@ -85,3 +85,11 @@
 
 - part3（stage 2）通关时同步率 ≥99.5%（`PART3_PERFECT_THRESHOLD`）写入 `user://settings.cfg` 的 `[endings] part3_perfect_sync = true`，作为完整关卡最高档结局的前置条件。
 - 结局读取时机：玩家到达终点 `GameState == Completed` 后同步率冻结（FullLevelSync 只在 Playing 时衰减），`get_inherited_sync()` 返回最终值。
+
+## 结算报幕（FinStageEntry._show_credits_roll）
+
+- 仅在完整关卡（stage 3）通关后播放：`AudioManager.stop()` 切到解锁曲，滚轴自底部以 60px/s 匀速上升（`roll_speed`，Tween 线性缓动，`ignore_time_scale`）。
+- 滚动段内容（自下而上）：主题句 →（李商隐《锦瑟》）→ 致谢 → 灵感来源 →（苏轼《水调歌头》）→（李白《月下独酌》）。
+- 滚动结束定格（`_reveal_credits_end`）：「属于你的回声」+ 结局名 + **结局诗**（五档对应，`ENDING_POEMS`）+ 出处 + 标题「弄影」+「终」+「返回主菜单」。
+- **结局诗去重**：滚动段诗句与定格结局诗同属一个素材池（结局诗[0]=苏轼句、[1]=李白句、[3]=锦瑟句，与 `CREDITS_SHU/LIBAI/POEM` 相同）。滚动段以 `ending_poem != poem/shu/libai` 字符串比对逐句跳过重复项，保证每句诗在整段报幕中只出现一次；该比对同样覆盖定格诗 fallback 为苏轼句（`ending_layer_index < 0`）的边界情况，且天然适配中英文各比各的文本。
+- 调试钩子：命令行参数 `--test-credits` 跳过游戏流程直接播放完整结算报幕（`_debug_play_credits`）。

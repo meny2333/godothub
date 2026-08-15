@@ -267,7 +267,7 @@ theme_override_font_sizes/font_size = 17
 theme_override_styles/normal = SubResource("StylePrimary")
 theme_override_styles/pressed = SubResource("StylePrimaryHover")
 theme_override_styles/hover = SubResource("StylePrimaryHover")
-text = "选择章节"
+text = "踏入回声"
 
 [node name="QuickStartButton" type="Button" parent="SafeMargin/Layout/ScreenArea/HomeScreen/HomeContent/Actions" unique_id=661761412]
 custom_minimum_size = Vector2(190, 52)
@@ -377,7 +377,7 @@ theme_override_colors/font_hover_color = Color(0.08, 0.07, 0.05, 1)
 theme_override_styles/normal = SubResource("StylePrimary")
 theme_override_styles/pressed = SubResource("StylePrimaryHover")
 theme_override_styles/hover = SubResource("StylePrimaryHover")
-text = "进入场景"
+text = "走向这段路"
 
 [node name="SettingsShade" type="ColorRect" parent="." unique_id=246358319]
 visible = false
@@ -434,7 +434,7 @@ text = "关闭"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.61, 0.65, 0.68, 1)
 theme_override_font_sizes/font_size = 13
-text = "调整音画同步。改动会立即保存。"
+text = "让声音与画面，与你的节奏同行。改动即刻生效。"
 autowrap_mode = 2
 
 [node name="Divider" type="ColorRect" parent="SettingsPanel/PanelMargin/SettingsContent" unique_id=291192861]
