@@ -42,6 +42,10 @@ enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg", "res://addons/tem
 
 import/fbx2gltf/enabled=false
 
+[gui]
+
+theme/custom="res://#Template/[Resources]/GUI/GlobalTheme.tres"
+
 [input]
 
 turn={
