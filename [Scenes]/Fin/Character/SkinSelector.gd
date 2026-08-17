@@ -2,6 +2,7 @@ extends CanvasLayer
 class_name SkinSelector
 
 const CLASSIC_SKIN: String = "classic"
+const MAIN_MENU_SCENE_PATH: String = "res://[Scenes]/MainMenu/MainMenu.tscn"
 const GODOT_SKIN_ID: String = "godot"
 const GODOT_SKIN: String = "res://[Scenes]/Fin/Character/SkinGodot.tscn"
 const CLASSIC_IMAGE: String = "res://[Scenes]/Fin/classical-transparent.png"
@@ -49,6 +50,7 @@ const DEFAULT_TURN_KEY: Key = KEY_SPACE
 @onready var godot_selected_bar: ColorRect = $SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/GodotButton/CardContent/GodotSelectedBar
 @onready var classic_name: Label = $SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/ClassicButton/CardContent/Name
 @onready var classic_detail: Label = $SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/ClassicButton/CardContent/Detail
+@onready var godot_name: Label = $SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/GodotButton/CardContent/Name
 @onready var godot_detail: Label = $SkinPanelHolder/SkinPanel/PanelMargin/Contents/Cards/GodotButton/CardContent/Detail
 @onready var action_row: HBoxContainer = $SkinPanelHolder/SkinPanel/PanelMargin/Contents/ActionRow
 @onready var turn_preview_checkbox: CheckBox = $SkinPanelHolder/SkinPanel/PanelMargin/Contents/ActionRow/TurnPreviewCheckBox
@@ -72,6 +74,7 @@ const DEFAULT_TURN_KEY: Key = KEY_SPACE
 @onready var turn_key_label: Label = $SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow/TurnKeyLabel
 @onready var turn_key_value_button: Button = $SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow/TurnKeyValue
 @onready var turn_key_remove_button: Button = $SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/TurnKeyRow/TurnKeyRemove
+@onready var return_button: Button = $SettingsPanelHolder/SettingsPanel/PanelMargin/SettingsContent/ReturnButton
 
 var player: Player = null
 var godot_skin: GodotCharacter = null
@@ -92,6 +95,7 @@ var _slide_tween: Tween = null
 var _panel_tweens: Dictionary = {}
 var _closing_panel: Control = null
 var _recording_turn_key: bool = false
+var _return_requested: bool = false
 var _turn_keys: Array[int] = [DEFAULT_TURN_KEY]
 var _turn_buttons: Array[int] = [MOUSE_BUTTON_LEFT]
 
@@ -225,6 +229,19 @@ func _close_all() -> void:
 		_close_skin_panel()
 	if _settings_open:
 		_close_settings()
+
+## 从设置面板返回主菜单：先收起面板，再重置关卡状态并切场景。
+func _on_return_to_menu_pressed() -> void:
+	if _return_requested:
+		return
+	_return_requested = true
+	_close_all()
+	hide()
+	LevelManager.reset_to_defaults()
+	var error: Error = get_tree().change_scene_to_file(MAIN_MENU_SCENE_PATH)
+	if error != OK:
+		_return_requested = false
+		push_error("SkinSelector.gd: 无法返回主菜单 (%s)" % error_string(error))
 
 func _on_background_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton \
@@ -378,7 +395,7 @@ func _update_selection_visual() -> void:
 	var is_classic: bool = current_skin == CLASSIC_SKIN
 	var preview_texture: Texture2D = load(CLASSIC_IMAGE if is_classic else GODOT_IMAGE) as Texture2D
 	current_preview.texture = preview_texture
-	current_name.text = ("经典" if is_chinese else "CLASSIC") if is_classic else "Godot"
+	current_name.text = ("经典" if is_chinese else "CLASSIC") if is_classic else ("机器人" if is_chinese else "ROBOT")
 	classic_selected_bar.visible = is_classic
 	godot_selected_bar.visible = not is_classic
 	action_row.visible = not is_classic
@@ -598,6 +615,7 @@ func _apply_language() -> void:
 	options_title.text = "选择谁与你同行" if is_chinese else "CHOOSE WHO WALKS WITH YOU"
 	classic_name.text = "经典" if is_chinese else "CLASSIC"
 	classic_detail.text = "原始角色" if is_chinese else "ORIGINAL FORM"
+	godot_name.text = "机器人" if is_chinese else "ROBOT"
 	godot_detail.text = "低多边形角色" if is_chinese else "LOW-POLY FORM"
 	turn_preview_checkbox.text = "转弯动画" if is_chinese else "TURN"
 	turn_preview_checkbox.tooltip_text = "预览转弯动画" if is_chinese else "PREVIEW TURN"
@@ -616,6 +634,8 @@ func _apply_language() -> void:
 	latency_title.text = "音画延迟" if is_chinese else "AUDIO DELAY"
 	turn_key_label.text = "转向键" if is_chinese else "TURN KEY"
 	turn_key_value_button.tooltip_text = "点击后按新键绑定" if is_chinese else "CLICK THEN PRESS A KEY TO REBIND"
+	return_button.text = "返回主菜单" if is_chinese else "RETURN TO MAIN MENU"
+	return_button.tooltip_text = "返回主菜单" if is_chinese else "RETURN TO MAIN MENU"
 	settings_note.text = "ESC 可关闭面板" if is_chinese else "PRESS ESC TO CLOSE"
 	_update_selection_visual()
 	_update_turn_key_button()
