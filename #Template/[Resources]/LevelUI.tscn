@@ -1,9 +1,10 @@
-[gd_scene format=3 uid="uid://wx3awwdt8xdy"]
+[gd_scene load_steps=6 format=3 uid="uid://wx3awwdt8xdy"]
 
 [ext_resource type="Script" uid="uid://qco7fgruvgdp" path="res://#Template/[Scripts]/GUI/LevelUI.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://#Template/[Resources]/GUI/Sprites.png" id="2_atlas"]
 [ext_resource type="FontFile" path="res://#Template/[Resources]/GUI/MiSans-Normal.ttf" id="3_misans"]
 [ext_resource type="FontFile" path="res://#Template/[Resources]/GUI/CaviarDreams.TTF" id="4_caviar"]
+[ext_resource type="FontVariation" uid="uid://c8n5m2v9k4q7t" path="res://#Template/[Resources]/GUI/ComboFont.tres" id="5_combo"]
 
 [sub_resource type="AtlasTexture" id="Atlas_frame"]
 atlas = ExtResource("2_atlas")
@@ -64,7 +65,7 @@ corner_radius_bottom_left = 8
 bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="Theme" id="Theme_level_ui"]
-default_font = ExtResource("3_misans")
+default_font = ExtResource("5_combo")
 default_font_size = 22
 Button/styles/normal = SubResource("Style_frame")
 Button/styles/hover = SubResource("Style_frame_hover")
@@ -108,7 +109,7 @@ offset_top = 48.0
 offset_right = -20.0
 offset_bottom = 116.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("4_caviar")
+theme_override_fonts/font = ExtResource("5_combo")
 theme_override_font_sizes/font_size = 48
 text = "Level Name"
 horizontal_alignment = 1

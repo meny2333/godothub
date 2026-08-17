@@ -1,9 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://c3fosloqsr26b"]
+[gd_scene load_steps=18 format=3 uid="uid://c3fosloqsr26b"]
 
 [ext_resource type="Script" uid="uid://i0an8f1engmx" path="res://[Scenes]/MainMenu/MainMenu.gd" id="1_menu"]
 [ext_resource type="Script" uid="uid://cvr3fdljdn8qq" path="res://[Scenes]/MainMenu/EchoBackdrop.gd" id="2_backdrop"]
-[ext_resource type="FontFile" uid="uid://cofd0gpguc54l" path="res://#Template/[Resources]/GUI/MiSans-Normal.ttf" id="3_font"]
-[ext_resource type="FontFile" uid="uid://cfyw78f6iowmi" path="res://#Template/[Resources]/GUI/CaviarDreams.TTF" id="4_display"]
+[ext_resource type="FontVariation" uid="uid://c8n5m2v9k4q7t" path="res://#Template/[Resources]/GUI/ComboFont.tres" id="3_font"]
+[ext_resource type="PackedScene" path="res://[Scenes]/MainMenu/MirrorCarousel.tscn" id="5_carousel"]
 [ext_resource type="PackedScene" path="res://[Scenes]/MainMenu/MirrorCarousel.tscn" id="5_carousel"]
 [ext_resource type="Texture2D" uid="uid://crqiqa5ytpy7u" path="res://#Template/[Resources]/GUI/arrow_left.png" id="6_arrow_left"]
 [ext_resource type="Texture2D" uid="uid://ca8sn1wc12uyy" path="res://#Template/[Resources]/GUI/arrow_right.png" id="7_arrow_right"]
@@ -186,7 +186,6 @@ theme_override_constants/separation = 0
 [node name="BrandTitle" type="Label" parent="SafeMargin/Layout/TopBar/Brand" unique_id=2111469106]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.96, 0.82, 0.54, 1)
-theme_override_fonts/font = ExtResource("4_display")
 theme_override_font_sizes/font_size = 20
 text = "弄影"
 

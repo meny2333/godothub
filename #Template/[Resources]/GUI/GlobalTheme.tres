@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=2 format=3]
 
-[ext_resource type="FontFile" uid="uid://cofd0gpguc54l" path="res://#Template/[Resources]/GUI/MiSans-Normal.ttf" id="1_font"]
+[ext_resource type="FontVariation" uid="uid://c8n5m2v9k4q7t" path="res://#Template/[Resources]/GUI/ComboFont.tres" id="1_font"]
 
 [resource]
 default_font = ExtResource("1_font")

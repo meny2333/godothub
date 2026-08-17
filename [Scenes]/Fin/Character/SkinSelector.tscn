@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://[Scenes]/Fin/Character/SkinSelector.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://[Scenes]/Fin/classical-transparent.png" id="2_classic"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" path="res://#Template/[Resources]/GUI/gear.png" id="5_gear"]
 [ext_resource type="Texture2D" path="res://#Template/[Resources]/GUI/arrow_left.png" id="6_arrow_left"]
 [ext_resource type="Texture2D" path="res://#Template/[Resources]/GUI/arrow_right.png" id="7_arrow_right"]
+[ext_resource type="FontVariation" uid="uid://c8n5m2v9k4q7t" path="res://#Template/[Resources]/GUI/ComboFont.tres" id="8_combo"]
 
 [sub_resource type="StyleBoxFlat" id="StylePanel"]
 bg_color = Color(0.035, 0.047, 0.059, 0.96)
@@ -114,7 +115,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="Theme" id="Theme_menu"]
-default_font = ExtResource("4_font")
+default_font = ExtResource("8_combo")
 default_font_size = 16
 Button/colors/font_color = Color(0.92, 0.93, 0.93, 1)
 Button/colors/font_disabled_color = Color(0.58, 0.61, 0.64, 0.72)
