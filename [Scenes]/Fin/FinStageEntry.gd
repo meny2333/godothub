@@ -253,7 +253,7 @@ func _update_death_hint() -> void:
 	var config: ConfigFile = ConfigFile.new()
 	config.load(SETTINGS_PATH)
 	var is_chinese: bool = str(config.get_value(UI_SECTION, LANGUAGE_KEY, "zh")) != "en"
-	var hint: String = ("已跌倒 %d/8，残影依然在等你 🌫️" if is_chinese else "FALLEN %d/8 · THE ECHO IS STILL WAITING 🌫️") \
+	var hint: String = ("已跌倒 %d 次，残影依然在等你 🌫️" if is_chinese else "FALLEN %d TIMES · THE ECHO IS STILL WAITING 🌫️") \
 		% LevelManager.full_level_death_count
 	level_ui.call("set_death_hint", hint)
 
@@ -853,6 +853,16 @@ func _restore_checkpoint(checkpoint_path: NodePath) -> void:
 		return
 	checkpoint._enter_trigger(player)
 	checkpoint.revive()
+	_hide_checkpoint_container(checkpoint)
 	# 入口定位只用于把玩家放到本段起点，不作为死亡复活点：
 	# 死亡后直接重开（GameOverNormal），等玩家推进到中途皇冠检查点再启用复活。
 	LevelManager.current_checkpoint = null
+
+## 入口定位（_restore_checkpoint）后皇冠已被消耗，隐藏整个皇冠容器，避免残留在出生点。
+func _hide_checkpoint_container(checkpoint: Checkpoint) -> void:
+	var area: Node3D = checkpoint.get_parent() as Node3D
+	if not area:
+		return
+	var container: Node3D = area.get_parent() as Node3D
+	if container:
+		container.visible = false

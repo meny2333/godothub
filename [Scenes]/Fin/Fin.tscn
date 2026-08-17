@@ -826,7 +826,7 @@ transform = Transform3D(-8.742278e-08, 0, 5.7999964, 0, 1, 0, -2, 0, -2.5352588e
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 6.399996, 126.62423, -0.9999995, 248.32007)
 
 [node name="Road 25" parent="BasicOBJ_Group/RoadHolder" unique_id=2047914253 instance=ExtResource("6_mot87")]
-transform = Transform3D(-2, 0, -1.919552e-06, 0, 1, 0, 1.7484555e-07, 0, -21.957111, 120.9024, -1, 234.90227)
+transform = Transform3D(-2, 0, -1.919552e-06, 0, 1, 0, 1.7484555e-07, 0, -21.957111, 120.9024, -1, 233.21092)
 
 [node name="Road 27" parent="BasicOBJ_Group/RoadHolder" unique_id=1882715357 instance=ExtResource("6_mot87")]
 transform = Transform3D(-8.742278e-08, 0, 4.4999976, 0, 1, 0, -2, 0, -1.9670114e-07, 129.98541, -1, 250.90706)
@@ -2578,6 +2578,66 @@ mesh = SubResource("SphereMesh_mtojw")
 
 [node name="FloatingBlueLight_05" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=1249787254]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 1, 103)
+material_override = SubResource("StandardMaterial3D_34yn8")
+mesh = SubResource("SphereMesh_qmtuy")
+
+[node name="FloatingBlueLight_06" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=1671855093]
+transform = Transform3D(0.68944716, -0.16773358, 0.70464766, 0.088828385, 0.98505473, 0.1475692, -0.7188688, -0.039148465, 0.6940427, 55.52529, -5.8750753, 150.4654)
+material_override = SubResource("StandardMaterial3D_uc76h")
+mesh = SubResource("SphereMesh_ytrvt")
+
+[node name="FloatingBlueLight_07" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=813581226]
+transform = Transform3D(0.68944716, -0.16773358, 0.70464766, 0.088828385, 0.98505473, 0.1475692, -0.7188688, -0.039148465, 0.6940427, 71.23231, -2.7983136, 155.47667)
+material_override = SubResource("StandardMaterial3D_qvjd2")
+mesh = SubResource("SphereMesh_ahllt")
+
+[node name="FloatingBlueLight_08" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=170127931]
+transform = Transform3D(0.68944716, -0.16773358, 0.70464766, 0.088828385, 0.98505473, 0.1475692, -0.7188688, -0.039148465, 0.6940427, 76.31842, -1.3351669, 173.05508)
+material_override = SubResource("StandardMaterial3D_g0nsa")
+mesh = SubResource("SphereMesh_5dhol")
+
+[node name="FloatingBlueLight_09" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=162290278]
+transform = Transform3D(0.68944716, -0.16773358, 0.70464766, 0.088828385, 0.98505473, 0.1475692, -0.7188688, -0.039148465, 0.6940427, 95.8478, 2.3476326, 176.93843)
+material_override = SubResource("StandardMaterial3D_l42g3")
+mesh = SubResource("SphereMesh_8f1eb")
+
+[node name="FloatingBlueLight_10" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=75403618]
+transform = Transform3D(0.68944716, -0.16773358, 0.70464766, 0.088828385, 0.98505473, 0.1475692, -0.7188688, -0.039148465, 0.6940427, 103.76771, 4.459797, 198.70593)
+material_override = SubResource("StandardMaterial3D_l6jxc")
+mesh = SubResource("SphereMesh_mtojw")
+
+[node name="FloatingBlueLight_11" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=186343050]
+transform = Transform3D(0.68944716, -0.16773358, 0.70464766, 0.088828385, 0.98505473, 0.1475692, -0.7188688, -0.039148465, 0.6940427, 125.09827, 8.501125, 206.44765)
+material_override = SubResource("StandardMaterial3D_34yn8")
+mesh = SubResource("SphereMesh_qmtuy")
+
+[node name="FloatingBlueLight_12" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=160549923]
+transform = Transform3D(0.9912677, -0.10192272, 0.083667666, 0.088828385, 0.9850547, 0.14756918, -0.097457975, -0.13884851, 0.98550665, 38.488594, -5.8750753, 80.127914)
+material_override = SubResource("StandardMaterial3D_uc76h")
+mesh = SubResource("SphereMesh_ytrvt")
+
+[node name="FloatingBlueLight_13" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=1978928154]
+transform = Transform3D(0.9912677, -0.10192272, 0.083667666, 0.088828385, 0.9850547, 0.14756918, -0.097457975, -0.13884851, 0.98550665, 47.157745, -2.7983136, 94.15178)
+material_override = SubResource("StandardMaterial3D_qvjd2")
+mesh = SubResource("SphereMesh_ahllt")
+
+[node name="FloatingBlueLight_14" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=2099414084]
+transform = Transform3D(0.9912677, -0.10192272, 0.083667666, 0.088828385, 0.9850547, 0.14756918, -0.097457975, -0.13884851, 0.98550665, 39.585213, -1.3351669, 110.8109)
+material_override = SubResource("StandardMaterial3D_g0nsa")
+mesh = SubResource("SphereMesh_5dhol")
+
+[node name="FloatingBlueLight_15" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=174173321]
+transform = Transform3D(0.9912677, -0.10192272, 0.083667666, 0.088828385, 0.9850547, 0.14756918, -0.097457975, -0.13884851, 0.98550665, 51.89112, 2.3476326, 126.46471)
+material_override = SubResource("StandardMaterial3D_l42g3")
+mesh = SubResource("SphereMesh_8f1eb")
+
+[node name="FloatingBlueLight_16" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=539485525]
+transform = Transform3D(0.9912677, -0.10192272, 0.083667666, 0.088828385, 0.9850547, 0.14756918, -0.097457975, -0.13884851, 0.98550665, 43.74566, 4.459797, 148.14882)
+material_override = SubResource("StandardMaterial3D_l6jxc")
+mesh = SubResource("SphereMesh_mtojw")
+
+[node name="FloatingBlueLight_17" type="MeshInstance3D" parent="Scene_Group/part1/Part1Atmosphere" unique_id=6113013]
+transform = Transform3D(0.9912677, -0.10192272, 0.083667666, 0.088828385, 0.9850547, 0.14756918, -0.097457975, -0.13884851, 0.98550665, 54.90953, 8.501125, 167.9047)
 material_override = SubResource("StandardMaterial3D_34yn8")
 mesh = SubResource("SphereMesh_qmtuy")
 
@@ -5239,7 +5299,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.584137)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.584137)
 
 [node name="CrownSprite" parent="collection/Crown2" index="3" unique_id=1095474833]
-transform = Transform3D(-0.38176775, 0.18301275, -0.9059578, -0.101721175, 0.96592563, 0.2379919, 0.9186435, 0.18301275, -0.35014307, 10.135147, 2.9180164, 12.7578125)
+transform = Transform3D(-0.48043606, 0.25571147, -0.8389236, -0.05575622, 0.9457106, 0.3201917, 0.87525564, 0.2006069, -0.44009608, 10.079956, 1.2534187, 11.778778)
+
+[node name="CrownOutline" parent="collection/Crown2/CrownSprite" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="HeartCheckpoint" parent="collection" unique_id=1980331538 instance=ExtResource("40_qmtuy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 390.9224, 14, 450.54376)
