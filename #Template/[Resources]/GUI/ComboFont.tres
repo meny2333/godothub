@@ -1,0 +1,8 @@
+[gd_resource type="FontVariation" load_steps=3 format=3 uid="uid://c8n5m2v9k4q7t"]
+
+[ext_resource type="FontFile" uid="uid://cfyw78f6iowmi" path="res://#Template/[Resources]/GUI/CaviarDreams.TTF" id="1_caviar"]
+[ext_resource type="FontFile" uid="uid://cofd0gpguc54l" path="res://#Template/[Resources]/GUI/MiSans-Normal.ttf" id="2_misans"]
+
+[resource]
+base_font = ExtResource("1_caviar")
+fallbacks = Array[Font]([ExtResource("2_misans")])

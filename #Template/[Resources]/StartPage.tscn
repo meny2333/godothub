@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://startpage"]
+[gd_scene load_steps=10 format=3 uid="uid://startpage"]
 
 [ext_resource type="Script" uid="uid://urm8r3g8vfda" path="res://#Template/[Scripts]/GUI/StartPage.gd" id="1"]
 [ext_resource type="Script" uid="uid://cpt228wqyq445" path="res://#Template/[Scripts]/Auto/SetAutoPlay.gd" id="2"]
-[ext_resource type="FontFile" uid="uid://cofd0gpguc54l" path="res://#Template/[Resources]/GUI/MiSans-Normal.ttf" id="3_font"]
+[ext_resource type="FontVariation" uid="uid://c8n5m2v9k4q7t" path="res://#Template/[Resources]/GUI/ComboFont.tres" id="3_font"]
 [ext_resource type="Texture2D" uid="uid://crqiqa5ytpy7u" path="res://#Template/[Resources]/GUI/arrow_left.png" id="4_left"]
 [ext_resource type="Texture2D" uid="uid://ca8sn1wc12uyy" path="res://#Template/[Resources]/GUI/arrow_right.png" id="5_right"]
 [ext_resource type="Texture2D" uid="uid://b2vgkd0fgi6i8" path="res://#Template/[Resources]/GUI/info.png" id="6_info"]
